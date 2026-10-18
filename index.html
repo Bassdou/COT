@@ -2,13 +2,10 @@
 <html lang="he" dir="rtl">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>מערכת שעות - משמרות ופיצול</title>
     <style>
-        /* === סגנונות בסיסיים של המסך === */
-        h2, .version-stamp { touch-action: none; user-select: none; -webkit-user-select: none; }
         body { font-family: 'Segoe UI', Tahoma, Arial, sans-serif; background-color: #eef5f9; margin: 0; padding: 20px; color: #333; }
-        #debugBox { padding: 5px 10px; margin-bottom: 10px; border-radius: 4px; text-align: center; font-size: 12px; border: 1px solid #c3e6cb; background-color: #d4edda; color: #155724; }
         
         /* הסרגל העליון (פס כחול) */
         #debugBox {
@@ -22,7 +19,7 @@
             box-shadow: 0 4px 15px rgba(25, 118, 210, 0.3);
         }
 
-        /* עיצוב כללי לכפתורי תלת-מימד בגווני כחול */
+        /* כפתורי תלת-מימד */
         .btn-3d {
             position: relative;
             top: 0;
@@ -42,30 +39,30 @@
         .btn-logout { background-color: #0d47a1; color: white; padding: 8px 15px; font-size: 14px; box-shadow: 0 4px #0a367c; }
         .btn-logout:active { box-shadow: 0 0 #0a367c; }
 
-        .btn-load { background-color: #42a5f5; color: white; padding: 8px 10px; font-size: 13px; box-shadow: 0 4px #1e88e5; }
+        .btn-load { background-color: #42a5f5; color: white; padding: 8px 12px; font-size: 13px; box-shadow: 0 4px #1e88e5; }
         .btn-load:active { box-shadow: 0 0 #1e88e5; }
         
-        .btn-primary { background-color: #1565c0; color: white; padding: 8px 10px; font-size: 13px; box-shadow: 0 4px #0d47a1; }
+        .btn-primary { background-color: #1565c0; color: white; padding: 8px 12px; font-size: 13px; box-shadow: 0 4px #0d47a1; }
         .btn-primary:active { box-shadow: 0 0 #0d47a1; }
         
-        .btn-save { background-color: #1e88e5; color: white; padding: 8px 10px; font-size: 13px; box-shadow: 0 4px #1565c0; }
+        .btn-save { background-color: #1e88e5; color: white; padding: 8px 12px; font-size: 13px; box-shadow: 0 4px #1565c0; }
         .btn-save:active { box-shadow: 0 0 #1565c0; }
         
-        .btn-reset { background-color: #546e7a; color: white; padding: 8px 10px; font-size: 13px; box-shadow: 0 4px #37474f; }
+        .btn-reset { background-color: #546e7a; color: white; padding: 8px 12px; font-size: 13px; box-shadow: 0 4px #37474f; }
         .btn-reset:active { box-shadow: 0 0 #37474f; }
         
-        .btn-print { background-color: #1565c0; color: white; padding: 15px 30px; font-size: 16px; box-shadow: 0 4px #0d47a1; border-radius: 8px; }
+        .btn-print { background-color: #1565c0; color: white; padding: 14px 28px; font-size: 16px; box-shadow: 0 4px #0d47a1; border-radius: 8px; }
         .btn-print:active { box-shadow: 0 0 #0d47a1; }
 
         /* פאנל נתונים ראשי */
         .header-panel {
-            background: #fff; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 25px; 
-            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 30px;
+            background: #fff; padding: 20px 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 25px; 
+            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;
         }
         
         .inputs-section { display: flex; flex-wrap: wrap; gap: 12px; flex: 2; align-items: flex-end; }
         .input-group {
-            background-color: #e3f2fd; /* רקע תכלת עדין */
+            background-color: #e3f2fd;
             border: 1px solid #bbdefb;
             border-radius: 8px;
             padding: 5px 8px;
@@ -73,7 +70,7 @@
             flex-direction: column;
             align-items: center;
             box-shadow: inset 0 1px 3px rgba(0,0,0,0.03);
-            border-bottom: 3px solid #1e88e5; /* פס עיטור תחתון כחול */
+            border-bottom: 3px solid #1e88e5;
         }
         .input-group label { 
             font-size: 11px; 
@@ -99,8 +96,8 @@
             color: #1565c0;
         }
 
-        .actions-section { display: flex; flex-direction: column; gap: 12px; flex: 1; min-width: 180px; }
-        .action-row { display: flex; gap: 12px; }
+        .actions-section { display: flex; flex-direction: column; gap: 8px; flex: 1; min-width: 200px; }
+        .action-row { display: flex; gap: 8px; }
         .action-row button { flex: 1; }
         
         /* טבלה בגווני כחול */
@@ -112,7 +109,6 @@
         .th-group-1 { background-color: #0d47a1; } .th-group-2 { background-color: #1565c0; } .th-group-3 { background-color: #1976d2; } .th-group-4 { background-color: #1e88e5; }
         tr:nth-child(even) { background-color: #f9fcff; }
         
-        /* עיצוב שדות הזמן המקצועיים */
         .time-input { width: 65px; padding: 4px; border: 1px solid #90caf9; border-radius: 3px; text-align: center; font-weight: bold; font-family: monospace; font-size: 14px; color: #0d47a1;}
         .time-input::placeholder { color: #bbdefb; font-weight: normal; }
         .shift-type-input { width: 35px; padding: 4px; border: 1px solid #90caf9; border-radius: 3px; text-align: center; font-weight: bold; font-size: 14px; background-color: #e3f2fd; color: #0d47a1; margin: 0 auto; display: block; }
@@ -156,7 +152,7 @@
         .info-section ul { margin-top: 5px; padding-right: 20px; }
         .info-section li { margin-bottom: 5px; }
 
-        .version-stamp { position: fixed; bottom: 5px; left: 5px; font-size: 10px; font-weight: bold; color: black; z-index: 99999; cursor: default;}
+        .version-stamp { position: fixed; bottom: 5px; left: 5px; font-size: 10px; font-weight: bold; color: #7f8c8d; z-index: 99999; cursor: default;}
         .print-only { display: none; }
         .print-only-cell { display: none; }
 
@@ -209,16 +205,34 @@
 <body>
 
 <!-- מסך התחברות / הרשמה (Overlay) -->
-<div id="authOverlay" style="position: fixed; top:0; left:0; width:100%; height:100%; background:#eef5f9; z-index: 10000; display:flex; justify-content:center; align-items:center;">
-    <div style="background:#fff; padding:30px; border-radius:8px; box-shadow:0 4px 15px rgba(0,0,0,0.1); width:90%; max-width:400px; text-align:center;">
-        <h2 style="color:#0d47a1; margin-top:0; font-size:24px; user-select:none; touch-action:none;" onpointerdown="secretBypass(event)">כניסה למערכת</h2>
-        <p style="font-size:14px; color:#546e7a; margin-bottom:20px;">אנא התחבר או הרשם כדי להמשיך</p>
-        <input type="email" id="authEmail" placeholder="אימייל" style="width:100%; box-sizing:border-box; margin-bottom:10px; padding:10px; text-align:left; font-size:16px; border: 1px solid #90caf9; border-radius: 4px;" dir="ltr">
-        <input type="password" id="authPassword" placeholder="סיסמה (לפחות 6 תווים)" style="width:100%; box-sizing:border-box; margin-bottom:20px; padding:10px; text-align:left; font-size:16px; border: 1px solid #90caf9; border-radius: 4px;" dir="ltr">
-        <div id="authError" style="color:#e74c3c; font-size:13px; margin-bottom:10px; font-weight:bold; min-height:15px;"></div>
-        <div style="display:flex; gap:10px;">
-            <button class="btn-3d" onclick="loginUser()" style="flex:1; padding:12px; background:#1976d2; color:white; border-radius:4px; font-size:15px; box-shadow:0 4px #1565c0;">התחבר</button>
-            <button class="btn-3d" onclick="registerUser()" style="flex:1; padding:12px; background:#1e88e5; color:white; border-radius:4px; font-size:15px; box-shadow:0 4px #1976d2;">הרשמה חדשה</button>
+<div id="authOverlay" style="position: fixed; top:0; left:0; width:100%; height:100%; background: linear-gradient(135deg, #1976d2 0%, #eef5f9 100%); z-index: 10000; display:flex; justify-content:center; align-items:center; padding: 15px; box-sizing: border-box; overflow-y: auto;">
+    <div style="background:#fff; padding:35px 25px; border-radius:16px; box-shadow:0 10px 40px rgba(0,0,0,0.2); width:100%; max-width:400px; text-align:center; position:relative; overflow:hidden; margin: auto;">
+        <!-- פס קישוט עליון -->
+        <div style="position:absolute; top:0; left:0; width:100%; height:6px; background:#1e88e5;"></div>
+        
+        <h2 style="color:#0d47a1; margin-top:0; margin-bottom:5px; font-size:26px; cursor:pointer;" onclick="secretBypass()">בקרת דו"ח פיצול</h2>
+        <h4 style="color:#546e7a; margin-top:0; margin-bottom:20px; font-weight:normal; font-size:14px;">ניהול חכם של משמרות ושכר</h4>
+        
+        <!-- תיבת מידע והנחיות -->
+        <div style="background:#e3f2fd; color:#0d47a1; padding:15px; border-radius:10px; font-size:13px; margin-bottom:25px; border:1px solid #bbdefb; text-align:right; line-height:1.5;">
+            <strong style="font-size:14px;">ברוכים הבאים! 👋</strong><br>
+            כדי לשמור על פרטיות נתוני השכר שלך ולאפשר גישה מכל מכשיר, המערכת דורשת זיהוי קצר.<br><br>
+            <span style="font-size:12px; color:#1565c0;"><strong>משתמש חדש?</strong> הקלד אימייל וסיסמה לבחירתך ולחץ על <b>"הרשמה חדשה"</b>.</span>
+        </div>
+
+        <div style="text-align:right;">
+            <label style="font-size:13px; font-weight:bold; color:#1565c0; margin-bottom:6px; display:block;">כתובת אימייל</label>
+            <input type="email" id="authEmail" placeholder="name@example.com" style="width:100%; box-sizing:border-box; margin-bottom:15px; padding:12px; text-align:left; font-size:15px; border: 2px solid #e3f2fd; border-radius: 8px; background:#f8fbff; outline:none;" dir="ltr">
+            
+            <label style="font-size:13px; font-weight:bold; color:#1565c0; margin-bottom:6px; display:block;">סיסמה</label>
+            <input type="password" id="authPassword" placeholder="לפחות 6 תווים" style="width:100%; box-sizing:border-box; margin-bottom:5px; padding:12px; text-align:left; font-size:15px; border: 2px solid #e3f2fd; border-radius: 8px; background:#f8fbff; outline:none;" dir="ltr">
+        </div>
+
+        <div id="authError" style="color:#e74c3c; font-size:13px; margin-bottom:20px; font-weight:bold; min-height:18px;"></div>
+        
+        <div style="display:flex; gap:12px; flex-direction: column;">
+            <button class="btn-3d" onclick="loginUser()" style="width:100%; padding:14px; background:#1976d2; color:white; border-radius:8px; font-size:16px; box-shadow:0 4px #1565c0; margin-bottom: 5px;">כניסה למערכת</button>
+            <button class="btn-3d" onclick="registerUser()" style="width:100%; padding:12px; background:#fff; color:#1976d2; border:2px solid #1976d2; border-radius:8px; font-size:15px; box-shadow:0 4px #bbdefb; top:-2px;">הרשמה חדשה</button>
         </div>
     </div>
 </div>
@@ -309,7 +323,7 @@
     <div class="inputs-section">
         <div class="input-group">
             <label>שם עובד</label>
-            <input type="text" id="employeeName" value="" style="width: 130px;" oninput="updateTitles()">
+            <input type="text" id="employeeName" value="" style="width: 110px;" oninput="updateTitles()">
         </div>
         <div class="input-group">
             <label>חודש</label>
@@ -334,11 +348,11 @@
         </div>
         <div class="input-group">
             <label>יתרת קודמת שבת</label>
-            <input type="number" id="shabbatBalance" value="0.00" step="0.01" style="width: 80px;" oninput="updateGrandTotal()">
+            <input type="number" id="shabbatBalance" value="0.00" step="0.01" style="width: 75px;" oninput="updateGrandTotal()">
         </div>
     </div>
     
-    <!-- צד שמאל: כפתורי פעולה -->
+    <!-- צד שמאל: כפתורי פעולה מסודרים בשתי שורות -->
     <div class="actions-section">
         <div class="action-row">
             <button class="btn-primary btn-3d" onclick="generateTable()">הכן גיליון</button>
@@ -464,32 +478,6 @@
 </div>
 
 <script>
-    window.isBypassed = false;
-    let clickCount = 0;
-    let clickTimer;
-    window.secretBypass = function(e) {
-        if(e) e.preventDefault();
-        clickCount++;
-        clearTimeout(clickTimer);
-        
-        // חיווי ויזואלי קל כדי שתדע שהלחיצה נקלטה
-        let titleEl = document.querySelector('#authOverlay h2');
-        if(titleEl) {
-            let originalColor = titleEl.style.color;
-            titleEl.style.color = '#1e88e5';
-            setTimeout(() => { titleEl.style.color = originalColor; }, 150);
-        }
-
-        if(clickCount >= 3) {
-            window.isBypassed = true;
-            document.getElementById('authOverlay').style.display = 'none';
-            var btn = document.getElementById('logoutBtn');
-            if(btn) btn.style.display = 'inline-block';
-            clickCount = 0;
-        }
-        clickTimer = setTimeout(() => { clickCount = 0; }, 2000);
-    };
-
     // --- Firebase Configuration ---
     const firebaseConfig = {
       apiKey: "AIzaSyDzcW_tXO08BxmWki2Imx6sxq_4YKyxBLQ",
@@ -501,8 +489,10 @@
     };
     firebase.initializeApp(firebaseConfig);
 
+    window.isBypassed = false;
+
     firebase.auth().onAuthStateChanged(function(user) {
-        if (window.isBypassed) return; // לא לנעול חזרה אם הופעל המעקף
+        if (window.isBypassed) return;
         if (user) {
             document.getElementById('authOverlay').style.display = 'none';
             var btn = document.getElementById('logoutBtn');
@@ -545,6 +535,22 @@
     window.logoutUser = function() {
         window.isBypassed = false;
         firebase.auth().signOut();
+    };
+
+    // --- Backdoor Secret Bypass ---
+    let clickCount = 0;
+    let clickTimer;
+    window.secretBypass = function() {
+        clickCount++;
+        clearTimeout(clickTimer);
+        if(clickCount >= 3) {
+            window.isBypassed = true;
+            document.getElementById('authOverlay').style.display = 'none';
+            var btn = document.getElementById('logoutBtn');
+            if(btn) btn.style.display = 'inline-block';
+            clickCount = 0;
+        }
+        clickTimer = setTimeout(() => clickCount = 0, 1500);
     };
 
     var daysHebrew = ["א'", "ב'", "ג'", "ד'", "ה'", "ו'", "ש'"];
@@ -1130,7 +1136,6 @@
         if(document.getElementById('dashShabbatDeducted')) document.getElementById('dashShabbatDeducted').innerText = deductedShabbatDays.toFixed(2);
         if(document.getElementById('dashShabbatTotal')) document.getElementById('dashShabbatTotal').innerText = finalShabbatTotal.toFixed(2);
 
-        // הושמט הערך של דוח הפיצול מהמסך לפי הבקשה
         document.getElementById('tlushCost').innerText = tlushCost.toFixed(2) + ' ₪';
         
         if(document.getElementById('printDashShifts')) document.getElementById('printDashShifts').innerText = totalShifts;
@@ -1143,7 +1148,6 @@
         if(document.getElementById('printDashShabbatDeducted')) document.getElementById('printDashShabbatDeducted').innerText = deductedShabbatDays.toFixed(2);
         if(document.getElementById('printDashShabbatTotal')) document.getElementById('printDashShabbatTotal').innerText = finalShabbatTotal.toFixed(2);
 
-        // עדכון בהדפסה להצגת הערך של התלוש בלבד
         if(document.getElementById('tlushCostPrint')) document.getElementById('tlushCostPrint').innerText = tlushCost.toFixed(2) + ' ₪';
     };
 
@@ -1202,7 +1206,6 @@
     });
 
     window.clearData = function() {
-        // איפוס שדות למניעת שמירת נתונים בזיכרון המטמון של הדפדפן (Cache)
         document.getElementById('employeeName').value = "";
         document.getElementById('hourlyRate').value = "";
         document.getElementById('eshelRate').value = "52.66";
@@ -1215,7 +1218,6 @@
         document.getElementById('yearInput').value = calcYear;
         document.getElementById('monthSelect').value = prevMonth;
         
-        // מחיקת תוכן הטבלה והסתרתה
         var tbody = document.getElementById('tbody');
         if (tbody) tbody.innerHTML = '';
         
@@ -1235,6 +1237,6 @@
     };
 
 </script>
-<div class="version-stamp" onpointerdown="secretBypass(event)" style="cursor:default;" title="V">V202610181850</div>
+<div class="version-stamp" title="V">V202610181930</div>
 </body>
 </html>
