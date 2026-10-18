@@ -319,17 +319,17 @@
                     <li><strong>מנוע חישוב מתקדם:</strong> מנתח כל דקת עבודה ומפצל לתעריפים השונים, כולל שבת, שעות נוספות בשבת, ו"תוספת משמרת" (ת.מ.). בסוף הדוח מוצג סך השעות והערך (בש"ח) לכל תעריף, ובשורה התחתונה מחושב סה"כ ערך השעות הנוספות לחודש (להשוואה מול תלוש השכר).</li>
                     <li><strong>ניהול חופש שבת:</strong> מעקב אוטומטי אחר צבירה, קיזוז ימים מנוצלים (קוד "חש"), וניהול יתרה מצטברת.</li>
                     <li><strong>לוח בקרה חי:</strong> תצוגה מסכמת של משמרות, שעות תקן/בפועל, דוח אש"ל, והשוואת ערך.</li>
-                    <li><strong>שמירה, טעינה ופרטיות:</strong> הנתונים נשמרים מקומית במחשב (בקובץ JSON) ולא בענן.</li>
-                    <li><strong>דוח מותאם (PDF):</strong> הפקת דוח נקי ומקצועי להדפסה לרוחב A4, הדומה לדוח הפיצול המשרדי.</li>
+                    <li><strong>שמירה, טעינה ופרטיות:</strong> הנתונים אינם נשמרים בענן, אלא מאוחסנים מקומית אצל המשתמש. בלחיצת כפתור ניתן לייצא ולשמור קובץ נתונים (JSON) ישירות לתיקייה במחשב, ולטעון אותו מחדש בעתיד.</li>
+                    <li><strong>דוח מותאם (PDF):</strong> המערכת מפיקה בלחיצת כפתור דוח נקי, רשמי ומקצועי המותאם להדפסה לרוחב דף A4 . הדוח דומה מאוד לדוח הפיצול הנשלח מהמשרד.</li>
                 </ul>
             </div>
 
             <div class="info-section">
                 <h3>הסכמי משמרות (חשוב להכיר)</h3>
                 <ul>
-                    <li><strong>משמרות בוקר</strong> שגלשו לאחרי השעה 14:00 לא יקבלו תוספת 20% אלא אם נצברו 3 שעות עבודה מלאות (החתמת כניסה לפני 17:00 בדיוק).</li>
-                    <li><strong>משמרת לילה</strong> שהתחילה לפני 03:00 - כל השעות אחרי כן נחשבות לילה. אם ההחתמה הייתה אחרי 03:00, בשעה 06:00 השעות הופכות לבוקר.</li>
-                    <li><strong>דוח אש"ל</strong> מחושב לפי סך שעות העבודה בפועל מחולק ב-8. המספר השלם מוכפל בערך מנת האוכל המעודכנת.</li>
+                    <li><strong>משמרות בוקר</strong> שגלשו לאחרי השעה 14:00, לא יקבלו תוספת 20% אלא אם נצברו 3 שעות מלאות (החתמה לפני 17:00 בדיוק)</li>
+                    <li><strong>משמרת לילה</strong> שהתחילה לפני 03:00 כל השעות אחרי זה נחשבות לילה. במקרה וההחתמה הייתה אחרי 03:00 ב 06:00 השעות הופכות לבוקר.</li>
+                    <li><strong>חישוב דוח האש"ל</strong> לפי סך שעות העבודה בפועל מחולק ב-8, המספר השלם בתוצאה מוכפל בערך מנת אוכל, כל רבעון מתעדכנת עלות מנה.</li>
                 </ul>
             </div>
 
@@ -373,7 +373,7 @@
 <div class="header-panel">
     <div class="input-group">
         <label>שם עובד</label>
-        <input type="text" id="employeeName" value="בסאם דובאה" style="width: 130px;" oninput="updateTitles()">
+        <input type="text" id="employeeName" value="" style="width: 130px;" oninput="updateTitles()">
     </div>
     <div class="input-group">
         <label>חודש</label>
@@ -390,11 +390,11 @@
     </div>
     <div class="input-group">
         <label>שעתי בסיס (₪)</label>
-        <input type="number" id="hourlyRate" value="41.94" step="0.01" style="width: 70px;" oninput="updateGrandTotal()">
+        <input type="number" id="hourlyRate" value="" step="0.01" style="width: 70px;" oninput="updateGrandTotal()">
     </div>
     <div class="input-group">
         <label>תעריף אש"ל (₪)</label>
-        <input type="number" id="eshelRate" value="52.38" step="0.01" style="width: 70px;" oninput="updateGrandTotal()">
+        <input type="number" id="eshelRate" value="" step="0.01" style="width: 70px;" oninput="updateGrandTotal()">
     </div>
     <div class="input-group">
         <label>יתרת קודמת שבת</label>
@@ -403,15 +403,14 @@
     
     <div class="spacer"></div>
     
-    <!-- שינוי סדר: שמור -> טען -> הכן -> הדפס -> מידע חשוב (הכי שמאלי ב-RTL) -->
     <button class="btn-save" onclick="saveData()">שמור נתונים</button>
     <button class="btn-load" onclick="loadData()">טען נתונים</button>
-    <input type="file" id="fileLoader" accept=".json" style="position: absolute; left: -9999px; width: 0; height: 0; opacity: 0;" onchange="handleFileLoad(event)">
+    <button class="btn-load" style="background-color: #e74c3c;" onclick="clearData()" title="נקה את כל הנתונים במסך">איפוס נתונים</button>
+    <input type="file" id="fileLoader" accept=".json" style="display: none;" onchange="handleFileLoad(event)">
     <button class="btn-primary" onclick="generateTable()">הכן גיליון חודשי</button>
     
     <button class="btn-print" id="printBtn" onclick="window.print()" style="display:none;">הפק דוח בקרת פיצול</button>
     
-    <!-- כפתור המידע המרובע יהיה אחרון בקוד ולכן הכי שמאלי במסך RTL -->
     <button class="btn-info" onclick="openShiftInfo()" title="מידע חשוב">
         <span class="icon">ℹ️</span>
         <span>מידע חשוב</span>
@@ -589,7 +588,7 @@
         document.getElementById('shiftInfoModal').style.display = "none";
     };
 
-window.onclick = function(event) {
+    window.onclick = function(event) {
         var modal = document.getElementById('shiftInfoModal');
         var miniModal = document.getElementById('miniShiftInfoModal');
         if (event.target == modal) {
@@ -1177,21 +1176,38 @@ window.onclick = function(event) {
         }
     });
 
+    window.clearData = function() {
+        document.getElementById('employeeName').value = "";
+        document.getElementById('hourlyRate').value = "";
+        document.getElementById('eshelRate').value = "";
+        document.getElementById('shabbatBalance').value = "0.00";
+        
+        var now = new Date();
+        var prevMonth = now.getMonth(); 
+        var calcYear = now.getFullYear();
+        if (prevMonth === 0) { prevMonth = 12; calcYear--; }
+        document.getElementById('yearInput').value = calcYear;
+        document.getElementById('monthSelect').value = prevMonth;
+        
+        var tbody = document.getElementById('tbody');
+        if (tbody) tbody.innerHTML = '';
+        
+        document.getElementById('tableContainer').style.display = 'none';
+        document.getElementById('summaryPanel').style.display = 'none';
+        document.getElementById('printBtn').style.display = 'none';
+        
+        updateTitles();
+    };
+
     window.onload = function() {
         try {
-            var now = new Date();
-            var prevMonth = now.getMonth(); 
-            var calcYear = now.getFullYear();
-            if (prevMonth === 0) { prevMonth = 12; calcYear--; }
-            document.getElementById('yearInput').value = calcYear;
-            document.getElementById('monthSelect').value = prevMonth;
-            updateTitles();
+            clearData();
         } catch(e) {
             console.error("שגיאה באתחול ראשוני: ", e);
         }
     };
 
 </script>
-<div class="version-stamp">V202610181115</div>
+<div class="version-stamp">V202610181220</div>
 </body>
 </html>
