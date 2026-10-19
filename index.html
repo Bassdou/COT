@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>COT - Calculate Over Time</title>
+    <!-- סמל הלוגו בלשונית הדפדפן (Favicon) -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 100'><text x='5' y='75' font-family='Arial Black, sans-serif' font-size='60' font-weight='900'><tspan fill='%23FF9800'>C</tspan><tspan fill='%2300E676' dx='-15'>O</tspan><tspan fill='%23FF5252' dx='-15'>T</tspan></text></svg>">
+    <!-- קישור לקובץ העיצוב -->
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-auth-compat.js"></script>
+</head>
+<body>
+<!-- מסך התחברות / הרשמה (Overlay) -->
+<div id="authOverlay" style="position: fixed; top:0; left:0; right:0; bottom:0; background: linear-gradient(135deg, #1976d2 0%, #eef5f9 100%); z-index: 10000; overflow-y: auto; display: flex; align-items: flex-start; justify-content: center; padding: 20px; box-sizing: border-box; padding-top: 10vh; padding-bottom: 5vh;">
+    
+    <div style="background:#fff; padding:35px 25px; border-radius:16px; box-shadow:0 10px 40px rgba(0,0,0,0.2); width:100%; max-width:400px; text-align:center; position:relative; margin: auto; box-sizing: border-box;">
+        <!-- פס קישוט עליון -->
+        <div style="position:absolute; top:0; left:0; width:100%; height:6px; background:#1e88e5;"></div>
+        
+        <!-- הלוגו של COT במסך התחברות (לחיצה משולשת כאן עוקפת הרשמה) -->
+        <div style="display: flex; align-items: center; justify-content: center; cursor: pointer; margin-bottom: 10px; touch-action:none; user-select:none;" onclick="secretBypass(event)" title="לחץ 3 פעמים רצוף לכניסה מהירה">
+            <div class="icon-logo" dir="ltr" style="position: relative; width: 75px; height: 50px; font-family: 'Arial Black', 'Segoe UI Black', sans-serif; font-size: 48px; line-height: 50px; font-weight: 900; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));">
+                <span style="position: absolute; left: 0px; top: 0; color: #FF9800; opacity: 0.9; z-index: 3;">C</span>
+                <span style="position: absolute; left: 19px; top: 0; color: #00BFA5; opacity: 0.85; z-index: 1;">O</span>
+                <span style="position: absolute; left: 40px; top: 0; color: #FF5252; opacity: 0.9; z-index: 2;">T</span>
+            </div>
+        </div>
+        
+        <h2 style="color:#0d47a1; margin-top:0; margin-bottom:5px; font-size:22px; user-select:none; touch-action:none; cursor:pointer;" onclick="secretBypass(event)">בקרת דו"ח פיצול</h2>
+        <h4 style="color:#546e7a; margin-top:0; margin-bottom:20px; font-weight:normal; font-size:14px;">ניהול חכם של משמרות ושכר</h4>
+        
+        <!-- תיבת מידע והנחיות -->
+        <div style="background:#e3f2fd; color:#0d47a1; padding:15px; border-radius:10px; font-size:13px; margin-bottom:25px; border:1px solid #bbdefb; text-align:right; line-height:1.5;">
+            <strong style="font-size:14px;">ברוכים הבאים! 👋</strong><br>
+            כדי לשמור על פרטיות נתוני השכר שלך ולאפשר גישה מכל מכשיר, המערכת דורשת זיהוי קצר.<br><br>
+            <span style="font-size:12px; color:#1565c0;"><strong>משתמש חדש?</strong> הקלד אימייל וסיסמה לבחירתך ולחץ על <b>"הרשמה חדשה"</b>.</span>
+        </div>
+
+        <div style="text-align:right;">
+            <label style="font-size:13px; font-weight:bold; color:#1565c0; margin-bottom:6px; display:block;">שם העובד (לרישום בדוח)</label>
+            <input type="text" id="authName" placeholder="הקלד שם מלא" style="width:100%; box-sizing:border-box; margin-bottom:15px; padding:12px; text-align:right; font-size:15px; border: 2px solid #e3f2fd; border-radius: 8px; background:#f8fbff; outline:none; transition:0.2s;" onfocus="this.style.borderColor='#90caf9'" onblur="this.style.borderColor='#e3f2fd'" dir="rtl">
+            
+            <label style="font-size:13px; font-weight:bold; color:#1565c0; margin-bottom:6px; display:block;">כתובת אימייל</label>
+            <input type="email" id="authEmail" placeholder="name@example.com" style="width:100%; box-sizing:border-box; margin-bottom:15px; padding:12px; text-align:left; font-size:15px; border: 2px solid #e3f2fd; border-radius: 8px; background:#f8fbff; outline:none; transition:0.2s;" onfocus="this.style.borderColor='#90caf9'" onblur="this.style.borderColor='#e3f2fd'" dir="ltr">
+            
+            <label style="font-size:13px; font-weight:bold; color:#1565c0; margin-bottom:6px; display:block;">סיסמה</label>
+            <input type="password" id="authPassword" placeholder="לפחות 6 תווים" style="width:100%; box-sizing:border-box; margin-bottom:5px; padding:12px; text-align:left; font-size:15px; border: 2px solid #e3f2fd; border-radius: 8px; background:#f8fbff; outline:none; transition:0.2s;" onfocus="this.style.borderColor='#90caf9'" onblur="this.style.borderColor='#e3f2fd'" dir="ltr">
+        </div>
+
+        <div id="authError" style="color:#e74c3c; font-size:13px; margin-bottom:20px; font-weight:bold; min-height:18px;"></div>
+        
+        <div style="display:flex; gap:12px; flex-direction: column;">
+            <button class="btn-3d" onclick="loginUser()" style="width:100%; padding:14px; background:#1976d2; color:white; border-radius:8px; font-size:16px; box-shadow:0 4px #1565c0; margin-bottom: 5px;">כניסה למערכת</button>
+            <button class="btn-3d" onclick="registerUser()" style="width:100%; padding:12px; background:#fff; color:#1976d2; border:2px solid #1976d2; border-radius:8px; font-size:15px; box-shadow:0 4px #bbdefb; top:-2px;">הרשמה חדשה</button>
+        </div>
+    </div>
+</div>
+
+<!-- מסך השלמת שם למשתמשים ותיקים -->
+<div id="updateNameOverlay" style="display: none; position: fixed; top:0; left:0; right:0; bottom:0; background: linear-gradient(135deg, #1976d2 0%, #eef5f9 100%); z-index: 10001; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box;">
+    <div style="background:#fff; padding:30px 25px; border-radius:16px; box-shadow:0 10px 40px rgba(0,0,0,0.2); width:100%; max-width:350px; text-align:center; position:relative; overflow:hidden;">
+        <div style="position:absolute; top:0; left:0; width:100%; height:6px; background:#ff9800;"></div>
+        <h3 style="color:#0d47a1; margin-top:0; font-size:20px;">השלמת פרטים חסרים</h3>
+        <p style="font-size:14px; color:#546e7a; margin-bottom: 20px; line-height: 1.5;">זיהינו שהחשבון שלך נוצר בעבר לפני עדכון המערכת.<br>כדי להמשיך, אנא הזן את שמך המלא (יופיע אוטומטית בדוחות).</p>
+        <input type="text" id="missingNameInput" placeholder="הקלד שם מלא כאן" style="width:100%; box-sizing:border-box; margin-bottom:15px; padding:12px; text-align:right; font-size:15px; border: 2px solid #e3f2fd; border-radius: 8px; background:#f8fbff; outline:none; transition:0.2s;" onfocus="this.style.borderColor='#90caf9'" onblur="this.style.borderColor='#e3f2fd'" dir="rtl">
+        <div id="missingNameError" style="color:#e74c3c; font-size:13px; margin-bottom:15px; font-weight:bold; min-height:15px;"></div>
+        <button class="btn-3d" onclick="saveMissingName()" style="width:100%; padding:12px; background:#1976d2; color:white; border-radius:8px; font-size:16px; box-shadow:0 4px #1565c0;">שמור והיכנס למערכת</button>
+    </div>
+</div>
+
+<!-- סרגל עליון - פס כחול -->
+<div id="debugBox">
+    <!-- הלוגו של COT בתוך המערכת -->
+    <div style="display: flex; align-items: center; gap: 12px;">
+        <div dir="ltr" style="position: relative; width: 55px; height: 36px; font-family: 'Arial Black', 'Segoe UI Black', sans-serif; font-size: 34px; line-height: 36px; font-weight: 900; margin-left: 5px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));">
+            <span style="position: absolute; left: 0px; top: 0; color: #FF9800; opacity: 0.95; z-index: 3;">C</span>
+            <span style="position: absolute; left: 14px; top: 0; color: #00E676; opacity: 0.9; z-index: 1;">O</span>
+            <span style="position: absolute; left: 30px; top: 0; color: #FF5252; opacity: 0.95; z-index: 2;">T</span>
+        </div>
+        <div style="display: flex; flex-direction: column; line-height: 1.1; border-right: 2px solid rgba(255,255,255,0.3); padding-right: 12px;">
+            <span style="font-size: 18px; font-weight: bold; color: #ffffff;">בקרת דו"ח פיצול</span>
+            <span style="font-size: 11px; color: #bbdefb; letter-spacing: 0.5px; font-family: Tahoma, sans-serif;">Calculate Over Time</span>
+        </div>
+    </div>
+    
+    <div style="display: flex; gap: 15px; align-items: center;">
+        <button class="btn-logout btn-3d" id="logoutBtn" onclick="logoutUser()" style="display:none;" title="התנתק מהמערכת">התנתק</button>
+        <!-- כפתור עליון - פותח רק את הגדרות המערכת הכלליות -->
+        <button class="btn-info btn-3d" onclick="openShiftInfo()" title="מידע חשוב על המערכת וההסכמים">
+            <span class="icon">ℹ️</span>
+            <span>מידע חשוב</span>
+        </button>
+    </div>
+</div>
+
+<!-- חלון עזר ראשי (Modal) רק טקסט הדרכה - ללא רשימת המשמרות -->
+<div id="shiftInfoModal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn" onclick="closeShiftInfo()">&times;</span>
+        <div class="modal-header">
+            <h2>ℹ️ מידע חשוב</h2>
+        </div>
+        <div style="max-height: 70vh; overflow-y: auto; padding-left: 10px;">
+            <div class="info-section">
+                <p>מערכת <strong>"בקרת דו"ח פיצול"</strong> היא יישום רשת חכם ועצמאי שנועד לתכנן, לנהל, לתעד ולנתח את שעות העבודה במשמרות.</p>
+                <p>המערכת מפצלת את השעות הנוספות עפ"י הסכמי העבודה בצורה מדויקת. העובד יוכל לתכנן איזה משמרות כדאי ומשתלם להשתבץ, ויוודא את תקינות חישובי השעות והתוספות מול דוח פיצול ומול תלוש השכר.</p>
+            </div>
+            <div class="info-section">
+                <h3>יכולות עיקריות</h3>
+                <ul>
+                    <li><strong>הזנת נתונים חכמה ("קלדנות עיוורת"):</strong> הזנה אוטומטית של זמני כניסה ויציאה על ידי הקלדת קודי משמרת קצרים. הקלדת שעות ללא נקודתיים (למשל: 1904 תהפוך אוטומטית ל-19:04, ו-8 ל-08:00) תוך אכיפת פורמט 24 שעות.</li>
+                    <li><strong>מנוע חישוב מתקדם:</strong> מנתח כל דקת עבודה ומפצל לתעריפים השונים, כולל שבת, שעות נוספות בשבת, ו"תוספת משמרת" (ת.מ.). בסוף הדוח מוצג סך השעות והערך (בש"ח) לכל תעריף, ובשורה התחתונה מחושב סה"כ ערך השעות הנוספות לחודש (להשוואה מול תלוש השכר).</li>
+                    <li><strong>ניהול חופש שבת:</strong> מעקב אוטומטי אחר צבירה, קיזוז ימים מנוצלים (קוד "חש"), וניהול יתרה מצטברת.</li>
+                    <li><strong>לוח בקרה חי:</strong> תצוגה מסכמת של משמרות, שעות תקן/בפועל, דוח אש"ל, והשוואת ערך.</li>
+                    <li><strong>שמירה, טעינה ופרטיות:</strong> הנתונים אינם נשמרים בענן, אלא מאוחסנים מקומית אצל המשתמש. בלחיצת כפתור ניתן לייצא ולשמור קובץ נתונים (JSON) ישירות לתיקייה במחשב, ולטעון אותו מחדש בעתיד.</li>
+                    <li><strong>דוח מותאם (PDF):</strong> המערכת מפיקה בלחיצת כפתור דוח נקי, רשמי ומקצועי המותאם להדפסה לרוחב דף A4 . הדוח דומה מאוד לדוח הפיצול הנשלח מהמשרד.</li>
+                </ul>
+            </div>
+            <div class="info-section">
+                <h3>הסכמי משמרות (חשוב להכיר)</h3>
+                <ul>
+                    <li><strong>משמרות בוקר</strong> שגלשו לאחרי השעה 14:00 לא יקבלו תוספת 20% אלא אם נצברו 3 שעות עבודה מלאות (החתמת כניסה לפני 17:00 בדיוק).</li>
+                    <li><strong>משמרת לילה</strong> שהתחילה לפני 03:00 - כל השעות אחרי כן נחשבות לילה. אם ההחתמה הייתה אחרי 03:00, בשעה 06:00 השעות הופכות לבוקר.</li>
+                    <li><strong>דוח אש"ל</strong> מחושב לפי סך שעות העבודה בפועל מחולק ב-8. המספר השלם מוכפל בערך מנת האוכל המעודכנת.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- חלון עזר קטן למשמרות (Mini Modal) - נפתח מהטבלה ומציג את סוגי המשמרות -->
+<div id="miniShiftInfoModal" class="modal">
+    <div class="modal-content" style="max-width: 400px; padding: 15px;">
+        <span class="close-btn" onclick="closeMiniShiftInfo()">&times;</span>
+        <div class="modal-header">
+            <h2 style="font-size: 18px; margin: 0; color: #0d47a1;">ℹ️ קודי משמרות</h2>
+        </div>
+        <div style="max-height: 50vh; overflow-y: auto;">
+            <table class="info-table" style="font-size: 13px;">
+                <thead><tr><th style="width: 25%;">קוד להקלדה</th><th style="width: 20%;">כניסה</th><th style="width: 20%;">יציאה</th><th>הערה</th></tr></thead>
+                <tbody>
+                    <tr><td><span class="code-badge">ב</span></td><td>07:00</td><td>19:00</td><td>בוקר 12 שעות</td></tr>
+                    <tr><td><span class="code-badge">ל</span></td><td>19:00</td><td>07:00</td><td>לילה 12 שעות</td></tr>
+                    <tr><td><span class="code-badge">615</span></td><td>06:00</td><td>15:00</td><td>בוקר מוקדמת</td></tr>
+                    <tr><td><span class="code-badge">616</span></td><td>07:00</td><td>16:00</td><td>בוקר רגילה</td></tr>
+                    <tr><td><span class="code-badge">617</span></td><td>08:00</td><td>17:00</td><td>בוקר מאוחרת</td></tr>
+                    <tr><td><span class="code-badge">ב06</span></td><td>07:00</td><td>18:00</td><td>בוקר מוארכת</td></tr>
+                    <tr><td><span class="code-badge">ב16</span></td><td>08:00</td><td>16:00</td><td>בוקר מקוצרת</td></tr>
+                    <tr><td><span class="code-badge">102</span></td><td>10:00</td><td>20:00</td><td>צהריים</td></tr>
+                    <tr><td><span class="code-badge">111</span></td><td>11:00</td><td>20:00</td><td>צהריים מאוחרת</td></tr>
+                    <tr><td><span class="code-badge">112</span></td><td>12:00</td><td>22:15</td><td>ערב</td></tr>
+                    <tr><td><span class="code-badge">132</span></td><td>13:00</td><td>23:15</td><td>ערב מאוחרת</td></tr>
+                    <tr><td><span class="code-badge">207</span></td><td>20:00</td><td>07:00</td><td>לילה מוקדמת</td></tr>
+                    <tr><td><span class="code-badge">217</span></td><td>21:00</td><td>07:00</td><td>לילה רגילה</td></tr>
+                    <tr><td><span class="code-badge">227</span></td><td>22:00</td><td>07:00</td><td>לילה מאוחרת</td></tr>
+                    <tr><td><span class="code-badge">228</span></td><td>22:00</td><td>08:00</td><td>לילה ארוכה</td></tr>
+                    <tr><td><span class="code-badge">ח</span></td><td>-</td><td>-</td><td>חופש רגיל (8 שעות)</td></tr>
+                    <tr><td><span class="code-badge">חש</span></td><td>-</td><td>-</td><td>חופש שבת (מנכה מהיתרה)</td></tr>
+                    <tr><td><span class="code-badge">מח</span></td><td>-</td><td>-</td><td>מחלה (8 שעות תקן)</td></tr>
+                    <tr><td><span class="code-badge">הס</span></td><td>-</td><td>-</td><td>עפ"י הסכם (8 שעות תקן)</td></tr>
+                    <tr><td><span class="code-badge">בח</span></td><td>-</td><td>-</td><td>בחירה (8 שעות תקן)</td></tr>
+                    <tr><td><span class="code-badge">מבמ</span></td><td>-</td><td>-</td><td>מחלת בן משפחה (8 שעות)</td></tr>
+                    <tr><td><span class="code-badge">הכ</span></td><td>-</td><td>-</td><td>הכשרה (8 שעות תקן)</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="header-panel">
+    <div class="inputs-section">
+        <div class="input-group">
+            <label>שם עובד</label>
+            <input type="text" id="employeeName" value="" style="width: 110px;" oninput="updateTitles()">
+        </div>
+        <div class="input-group">
+            <label>חודש</label>
+            <select id="monthSelect" style="width: 110px;" onchange="updateTitles(); generateTable();">
+                <option value="1">01 - ינואר</option><option value="2">02 - פברואר</option><option value="3">03 - מרץ</option>
+                <option value="4">04 - אפריל</option><option value="5">05 - מאי</option><option value="6">06 - יוני</option>
+                <option value="7">07 - יולי</option><option value="8">08 - אוגוסט</option><option value="9">09 - ספטמבר</option>
+                <option value="10">10 - אוקטובר</option><option value="11">11 - נובמבר</option><option value="12">12 - דצמבר</option>
+            </select>
+        </div>
+        <div class="input-group">
+            <label>שנה</label>
+            <input type="number" id="yearInput" value="2026" style="width: 65px;" oninput="updateTitles(); generateTable();">
+        </div>
+        <div class="input-group">
+            <label>שעתי בסיס (₪)</label>
+            <input type="number" id="hourlyRate" value="0.00" step="0.01" style="width: 70px;" oninput="updateGrandTotal()">
+        </div>
+        <div class="input-group">
+            <label>תעריף אש"ל (₪)</label>
+            <input type="number" id="eshelRate" value="52.66" step="0.01" style="width: 70px;" oninput="updateGrandTotal()">
+        </div>
+        <div class="input-group">
+            <label>יתרת קודמת שבת</label>
+            <input type="number" id="shabbatBalance" value="0.00" step="0.01" style="width: 75px;" oninput="updateGrandTotal()">
+        </div>
+    </div>
+    
+    <div class="actions-section">
+        <div class="action-row">
+            <button class="btn-load btn-3d" onclick="loadData()">טען קובץ</button>
+            <button class="btn-primary btn-3d" onclick="generateTable()">הכן גיליון</button>
+        </div>
+        <div class="action-row">
+            <button class="btn-save btn-3d" onclick="saveData()">שמור קובץ</button>
+            <button class="btn-reset btn-3d" onclick="clearData()" title="נקה את כל הנתונים במסך">איפוס גיליון</button>
+        </div>
+        <input type="file" id="fileLoader" accept=".json" style="display: none;" onchange="handleFileLoad(event)">
+    </div>
+</div>
+
+<div id="printHeader" class="print-only">
+    <h1>
+        <span>דוח בקרה פיצול שעות חודש <span id="printMonthYearText"></span></span>
+        <span id="printEmployeeNameDisplay" style="display: none;"></span>
+    </h1>
+</div>
+
+<div class="table-container" id="tableContainer" style="display:none;">
+    <h2 id="sheetTitle" style="text-align: center; color: #2c3e50;">דוח שעות משמרות</h2>
+    <table id="timesheet">
+        <thead>
+            <tr>
+                <th colspan="2" rowspan="2" class="col-sep" style="width: 60px; min-width: 60px; max-width: 70px;">תאריך</th>
+                <th rowspan="2" class="col-sep hide-print" style="width: 35px;" title="הזן קוד משמרת">
+                    משמרת
+                    <span onclick="openMiniShiftInfo()" style="cursor:pointer; font-size:14px; margin-right:3px;" title="הצג רשימת קודים">ℹ️</span>
+                </th>
+                <th rowspan="2" class="print-thick-right" style="width: 75px; min-width: 75px; max-width: 85px;">כניסה</th>
+                <th rowspan="2" class="col-sep" style="width: 75px; min-width: 75px; max-width: 85px;">יציאה</th>
+                <th rowspan="2" class="col-sep" style="width: 90px; min-width: 90px; max-width: 110px;">תאור</th>
+                <th rowspan="2" class="calc-th">סה"כ<br>שעות</th>
+                <th rowspan="2" class="col-sep calc-th" title="חושב לפי ימים (חלקי 8)">חופש<br>שבת</th>
+                
+                <th rowspan="2" class="col-sep calc-th thick-border-left" title="עמודה I">רגילות</th>
+                <th colspan="3" class="col-sep thick-border-left">ש"נ</th>
+                <th colspan="2" class="col-sep thick-border-left">שבת</th>
+                <th colspan="4" class="col-sep thick-border-left">ש"נ</th>
+                <th colspan="5" class="col-sep thick-border-left">ת.מ.</th>
+                <th rowspan="2" class="col-sep">ערך</th>
+            </tr>
+            <tr>
+                <th class="calc-th">100%</th>
+                <th class="calc-th">125%</th>
+                <th class="col-sep calc-th thick-border-left">150%</th>
+                <th class="calc-th">175%</th>
+                <th class="col-sep calc-th thick-border-left">200%</th>
+                <th class="calc-th">180%</th>
+                <th class="calc-th">187.5%</th>
+                <th class="calc-th">225%</th>
+                <th class="col-sep calc-th thick-border-left">250%</th>
+                <th class="calc-th">20%</th>
+                <th class="calc-th">50%</th>
+                <th class="calc-th">75%</th>
+                <th class="calc-th">87.5%</th>
+                <th class="col-sep calc-th thick-border-left">100%</th>
+            </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+        <tfoot>
+            <tr class="tfoot-summary hours-row">
+                <td colspan="6" class="col-sep hide-print" style="text-align: right; padding-right: 10px;">סה"כ שעות לאחר קיזוז:</td>
+                <td colspan="5" class="col-sep print-only-cell" style="text-align: right; padding-right: 10px;">סה"כ שעות לאחר קיזוז:</td>
+                <td id="sum-hours-totalShift"></td>
+                <td id="sum-hours-shabbat" class="col-sep" title="סך הכל ימים"></td>
+                <td id="sum-hours-I" class="col-sep thick-border-left"></td>
+                <td id="sum-hours-J"></td><td id="sum-hours-K"></td><td id="sum-hours-L" class="col-sep thick-border-left"></td>
+                <td id="sum-hours-M"></td><td id="sum-hours-N" class="col-sep thick-border-left"></td><td id="sum-hours-O"></td><td id="sum-hours-P"></td>
+                <td id="sum-hours-Q"></td><td id="sum-hours-R" class="col-sep thick-border-left"></td>
+                <td id="sum-hours-S"></td><td id="sum-hours-T"></td>
+                <td id="sum-hours-U"></td><td id="sum-hours-V"></td>
+                <td id="sum-hours-W" class="col-sep thick-border-left"></td>
+                <td id="sum-hours-total" class="col-sep"></td>
+            </tr>
+            <tr class="tfoot-summary cost-row">
+                <td colspan="6" class="col-sep hide-print" style="text-align: right; padding-right: 10px;">עלות עמודה:</td>
+                <td colspan="5" class="col-sep print-only-cell" style="text-align: right; padding-right: 10px;">עלות עמודה:</td>
+                <td id="sum-cost-totalShift"></td>
+                <td id="sum-cost-shabbat" class="col-sep"></td>
+                <td id="sum-cost-I" class="col-sep thick-border-left"></td>
+                <td id="sum-cost-J"></td><td id="sum-cost-K"></td><td id="sum-cost-L" class="col-sep thick-border-left"></td>
+                <td id="sum-cost-M"></td><td id="sum-cost-N" class="col-sep thick-border-left"></td><td id="sum-cost-O"></td><td id="sum-cost-P"></td>
+                <td id="sum-cost-Q"></td><td id="sum-cost-R" class="col-sep thick-border-left"></td>
+                <td id="sum-cost-S"></td><td id="sum-cost-T"></td>
+                <td id="sum-cost-U"></td><td id="sum-cost-V"></td>
+                <td id="sum-cost-W" class="col-sep thick-border-left"></td>
+                <td id="sum-cost-total" class="col-sep">0.00</td>
+            </tr>
+        </tfoot>
+    </table>
+    <div id="printDashboard" class="print-only">
+        <div><strong>משמרות:</strong> <span id="printDashShifts">0</span></div>
+        <div><strong>תקן:</strong> <span id="printDashStandard">0.00 ש'</span></div>
+        <div><strong>בפועל:</strong> <span id="printDashGross">0.00 ש'</span></div>
+        <div><strong>אש"ל:</strong> <span id="printDashEshel">0.00 ₪</span></div>
+        <div><strong>חופש שבת:</strong> קודמת <span id="printDashShabbatPrev">0.00</span> | נצבר <span id="printDashShabbatEarned">0.00</span> | קוזז <span id="printDashShabbatDeducted">0.00</span> | <strong>יתרה: <span id="printDashShabbatTotal">0.00</span></strong></div>
+        <div><strong>ערך ש"נ:</strong> <span id="tlushCostPrint">0.00 ₪</span></div>
+    </div>
+</div>
+
+<div class="dashboard" id="summaryPanel" style="display:none;">
+    <div class="dash-card"><h4>כמות משמרות</h4><div id="dashShifts" class="val">0</div></div>
+    <div class="dash-card"><h4>שעות תקן</h4><div id="dashStandard" class="val">0.00</div></div>
+    <div class="dash-card"><h4>שעות בפועל</h4><div id="dashGross" class="val">0.00</div></div>
+    <div class="dash-card" style="border-top-color: #8e44ad;"><h4>אש"ל (₪)</h4><div id="dashEshel" class="val" style="color: #8e44ad;">0.00 ₪</div></div>
+    
+    <div class="dash-card shabbat-card">
+        <h4 style="text-align: center; margin-bottom: 8px;">חופש שבת</h4>
+        <div class="row"><span>יתרה קודמת:</span> <strong id="dashShabbatPrev">0.00</strong></div>
+        <div class="row" style="color: #27ae60;"><span>נצבר החודש (+):</span> <strong id="dashShabbatEarned">0.00</strong></div>
+        <div class="row" style="color: #c0392b;"><span>קוזז החודש (-):</span> <strong id="dashShabbatDeducted">0.00</strong></div>
+        <hr style="margin: 6px 0;">
+        <div class="row" style="font-size: 15px; color: #2c3e50;"><strong>יתרה עדכנית:</strong> <strong id="dashShabbatTotal">0.00</strong></div>
+    </div>
+    
+    <div class="dash-card tlush-card"><h4>ערך ש"נ</h4><div id="tlushCost" class="val">0.00 ₪</div></div>
+</div>
+
+<!-- קישור לקובץ ההיגיון / JS -->
+<script src="app.js"></script>
+<div class="version-stamp" onclick="secretBypass(event)" style="cursor:default;" title="V">V202610191558</div>
+</body>
+</html>

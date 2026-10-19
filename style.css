@@ -1,0 +1,159 @@
+/* === סגנונות בסיסיים === */
+* { box-sizing: border-box; }
+body { font-family: 'Segoe UI', Tahoma, Arial, sans-serif; background-color: #eef5f9; margin: 0; padding: 20px; color: #333; }
+h2, h4, .version-stamp { touch-action: none; user-select: none; -webkit-user-select: none; }
+
+/* הסרגל העליון (פס כחול) */
+#debugBox {
+    background-color: #1976d2; padding: 15px 25px; border-radius: 12px; display: flex;
+    justify-content: space-between; align-items: center; margin-bottom: 25px;
+    box-shadow: 0 4px 15px rgba(25, 118, 210, 0.3);
+}
+
+/* עיצוב כללי לכפתורים */
+.btn-3d {
+    position: relative; top: 0; transition: top 0.1s ease, box-shadow 0.1s ease; border: none; font-weight: bold; cursor: pointer; text-align: center; border-radius: 8px;
+}
+.btn-3d:active { top: 4px; }
+
+.btn-info { background-color: #fff; color: #1565c0; padding: 8px 15px; display: flex; align-items: center; gap: 8px; font-size: 14px; box-shadow: 0 4px #0d47a1; }
+.btn-info:active { box-shadow: 0 0 #0d47a1; }
+.btn-info .icon { font-size: 20px; }
+
+.btn-logout { background-color: #0d47a1; color: white; padding: 8px 15px; font-size: 14px; box-shadow: 0 4px #0a367c; }
+.btn-logout:active { box-shadow: 0 0 #0a367c; }
+
+.btn-load { background-color: #42a5f5; color: white; padding: 10px 12px; font-size: 14px; box-shadow: 0 4px #1e88e5; }
+.btn-load:active { box-shadow: 0 0 #1e88e5; }
+
+.btn-primary { background-color: #1565c0; color: white; padding: 10px 12px; font-size: 14px; box-shadow: 0 4px #0d47a1; }
+.btn-primary:active { box-shadow: 0 0 #0d47a1; }
+
+.btn-save { background-color: #1e88e5; color: white; padding: 10px 12px; font-size: 14px; box-shadow: 0 4px #1565c0; }
+.btn-save:active { box-shadow: 0 0 #1565c0; }
+
+.btn-reset { background-color: #546e7a; color: white; padding: 10px 12px; font-size: 14px; box-shadow: 0 4px #37474f; }
+.btn-reset:active { box-shadow: 0 0 #37474f; }
+
+.btn-print { background-color: #1565c0; color: white; padding: 14px 28px; font-size: 16px; box-shadow: 0 4px #0d47a1; border-radius: 8px; }
+.btn-print:active { box-shadow: 0 0 #0d47a1; }
+
+/* פאנל נתונים ראשי */
+.header-panel {
+    background: #fff; padding: 20px 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 25px; 
+    display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 25px;
+}
+
+.inputs-section { display: flex; flex-wrap: wrap; gap: 12px; flex: 2; }
+.input-group {
+    background-color: #e3f2fd; border: 1px solid #bbdefb; border-radius: 8px; padding: 5px 8px;
+    display: flex; flex-direction: column; align-items: center;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.03); border-bottom: 3px solid #1e88e5;
+}
+.input-group label { 
+    font-size: 11px; font-weight: bold; color: #1565c0; margin-bottom: 4px; width: 100%; text-align: center; border-bottom: 1px solid #bbdefb; padding-bottom: 3px;
+}
+.input-group input, .input-group select {
+    padding: 4px 2px; border: none; background: transparent; font-size: 14px; font-weight: bold; color: #0d47a1; text-align: center; width: 100%;
+}
+.input-group input:focus, .input-group select:focus { outline: none; color: #1565c0; }
+
+.actions-section { display: flex; flex-direction: column; gap: 12px; flex: 1; min-width: 220px; justify-content: flex-end; }
+.action-row { display: flex; gap: 10px; width: 100%; }
+.action-row button { flex: 1; }
+
+/* טבלה */
+.table-container { background: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); overflow-x: auto; max-height: 60vh; margin-bottom: 20px; }
+table { width: max-content; margin: 0 auto; border-collapse: collapse; white-space: nowrap; table-layout: auto; }
+thead { position: sticky; top: 0; z-index: 10; }
+th, td { border: 1px solid #e0e0e0; padding: 5px 2px; text-align: center; font-size: 13px; vertical-align: middle; }
+th { background-color: #1565c0; color: white; font-size: 12px; }
+tr:nth-child(even) { background-color: #f9fcff; }
+
+.time-input { width: 65px; padding: 4px; border: 1px solid #90caf9; border-radius: 3px; text-align: center; font-weight: bold; font-family: monospace; font-size: 14px; color: #0d47a1;}
+.time-input::placeholder { color: #bbdefb; font-weight: normal; }
+.shift-type-input { width: 35px; padding: 4px; border: 1px solid #90caf9; border-radius: 3px; text-align: center; font-weight: bold; font-size: 14px; background-color: #e3f2fd; color: #0d47a1; margin: 0 auto; display: block; }
+
+.val-cell, .calc-th { width: 38px !important; min-width: 38px !important; max-width: 45px !important; text-align: center !important; }
+.val-cell { color: #0d47a1; font-weight: bold; background-color: #f8fbff; }
+.day-sat { color: #1565c0; font-weight: bold; background-color: #e3f2fd !important; }
+.day-fri { color: #1976d2; font-weight: bold; background-color: #e1f5fe !important; }
+.thick-border-left { border-left: 2px solid #90caf9 !important; }
+
+.tfoot-summary { background-color: #e3f2fd; font-weight: bold; position: sticky; box-shadow: 0 -2px 5px rgba(0,0,0,0.1); }
+.tfoot-summary.hours-row { bottom: 34px; background-color: #bbdefb; }
+.tfoot-summary.cost-row { bottom: 0; }
+.tfoot-summary td { border: 2px solid #90caf9; color: #0d47a1; }
+
+/* דאשבורד */
+.dashboard { margin-top: 20px; text-align: center; }
+.dash-card { background: #fff; padding: 15px; border-radius: 8px; border-top: 4px solid #1976d2; display: inline-block; width: 140px; margin-left: 10px; margin-bottom: 10px; vertical-align: top; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.dash-card h4 { margin: 0 0 10px 0; font-size: 13px; color: #546e7a; }
+.dash-card .val { font-size: 18px; font-weight: bold; color: #0d47a1; }
+.shabbat-card { width: 190px !important; text-align: right !important; border-top-color: #0288d1 !important; }
+.shabbat-card .row { display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 4px; }
+.tlush-card { border-top: 4px solid #0d47a1; background: #bbdefb; } .tlush-card .val { color: #0d47a1; font-size: 20px; }
+
+/* חלונות מודאליים (Modal) */
+.modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.5); backdrop-filter: blur(2px); }
+.modal-content { background-color: #fff; margin: 3vh auto; padding: 25px; border-radius: 8px; width: 90%; max-width: 700px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); position: relative; animation: modalopen 0.3s;}
+@keyframes modalopen { from {opacity: 0; transform: translateY(-20px);} to {opacity: 1; transform: translateY(0);} }
+.close-btn { color: #aaa; float: left; font-size: 28px; font-weight: bold; cursor: pointer; margin-top: -10px; margin-left: -5px; }
+.close-btn:hover, .close-btn:focus { color: #e74c3c; text-decoration: none; }
+.modal-header { border-bottom: 2px solid #1976d2; padding-bottom: 10px; margin-bottom: 15px; }
+.modal-header h2 { margin: 0; color: #0d47a1; font-size: 22px; }
+.info-table { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
+.info-table th { background-color: #1976d2; color: white; padding: 8px; font-size: 14px; text-align: right;}
+.info-table td { padding: 6px 8px; border-bottom: 1px solid #eee; font-size: 14px; color: #333; text-align: right;}
+.info-table tr:hover { background-color: #e3f2fd; }
+.code-badge { background-color: #e3f2fd; color: #0d47a1; padding: 2px 6px; border-radius: 4px; font-weight: bold; font-family: monospace; border: 1px solid #90caf9; display: inline-block; min-width: 30px; text-align: center;}
+
+.info-section { margin-bottom: 20px; line-height: 1.6; font-size: 14px; color: #34495e; }
+.info-section h3 { margin-bottom: 8px; color: #1565c0; font-size: 16px; border-bottom: 1px solid #eee; padding-bottom: 4px; }
+.info-section ul { margin-top: 5px; padding-right: 20px; }
+.info-section li { margin-bottom: 5px; }
+
+.version-stamp { position: fixed; bottom: 5px; left: 5px; font-size: 10px; font-weight: bold; color: #7f8c8d; z-index: 99999; cursor: default;}
+
+.print-only { display: none; }
+.print-only-cell { display: none; }
+
+/* === עיצוב הדפסה === */
+@media print {
+    @page { size: A4 landscape; margin: 5mm; } 
+    body { background: white !important; padding: 0 !important; margin: 0 !important; font-family: Arial, Helvetica, sans-serif !important; color: #000 !important;}
+    #debugBox, .header-panel, noscript, .dashboard, .modal, .version-stamp, #authOverlay, #updateNameOverlay { display: none !important; }
+    #sheetTitle { display: none !important; } 
+    .print-only { display: block !important; }
+    .print-only-cell { display: table-cell !important; }
+    .hide-print { display: none !important; } 
+    
+    .table-container { box-shadow: none !important; max-height: none !important; overflow: visible !important; border: none !important; margin: 0 auto !important; padding: 0 !important; width: max-content !important; }
+    #printHeader { text-align: center; margin-bottom: 8px; }
+    #printHeader h1 { font-size: 14pt; margin: 0; padding-bottom: 2px; display: flex; justify-content: center; align-items: center; gap: 15px; }
+    #printEmployeeNameDisplay { font-size: 10.5pt; font-weight: normal; color: #333; }
+    table { width: 100% !important; margin: 0 !important; border-collapse: collapse !important; table-layout: auto !important; border: 2px solid #000 !important; }
+    tr { page-break-inside: avoid !important; }
+    
+    thead { display: table-header-group !important; position: static !important; }
+    tfoot { display: table-footer-group !important; position: static !important; }
+    .tfoot-summary { position: static !important; box-shadow: none !important; }
+    th, td { border: none !important; border-left: 1px solid #ccc !important; color: #000 !important; background-color: transparent !important; font-size: 8.5pt !important; padding: 2px 3px !important; height: 12px !important; line-height: 1 !important; text-align: center !important; vertical-align: middle !important; white-space: nowrap !important;}
+    th { font-weight: bold !important; font-size: 8.5pt !important; border-bottom: 1px solid #000 !important; }
+    th:first-child, td:first-child { border-left: none !important; }
+    .col-sep { border-left: 1.5px solid #000 !important; }
+    .print-thick-right { border-right: 1.5px solid #000 !important; }
+    .thick-border-left { border-left: 2.5px solid #000 !important; }
+    tr.row-sat td { border-bottom: 1px solid #000 !important; }
+    thead th { border-top: 1.5px solid #000 !important; border-bottom: 1.5px solid #000 !important; }
+    tfoot td { border-top: 1.5px solid #000 !important; font-weight: bold !important; background-color: transparent !important; }
+    .tfoot-summary.cost-row td { border-top: 1px dashed #666 !important; } 
+    tfoot tr:last-child td { border-bottom: 1.5px solid #000 !important; }
+    .tfoot-summary td[colspan] { text-align: right !important; padding-right: 5px !important; }
+    .hide-on-print { display: none !important; }
+    input[type="text"] { border: none !important; background: transparent !important; font-size: 8.5pt !important; font-family: monospace !important; width: 7ch !important; text-align: center !important; color: #000 !important; padding: 0 !important; margin: 0 auto !important; display: block !important;}
+    input[type="text"]::placeholder { color: transparent !important; }
+    .empty-print { color: transparent !important; background: transparent !important; }
+    #printDashboard { display: flex !important; justify-content: space-between; align-items: center; border: 2px solid #000; border-top: none; padding: 6px 8px; margin-top: 0; font-size: 8.5pt; font-weight: normal; background-color: transparent !important; width: 100% !important; box-sizing: border-box; white-space: nowrap !important;}
+    #printDashboard div { margin: 0 4px; }
+}
