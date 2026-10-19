@@ -3,11 +3,14 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>מערכת שעות - משמרות ופיצול</title>
+    <title>COT - Calculate Over Time</title>
+    <!-- סמל הלוגו בלשונית הדפדפן (Favicon) מיוצר כ-SVG כדי לתמוך בצבעים -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 100'><text x='5' y='75' font-family='Arial Black, sans-serif' font-size='60' font-weight='900'><tspan fill='%23FF9800'>C</tspan><tspan fill='%2300E676' dx='-15'>O</tspan><tspan fill='%23FF5252' dx='-15'>T</tspan></text></svg>">
     <style>
-        /* === סגנונות בסיסיים של המסך === */
-        h2, .version-stamp { touch-action: none; user-select: none; -webkit-user-select: none; }
+        /* === סגנונות בסיסיים === */
+        * { box-sizing: border-box; }
         body { font-family: 'Segoe UI', Tahoma, Arial, sans-serif; background-color: #eef5f9; margin: 0; padding: 20px; color: #333; }
+        h2, h4, .version-stamp { touch-action: none; user-select: none; -webkit-user-select: none; }
         
         /* הסרגל העליון (פס כחול) */
         #debugBox {
@@ -21,16 +24,9 @@
             box-shadow: 0 4px 15px rgba(25, 118, 210, 0.3);
         }
 
-        /* עיצוב כללי לכפתורי תלת-מימד בגווני כחול */
+        /* עיצוב כללי לכפתורים */
         .btn-3d {
-            position: relative;
-            top: 0;
-            transition: top 0.1s ease, box-shadow 0.1s ease;
-            border: none;
-            font-weight: bold;
-            cursor: pointer;
-            text-align: center;
-            border-radius: 8px;
+            position: relative; top: 0; transition: top 0.1s ease, box-shadow 0.1s ease; border: none; font-weight: bold; cursor: pointer; text-align: center; border-radius: 8px;
         }
         .btn-3d:active { top: 4px; }
         
@@ -41,16 +37,16 @@
         .btn-logout { background-color: #0d47a1; color: white; padding: 8px 15px; font-size: 14px; box-shadow: 0 4px #0a367c; }
         .btn-logout:active { box-shadow: 0 0 #0a367c; }
 
-        .btn-load { background-color: #42a5f5; color: white; padding: 8px 12px; font-size: 13px; box-shadow: 0 4px #1e88e5; }
+        .btn-load { background-color: #42a5f5; color: white; padding: 10px 12px; font-size: 14px; box-shadow: 0 4px #1e88e5; }
         .btn-load:active { box-shadow: 0 0 #1e88e5; }
         
-        .btn-primary { background-color: #1565c0; color: white; padding: 8px 12px; font-size: 13px; box-shadow: 0 4px #0d47a1; }
+        .btn-primary { background-color: #1565c0; color: white; padding: 10px 12px; font-size: 14px; box-shadow: 0 4px #0d47a1; }
         .btn-primary:active { box-shadow: 0 0 #0d47a1; }
         
-        .btn-save { background-color: #1e88e5; color: white; padding: 8px 12px; font-size: 13px; box-shadow: 0 4px #1565c0; }
+        .btn-save { background-color: #1e88e5; color: white; padding: 10px 12px; font-size: 14px; box-shadow: 0 4px #1565c0; }
         .btn-save:active { box-shadow: 0 0 #1565c0; }
         
-        .btn-reset { background-color: #546e7a; color: white; padding: 8px 12px; font-size: 13px; box-shadow: 0 4px #37474f; }
+        .btn-reset { background-color: #546e7a; color: white; padding: 10px 12px; font-size: 14px; box-shadow: 0 4px #37474f; }
         .btn-reset:active { box-shadow: 0 0 #37474f; }
         
         .btn-print { background-color: #1565c0; color: white; padding: 14px 28px; font-size: 16px; box-shadow: 0 4px #0d47a1; border-radius: 8px; }
@@ -59,12 +55,12 @@
         /* פאנל נתונים ראשי */
         .header-panel {
             background: #fff; padding: 20px 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 25px; 
-            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;
+            display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 25px;
         }
         
-        .inputs-section { display: flex; flex-wrap: wrap; gap: 12px; flex: 2; align-items: flex-end; }
+        .inputs-section { display: flex; flex-wrap: wrap; gap: 12px; flex: 2; }
         .input-group {
-            background-color: #e3f2fd; /* רקע תכלת עדין */
+            background-color: #e3f2fd;
             border: 1px solid #bbdefb;
             border-radius: 8px;
             padding: 5px 8px;
@@ -72,43 +68,26 @@
             flex-direction: column;
             align-items: center;
             box-shadow: inset 0 1px 3px rgba(0,0,0,0.03);
-            border-bottom: 3px solid #1e88e5; /* פס עיטור תחתון כחול */
+            border-bottom: 3px solid #1e88e5;
         }
         .input-group label { 
-            font-size: 11px; 
-            font-weight: bold; 
-            color: #1565c0; 
-            margin-bottom: 2px;
-            width: 100%;
-            text-align: center;
-            border-bottom: 1px solid #bbdefb;
-            padding-bottom: 3px;
+            font-size: 11px; font-weight: bold; color: #1565c0; margin-bottom: 4px; width: 100%; text-align: center; border-bottom: 1px solid #bbdefb; padding-bottom: 3px;
         }
         .input-group input, .input-group select {
-            padding: 4px 2px; 
-            border: none; 
-            background: transparent;
-            font-size: 14px; 
-            font-weight: bold;
-            color: #0d47a1;
-            text-align: center;
+            padding: 4px 2px; border: none; background: transparent; font-size: 14px; font-weight: bold; color: #0d47a1; text-align: center; width: 100%;
         }
-        .input-group input:focus, .input-group select:focus {
-            outline: none;
-            color: #1565c0;
-        }
+        .input-group input:focus, .input-group select:focus { outline: none; color: #1565c0; }
 
-        .actions-section { display: flex; flex-direction: column; gap: 8px; flex: 1; min-width: 180px; }
-        .action-row { display: flex; gap: 8px; }
+        .actions-section { display: flex; flex-direction: column; gap: 12px; flex: 1; min-width: 220px; justify-content: flex-end; }
+        .action-row { display: flex; gap: 10px; width: 100%; }
         .action-row button { flex: 1; }
         
-        /* טבלה בגווני כחול */
+        /* טבלה */
         .table-container { background: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); overflow-x: auto; max-height: 60vh; margin-bottom: 20px; }
         table { width: 100%; border-collapse: collapse; white-space: nowrap; table-layout: auto; }
         thead { position: sticky; top: 0; z-index: 10; }
         th, td { border: 1px solid #e0e0e0; padding: 5px 2px; text-align: center; font-size: 13px; vertical-align: middle; }
         th { background-color: #1565c0; color: white; font-size: 12px; }
-        .th-group-1 { background-color: #0d47a1; } .th-group-2 { background-color: #1565c0; } .th-group-3 { background-color: #1976d2; } .th-group-4 { background-color: #1e88e5; }
         tr:nth-child(even) { background-color: #f9fcff; }
         
         .time-input { width: 65px; padding: 4px; border: 1px solid #90caf9; border-radius: 3px; text-align: center; font-weight: bold; font-family: monospace; font-size: 14px; color: #0d47a1;}
@@ -126,7 +105,7 @@
         .tfoot-summary.cost-row { bottom: 0; }
         .tfoot-summary td { border: 2px solid #90caf9; color: #0d47a1; }
         
-        /* אזור הסיכומים - דאשבורד */
+        /* דאשבורד */
         .dashboard { margin-top: 20px; text-align: center; }
         .dash-card { background: #fff; padding: 15px; border-radius: 8px; border-top: 4px solid #1976d2; display: inline-block; width: 140px; margin-left: 10px; margin-bottom: 10px; vertical-align: top; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
         .dash-card h4 { margin: 0 0 10px 0; font-size: 13px; color: #546e7a; }
@@ -155,6 +134,7 @@
         .info-section li { margin-bottom: 5px; }
 
         .version-stamp { position: fixed; bottom: 5px; left: 5px; font-size: 10px; font-weight: bold; color: #7f8c8d; z-index: 99999; cursor: default;}
+        
         .print-only { display: none; }
         .print-only-cell { display: none; }
 
@@ -178,7 +158,6 @@
             thead { display: table-header-group !important; position: static !important; }
             tfoot { display: table-footer-group !important; position: static !important; }
             .tfoot-summary { position: static !important; box-shadow: none !important; }
-            .th-group-1, .th-group-2, .th-group-3, .th-group-4 { background-color: transparent !important; color: #000 !important; }
             th, td { border: none !important; border-left: 1px solid #ccc !important; color: #000 !important; background-color: transparent !important; font-size: 8.5pt !important; padding: 2px 3px !important; height: 12px !important; line-height: 1 !important; text-align: center !important; vertical-align: middle !important; white-space: nowrap !important;}
             th { font-weight: bold !important; font-size: 8.5pt !important; border-bottom: 1px solid #000 !important; }
             th:first-child, td:first-child { border-left: none !important; }
@@ -206,16 +185,26 @@
 </head>
 <body>
 
-<!-- מסך התחברות / הרשמה (Overlay) -->
-<div id="authOverlay" style="position: fixed; top:0; left:0; right:0; bottom:0; background: linear-gradient(135deg, #1976d2 0%, #eef5f9 100%); z-index: 10000; overflow-y: auto; display: flex; padding: 20px; box-sizing: border-box;">
-    <div style="background:#fff; padding:35px 25px; border-radius:16px; box-shadow:0 10px 40px rgba(0,0,0,0.2); width:100%; max-width:400px; text-align:center; position:relative; overflow:hidden; margin: auto;">
+<!-- מסך התחברות / הרשמה (Overlay) - כולל תמיכה בגלילה ומירכוז חכם -->
+<div id="authOverlay" style="position: fixed; top:0; left:0; width:100%; height:100%; background: linear-gradient(135deg, #1976d2 0%, #eef5f9 100%); z-index: 10000; display:flex; align-items:flex-start; justify-content:center; overflow-y: auto; padding: 20px; box-sizing: border-box;">
+    
+    <div style="background:#fff; padding:35px 25px; border-radius:16px; box-shadow:0 10px 40px rgba(0,0,0,0.2); width:100%; max-width:400px; text-align:center; position:relative; margin: auto; box-sizing: border-box;">
         <!-- פס קישוט עליון -->
         <div style="position:absolute; top:0; left:0; width:100%; height:6px; background:#1e88e5;"></div>
         
-        <h2 style="color:#0d47a1; margin-top:0; margin-bottom:5px; font-size:26px; user-select:none; touch-action:none; cursor:pointer;" onpointerdown="secretBypass(event)">בקרת דו"ח פיצול</h2>
+        <!-- הלוגו של COT במסך התחברות (לחיצה משולשת כאן עוקפת הרשמה) -->
+        <div style="display: flex; align-items: center; justify-content: center; cursor: pointer; margin-bottom: 10px; touch-action:none; user-select:none;" onpointerdown="secretBypass(event)" title="לחץ 3 פעמים רצוף לכניסה מהירה">
+            <div class="icon-logo" dir="ltr" style="position: relative; width: 75px; height: 50px; font-family: 'Arial Black', 'Segoe UI Black', sans-serif; font-size: 48px; line-height: 50px; font-weight: 900; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));">
+                <span style="position: absolute; left: 0px; top: 0; color: #FF9800; opacity: 0.9; z-index: 3;">C</span>
+                <span style="position: absolute; left: 19px; top: 0; color: #00BFA5; opacity: 0.85; z-index: 1;">O</span>
+                <span style="position: absolute; left: 40px; top: 0; color: #FF5252; opacity: 0.9; z-index: 2;">T</span>
+            </div>
+        </div>
+        
+        <h2 style="color:#0d47a1; margin-top:0; margin-bottom:5px; font-size:22px; user-select:none; touch-action:none;">בקרת דו"ח פיצול</h2>
         <h4 style="color:#546e7a; margin-top:0; margin-bottom:20px; font-weight:normal; font-size:14px;">ניהול חכם של משמרות ושכר</h4>
         
-        <!-- תיבת מידע והנחיות -->
+        <!-- תיבת מידע -->
         <div style="background:#e3f2fd; color:#0d47a1; padding:15px; border-radius:10px; font-size:13px; margin-bottom:25px; border:1px solid #bbdefb; text-align:right; line-height:1.5;">
             <strong style="font-size:14px;">ברוכים הבאים! 👋</strong><br>
             כדי לשמור על פרטיות נתוני השכר שלך ולאפשר גישה מכל מכשיר, המערכת דורשת זיהוי קצר.<br><br>
@@ -244,9 +233,22 @@
 
 <!-- סרגל עליון - פס כחול -->
 <div id="debugBox">
-    <span style="font-size: 28px; font-weight: bold; color: #ffffff; letter-spacing: 0.5px;">בקרת דו"ח פיצול</span>
+    <!-- הלוגו של COT בתוך המערכת -->
+    <div style="display: flex; align-items: center; gap: 12px;">
+        <div dir="ltr" style="position: relative; width: 55px; height: 36px; font-family: 'Arial Black', 'Segoe UI Black', sans-serif; font-size: 34px; line-height: 36px; font-weight: 900; margin-left: 5px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));">
+            <span style="position: absolute; left: 0px; top: 0; color: #FF9800; opacity: 0.95; z-index: 3;">C</span>
+            <span style="position: absolute; left: 14px; top: 0; color: #00E676; opacity: 0.9; z-index: 1;">O</span>
+            <span style="position: absolute; left: 30px; top: 0; color: #FF5252; opacity: 0.95; z-index: 2;">T</span>
+        </div>
+        <div style="display: flex; flex-direction: column; line-height: 1.1; border-right: 2px solid rgba(255,255,255,0.3); padding-right: 12px;">
+            <span style="font-size: 18px; font-weight: bold; color: #ffffff;">בקרת דו"ח פיצול</span>
+            <span style="font-size: 11px; color: #bbdefb; letter-spacing: 0.5px; font-family: Tahoma, sans-serif;">Calculate Over Time</span>
+        </div>
+    </div>
+    
     <div style="display: flex; gap: 15px; align-items: center;">
         <button class="btn-logout btn-3d" id="logoutBtn" onclick="logoutUser()" style="display:none;" title="התנתק מהמערכת">התנתק</button>
+        <!-- כפתור עליון - פותח רק את הגדרות המערכת הכלליות -->
         <button class="btn-info btn-3d" onclick="openShiftInfo()" title="מידע חשוב על המערכת וההסכמים">
             <span class="icon">ℹ️</span>
             <span>מידע חשוב</span>
@@ -254,7 +256,42 @@
     </div>
 </div>
 
-<!-- חלון עזר קטן למשמרות (Mini Modal) -->
+<!-- חלון עזר ראשי (Modal) רק טקסט הדרכה - ללא רשימת המשמרות -->
+<div id="shiftInfoModal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn" onclick="closeShiftInfo()">&times;</span>
+        <div class="modal-header">
+            <h2>ℹ️ מידע חשוב</h2>
+        </div>
+        <div style="max-height: 70vh; overflow-y: auto; padding-left: 10px;">
+            <div class="info-section">
+                <p>מערכת <strong>"בקרת דו"ח פיצול"</strong> היא יישום רשת חכם ועצמאי שנועד לתכנן, לנהל, לתעד ולנתח את שעות העבודה במשמרות.</p>
+                <p>המערכת מפצלת את השעות הנוספות עפ"י הסכמי העבודה בצורה מדויקת. העובד יוכל לתכנן איזה משמרות כדאי ומשתלם להשתבץ, ויוודא את תקינות חישובי השעות והתוספות מול דוח הפיצול ומול תלוש השכר.</p>
+            </div>
+            <div class="info-section">
+                <h3>יכולות עיקריות</h3>
+                <ul>
+                    <li><strong>הזנת נתונים חכמה ("קלדנות עיוורת"):</strong> הזנה אוטומטית של זמני כניסה ויציאה על ידי הקלדת קודי משמרת קצרים. הקלדת שעות ללא נקודתיים (למשל: 1904 תהפוך אוטומטית ל-19:04, ו-8 ל-08:00) תוך אכיפת פורמט 24 שעות.</li>
+                    <li><strong>מנוע חישוב מתקדם:</strong> מנתח כל דקת עבודה ומפצל לתעריפים השונים, כולל שבת, שעות נוספות בשבת, ו"תוספת משמרת" (ת.מ.). בסוף הדוח מוצג סך השעות והערך (בש"ח) לכל תעריף, ובשורה התחתונה מחושב סה"כ ערך השעות הנוספות לחודש (להשוואה מול תלוש השכר).</li>
+                    <li><strong>ניהול חופש שבת:</strong> מעקב אוטומטי אחר צבירה, קיזוז ימים מנוצלים (קוד "חש"), וניהול יתרה מצטברת.</li>
+                    <li><strong>לוח בקרה חי:</strong> תצוגה מסכמת של משמרות, שעות תקן/בפועל, דוח אש"ל, והשוואת ערך.</li>
+                    <li><strong>שמירה, טעינה ופרטיות:</strong> הנתונים אינם נשמרים בענן, אלא מאוחסנים מקומית אצל המשתמש. בלחיצת כפתור ניתן לייצא ולשמור קובץ נתונים (JSON) ישירות לתיקייה במחשב, ולטעון אותו מחדש בעתיד.</li>
+                    <li><strong>דוח מותאם (PDF):</strong> המערכת מפיקה בלחיצת כפתור דוח נקי, רשמי ומקצועי המותאם להדפסה לרוחב דף A4 . הדוח דומה מאוד לדוח הפיצול הנשלח מהמשרד.</li>
+                </ul>
+            </div>
+            <div class="info-section">
+                <h3>הסכמי משמרות (חשוב להכיר)</h3>
+                <ul>
+                    <li><strong>משמרות בוקר</strong> שגלשו לאחרי השעה 14:00 לא יקבלו תוספת 20% אלא אם נצברו 3 שעות עבודה מלאות (החתמת כניסה לפני 17:00 בדיוק).</li>
+                    <li><strong>משמרת לילה</strong> שהתחילה לפני 03:00 - כל השעות אחרי כן נחשבות לילה. אם ההחתמה הייתה אחרי 03:00, בשעה 06:00 השעות הופכות לבוקר.</li>
+                    <li><strong>דוח אש"ל</strong> מחושב לפי סך שעות העבודה בפועל מחולק ב-8. המספר השלם מוכפל בערך מנת האוכל המעודכנת.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- חלון עזר קטן למשמרות (Mini Modal) - נפתח מהטבלה ומציג את סוגי המשמרות -->
 <div id="miniShiftInfoModal" class="modal">
     <div class="modal-content" style="max-width: 400px; padding: 15px;">
         <span class="close-btn" onclick="closeMiniShiftInfo()">&times;</span>
@@ -293,43 +330,8 @@
     </div>
 </div>
 
-<!-- חלון עזר למשמרות (Modal) עליון - ללא טבלת המשמרות -->
-<div id="shiftInfoModal" class="modal">
-    <div class="modal-content">
-        <span class="close-btn" onclick="closeShiftInfo()">&times;</span>
-        <div class="modal-header">
-            <h2>ℹ️ מידע חשוב</h2>
-        </div>
-        <div style="max-height: 70vh; overflow-y: auto; padding-left: 10px;">
-            <div class="info-section">
-                <p>מערכת <strong>"בקרת דו"ח פיצול"</strong> היא יישום רשת חכם ועצמאי שנועד לתכנן, לנהל, לתעד ולנתח את שעות העבודה במשמרות.</p>
-                <p>המערכת מפצלת את השעות הנוספות עפ"י הסכמי העבודה בצורה מדויקת. העובד יוכל לתכנן איזה משמרות כדאי ומשתלם להשתבץ, ויוודא את תקינות חישובי השעות והתוספות מול דוח הפיצול ומול תלוש השכר.</p>
-            </div>
-            <div class="info-section">
-                <h3>יכולות עיקריות</h3>
-                <ul>
-                    <li><strong>הזנת נתונים חכמה ("קלדנות עיוורת"):</strong> הזנה אוטומטית של זמני כניסה ויציאה על ידי הקלדת קודי משמרת קצרים. הקלדת שעות ללא נקודתיים (למשל: 1904 תהפוך אוטומטית ל-19:04, ו-8 ל-08:00) תוך אכיפת פורמט 24 שעות.</li>
-                    <li><strong>מנוע חישוב מתקדם:</strong> מנתח כל דקת עבודה ומפצל לתעריפים השונים, כולל שבת, שעות נוספות בשבת, ו"תוספת משמרת" (ת.מ.). בסוף הדוח מוצג סך השעות והערך (בש"ח) לכל תעריף, ובשורה התחתונה מחושב סה"כ ערך השעות הנוספות לחודש (להשוואה מול תלוש השכר).</li>
-                    <li><strong>ניהול חופש שבת:</strong> מעקב אוטומטי אחר צבירה, קיזוז ימים מנוצלים (קוד "חש"), וניהול יתרה מצטברת.</li>
-                    <li><strong>לוח בקרה חי:</strong> תצוגה מסכמת של משמרות, שעות תקן/בפועל, דוח אש"ל, והשוואת ערך.</li>
-                    <li><strong>שמירה, טעינה ופרטיות:</strong> הנתונים אינם נשמרים בענן, אלא מאוחסנים מקומית אצל המשתמש. בלחיצת כפתור ניתן לייצא ולשמור קובץ נתונים (JSON) ישירות לתיקייה במחשב, ולטעון אותו מחדש בעתיד.</li>
-                    <li><strong>דוח מותאם (PDF):</strong> המערכת מפיקה בלחיצת כפתור דוח נקי, רשמי ומקצועי המותאם להדפסה לרוחב דף A4 . הדוח דומה מאוד לדוח הפיצול הנשלח מהמשרד.</li>
-                </ul>
-            </div>
-            <div class="info-section">
-                <h3>הסכמי משמרות (חשוב להכיר)</h3>
-                <ul>
-                    <li><strong>משמרות בוקר</strong> שגלשו לאחרי השעה 14:00 לא יקבלו תוספת 20% אלא אם נצברו 3 שעות עבודה מלאות (החתמת כניסה לפני 17:00 בדיוק).</li>
-                    <li><strong>משמרת לילה</strong> שהתחילה לפני 03:00 - כל השעות אחרי כן נחשבות לילה. אם ההחתמה הייתה אחרי 03:00, בשעה 06:00 השעות הופכות לבוקר.</li>
-                    <li><strong>דוח אש"ל</strong> מחושב לפי סך שעות העבודה בפועל מחולק ב-8. המספר השלם מוכפל בערך מנת האוכל המעודכנת.</li>
-                </ul>
-            </div>
-        </div>
-    </div>
-</div>
-
 <div class="header-panel">
-    <!-- צד ימין: נתונים -->
+    <!-- צד ימין: נתוני בסיס -->
     <div class="inputs-section">
         <div class="input-group">
             <label>שם עובד</label>
@@ -362,7 +364,7 @@
         </div>
     </div>
     
-    <!-- צד שמאל: כפתורי פעולה מסודרים בשתי שורות -->
+    <!-- צד שמאל: כפתורי פעולה ב-2 שורות -->
     <div class="actions-section">
         <div class="action-row">
             <button class="btn-load btn-3d" onclick="loadData()">טען קובץ</button>
@@ -370,7 +372,7 @@
         </div>
         <div class="action-row">
             <button class="btn-save btn-3d" onclick="saveData()">שמור קובץ</button>
-            <button class="btn-reset btn-3d" onclick="clearData()" title="נקה את כל הנתונים במסך">איפוס גיליון</button>
+            <button class="btn-reset btn-3d" onclick="clearData()" title="נקה את כל הנתונים במסך">איפוס נתונים</button>
         </div>
         <input type="file" id="fileLoader" accept=".json" style="display: none;" onchange="handleFileLoad(event)">
     </div>
@@ -391,6 +393,7 @@
                 <th colspan="2" rowspan="2" class="col-sep">תאריך</th>
                 <th rowspan="2" class="col-sep hide-print" style="width: 35px;" title="הזן קוד משמרת">
                     משמרת
+                    <!-- הכפתור הפנימי שפותח את רשימת סוגי המשמרות בלבד -->
                     <span onclick="openMiniShiftInfo()" style="cursor:pointer; font-size:14px; margin-right:3px;" title="הצג רשימת קודים">ℹ️</span>
                 </th>
                 <th rowspan="2" class="print-thick-right">כניסה</th>
@@ -468,7 +471,7 @@
     <div class="dash-card"><h4>כמות משמרות</h4><div id="dashShifts" class="val">0</div></div>
     <div class="dash-card"><h4>שעות תקן</h4><div id="dashStandard" class="val">0.00</div></div>
     <div class="dash-card"><h4>שעות בפועל</h4><div id="dashGross" class="val">0.00</div></div>
-    <div class="dash-card" style="border-top-color: #1976d2;"><h4>אש"ל (₪)</h4><div id="dashEshel" class="val" style="color: #1565c0;">0.00 ₪</div></div>
+    <div class="dash-card" style="border-top-color: #8e44ad;"><h4>אש"ל (₪)</h4><div id="dashEshel" class="val" style="color: #8e44ad;">0.00 ₪</div></div>
     
     <div class="dash-card shabbat-card">
         <h4 style="text-align: center; margin-bottom: 8px;">חופש שבת</h4>
@@ -491,17 +494,19 @@
     window.isBypassed = false;
     let clickCount = 0;
     let clickTimer;
+    
+    // מנגנון ה-3 לחיצות שמעביר ישירות למערכת
     window.secretBypass = function(e) {
         if(e) e.preventDefault();
         clickCount++;
         clearTimeout(clickTimer);
         
-        let titleEl = document.querySelector('#authOverlay h2');
-        if(titleEl) {
-            let originalColor = titleEl.style.color;
-            titleEl.style.color = '#1e88e5';
-            setTimeout(() => { titleEl.style.color = originalColor; }, 150);
-        }
+        let titleEls = document.querySelectorAll('#authOverlay h2, #authOverlay .icon-logo');
+        titleEls.forEach(el => {
+            let originalColor = el.style.color;
+            el.style.color = '#42a5f5'; // הבהוב כדי לראות שלחצת
+            setTimeout(() => { el.style.color = originalColor; }, 150);
+        });
 
         if(clickCount >= 3) {
             window.isBypassed = true;
@@ -525,13 +530,12 @@
     firebase.initializeApp(firebaseConfig);
 
     firebase.auth().onAuthStateChanged(function(user) {
-        if (window.isBypassed) return; // לא לנעול חזרה אם הופעל המעקף
+        if (window.isBypassed) return; 
         if (user) {
             document.getElementById('authOverlay').style.display = 'none';
             var btn = document.getElementById('logoutBtn');
             if(btn) btn.style.display = 'inline-block';
             
-            // --- מילוי אוטומטי של שם העובד ---
             if (user.displayName) {
                 document.getElementById('employeeName').value = user.displayName;
                 updateTitles();
@@ -551,7 +555,6 @@
         
         firebase.auth().signInWithEmailAndPassword(email, pass)
         .then(function(userCredential) {
-            // אם המשתמש הזין שם במסך ההתחברות, נעדכן לו את הפרופיל כדי שיישמר לפעם הבאה
             if (name && userCredential.user.displayName !== name) {
                 userCredential.user.updateProfile({ displayName: name }).then(() => {
                     document.getElementById('employeeName').value = name;
@@ -1190,7 +1193,6 @@
         if(document.getElementById('dashShabbatDeducted')) document.getElementById('dashShabbatDeducted').innerText = deductedShabbatDays.toFixed(2);
         if(document.getElementById('dashShabbatTotal')) document.getElementById('dashShabbatTotal').innerText = finalShabbatTotal.toFixed(2);
 
-        // הושמט הערך של דוח הפיצול מהמסך לפי הבקשה
         document.getElementById('tlushCost').innerText = tlushCost.toFixed(2) + ' ₪';
         
         if(document.getElementById('printDashShifts')) document.getElementById('printDashShifts').innerText = totalShifts;
@@ -1203,7 +1205,6 @@
         if(document.getElementById('printDashShabbatDeducted')) document.getElementById('printDashShabbatDeducted').innerText = deductedShabbatDays.toFixed(2);
         if(document.getElementById('printDashShabbatTotal')) document.getElementById('printDashShabbatTotal').innerText = finalShabbatTotal.toFixed(2);
 
-        // עדכון בהדפסה להצגת הערך של התלוש בלבד
         if(document.getElementById('tlushCostPrint')) document.getElementById('tlushCostPrint').innerText = tlushCost.toFixed(2) + ' ₪';
     };
 
@@ -1295,6 +1296,6 @@
     };
 
 </script>
-<div class="version-stamp" onpointerdown="secretBypass(event)" style="cursor:default;" title="V">V202610190620</div>
+<div class="version-stamp" onpointerdown="secretBypass(event)" style="cursor:default;" title="V">V202610191350</div>
 </body>
 </html>
