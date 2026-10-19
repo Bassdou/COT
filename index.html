@@ -14,7 +14,7 @@
         
         /* הסרגל העליון */
         #debugBox {
-            background-color: #1976d2; padding: 15px 25px; border-radius: 12px; display: flex;
+            background-color: #1976d2; padding: 12px 25px; border-radius: 12px; display: flex;
             justify-content: space-between; align-items: center; margin-bottom: 25px;
             box-shadow: 0 4px 15px rgba(25, 118, 210, 0.3);
         }
@@ -22,9 +22,27 @@
         /* כפתורים */
         .btn-3d { position: relative; top: 0; transition: top 0.1s ease, box-shadow 0.1s ease; border: none; font-weight: bold; cursor: pointer; text-align: center; border-radius: 8px; }
         .btn-3d:active { top: 4px; }
-        .btn-info { background-color: #fff; color: #1565c0; padding: 8px 15px; display: flex; align-items: center; gap: 8px; font-size: 14px; box-shadow: 0 4px #0d47a1; }
+        
+        /* כפתור מידע מרובע - סמל מעל מלל */
+        .btn-info { 
+            background-color: #fff; 
+            color: #1565c0; 
+            width: 72px; 
+            height: 72px; 
+            padding: 6px; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            align-items: center; 
+            gap: 4px; 
+            font-size: 12px; 
+            line-height: 1.1;
+            box-shadow: 0 4px #0d47a1; 
+            border-radius: 10px;
+        }
         .btn-info:active { box-shadow: 0 0 #0d47a1; }
-        .btn-info .icon { font-size: 20px; }
+        .btn-info .icon { font-size: 24px; margin-bottom: 2px; }
+        
         .btn-logout { background-color: #0d47a1; color: white; padding: 8px 15px; font-size: 14px; box-shadow: 0 4px #0a367c; }
         .btn-logout:active { box-shadow: 0 0 #0a367c; }
         .btn-load { background-color: #42a5f5; color: white; padding: 10px 12px; font-size: 14px; box-shadow: 0 4px #1e88e5; }
@@ -80,7 +98,7 @@
         .tlush-card { border-top: 4px solid #0d47a1; background: #bbdefb; } .tlush-card .val { color: #0d47a1; font-size: 20px; }
 
         /* חלונות מודאליים (Modal) */
-        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.5); backdrop-filter: blur(2px); }
+        .modal { display: none; position: fixed; z-index: 20000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.5); backdrop-filter: blur(2px); }
         .modal-content { background-color: #fff; margin: 3vh auto; padding: 25px; border-radius: 8px; width: 90%; max-width: 700px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); position: relative; animation: modalopen 0.3s;}
         @keyframes modalopen { from {opacity: 0; transform: translateY(-20px);} to {opacity: 1; transform: translateY(0);} }
         .close-btn { color: #aaa; float: left; font-size: 28px; font-weight: bold; cursor: pointer; margin-top: -10px; margin-left: -5px; }
@@ -215,7 +233,8 @@
             <span style="font-size: 11px; color: #bbdefb; letter-spacing: 0.5px; font-family: Tahoma, sans-serif;">Calculate Over Time</span>
         </div>
     </div>
-    <div style="display: flex; gap: 15px; align-items: center;">
+    <div style="display: flex; gap: 12px; align-items: center;">
+        <button class="btn-3d hide-print" onclick="downloadSourceHTML()" style="background:#00c853; color:white; padding:8px 12px; font-size:12px; box-shadow:0 4px #009624;" title="הורד קובץ index.html מוכן להעלאה ל-GitHub">📥 הורד HTML</button>
         <button class="btn-logout btn-3d" id="logoutBtn" onclick="logoutUser()" style="display:none;" title="התנתק מהמערכת">התנתק</button>
         <button class="btn-info btn-3d" onclick="openShiftInfo()" title="מידע חשוב על המערכת וההסכמים">
             <span class="icon">ℹ️</span>
@@ -238,7 +257,7 @@
                 <h3>יכולות עיקריות</h3>
                 <ul>
                     <li><strong>הזנה חכמה:</strong> הקלדת קודי משמרת קצרים ממלאת אוטומטית שעות. הקלדת שעות ללא נקודתיים (למשל `1904` יהפוך ל-`19:04`).</li>
-                    <li><strong>זיהוי חגים אוטומטי:</strong> המערכת מושכת את חגי ישראל בהתאם לחודש ומחילה תעריף שבת ביום החג עצמו באופן אוטומטי (ללא ערבי חג וחול המועד).</li>
+                    <li><strong>זיהוי חגים אוטומטי:</strong> המערכת מושכת את חגי ישראל בהתאם לחודש ומחילה תעריף שבת ביום החג עצמו בלבד (ללא חול המועד, סוכות ב' וערבי חג).</li>
                     <li><strong>מנוע חישוב:</strong> מנתח כל דקת עבודה ומפצל לתעריפים השונים (שבת, לילה, ש"נ, ת.מ.).</li>
                     <li><strong>דוח אש"ל וחופש שבת:</strong> חישוב אוטומטי של שווי אש"ל ומעקב אחר יתרת חופש שבת.</li>
                     <li><strong>דוח מותאם (PDF):</strong> הפקת דוח נקי ומקצועי להדפסה לרוחב A4.</li>
@@ -249,6 +268,7 @@
                 <ul>
                     <li><strong>משמרות בוקר:</strong> שגלשו לאחרי 14:00 לא יקבלו 20% ת.מ אלא אם נצברו 3 שעות עבודה (החתמה לפני 17:00).</li>
                     <li><strong>משמרת לילה:</strong> כניסה לפני 03:00 - כל השעות אחרי כן נחשבות לילה. כניסה אחרי 03:00 - ב-06:00 הופך לבוקר.</li>
+                    <li><strong>שישי ערב חג (בוקר):</strong> תקן השעות עומד על 5.5 שעות, השעה שאחריו ב-100%, שעתיים ב-125%, והיתרה ב-150%.</li>
                 </ul>
             </div>
         </div>
@@ -257,12 +277,12 @@
 
 <!-- חלון עזר קטן למשמרות -->
 <div id="miniShiftInfoModal" class="modal">
-    <div class="modal-content" style="max-width: 400px; padding: 15px;">
+    <div class="modal-content" style="max-width: 420px; padding: 18px;">
         <span class="close-btn" onclick="closeMiniShiftInfo()">&times;</span>
-        <div class="modal-header"><h2 style="font-size: 18px; margin: 0; color: #0d47a1;">ℹ️ קודי משמרות</h2></div>
-        <div style="max-height: 50vh; overflow-y: auto;">
+        <div class="modal-header"><h2 style="font-size: 18px; margin: 0; color: #0d47a1;">ℹ️ קודי משמרות להקלדה מהירה</h2></div>
+        <div style="max-height: 55vh; overflow-y: auto;">
             <table class="info-table" style="font-size: 13px;">
-                <thead><tr><th style="width: 25%;">קוד</th><th style="width: 20%;">כניסה</th><th style="width: 20%;">יציאה</th><th>הערה</th></tr></thead>
+                <thead><tr><th style="width: 25%;">קוד</th><th style="width: 20%;">כניסה</th><th style="width: 20%;">יציאה</th><th>תאור</th></tr></thead>
                 <tbody>
                     <tr><td><span class="code-badge">ב</span></td><td>07:00</td><td>19:00</td><td>בוקר 12 שעות</td></tr>
                     <tr><td><span class="code-badge">ל</span></td><td>19:00</td><td>07:00</td><td>לילה 12 שעות</td></tr>
@@ -332,7 +352,7 @@
         </div>
         <div class="action-row">
             <button class="btn-save btn-3d" onclick="saveData()">שמור קובץ</button>
-            <button class="btn-reset btn-3d" onclick="clearData()" title="נקה את כל הנתונים במסך">איפוס גיליון</button>
+            <button class="btn-reset btn-3d" onclick="clearData()" title="נקה את כל הנתונים במסך">איפוס נתונים</button>
         </div>
         <input type="file" id="fileLoader" accept=".json" style="display: none;" onchange="handleFileLoad(event)">
     </div>
@@ -351,9 +371,9 @@
         <thead>
             <tr>
                 <th colspan="2" rowspan="2" class="col-sep" style="width: 60px; min-width: 60px; max-width: 70px;">תאריך</th>
-                <th rowspan="2" class="col-sep hide-print" style="width: 35px;" title="הזן קוד משמרת">
+                <th rowspan="2" class="col-sep hide-print" style="width: 45px;" title="הזן קוד משמרת">
                     משמרת
-                    <span onclick="openMiniShiftInfo()" style="cursor:pointer; font-size:14px; margin-right:3px;" title="הצג רשימת קודים">ℹ️</span>
+                    <span onclick="openMiniShiftInfo(); event.stopPropagation();" style="cursor:pointer; font-size:15px; display:inline-block; margin-right:2px; background:#fff; color:#1565c0; border-radius:50%; width:18px; height:18px; line-height:18px; text-align:center;" title="הצג רשימת קודים">ℹ️</span>
                 </th>
                 <th rowspan="2" class="print-thick-right" style="width: 75px; min-width: 75px; max-width: 85px;">כניסה</th>
                 <th rowspan="2" class="col-sep" style="width: 75px; min-width: 75px; max-width: 85px;">יציאה</th>
@@ -443,9 +463,27 @@
     </div>
     
     <div class="dash-card tlush-card"><h4>ערך ש"נ</h4><div id="tlushCost" class="val">0.00 ₪</div></div>
+
+    <div style="margin-top: 30px; margin-bottom: 10px;">
+        <button class="btn-print btn-3d" id="printBtn" onclick="window.print()">🖨️ הפק דוח בקרת פיצול</button>
+    </div>
 </div>
 
 <script>
+    // פונקציה להורדת קובץ הקוד הנוכחי כקובץ HTML מוכן
+    window.downloadSourceHTML = function() {
+        var htmlContent = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
+        var blob = new Blob([htmlContent], {type: "text/html;charset=utf-8"});
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        a.href = url;
+        a.download = "index.html";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    };
+
     // הגדרות כניסה סמויה 
     window.isBypassed = false;
     let clickCount = 0;
@@ -496,12 +534,10 @@
             document.getElementById('authOverlay').style.display = 'none';
             
             if (!user.displayName) {
-                // למשתמשים ותיקים אין שם - נציג מסך השלמה
                 document.getElementById('updateNameOverlay').style.display = 'flex';
                 var btn = document.getElementById('logoutBtn');
                 if(btn) btn.style.display = 'none';
             } else {
-                // משתמש תקין
                 var updateOverlay = document.getElementById('updateNameOverlay');
                 if(updateOverlay) updateOverlay.style.display = 'none';
                 
@@ -529,7 +565,6 @@
         
         firebase.auth().signInWithEmailAndPassword(email, pass)
         .then(function(userCredential) {
-            // אם המשתמש הזין שם במסך ההתחברות, נעדכן לו את הפרופיל כדי שיישמר לפעם הבאה
             if (name && userCredential.user.displayName !== name) {
                 userCredential.user.updateProfile({ displayName: name }).then(() => {
                     document.getElementById('employeeName').value = name;
@@ -577,7 +612,6 @@
         });
     };
 
-    
     window.saveMissingName = function() {
         var name = document.getElementById('missingNameInput').value.trim();
         var errorDiv = document.getElementById('missingNameError');
@@ -658,12 +692,24 @@
         document.title = getFormattedFileName();
     }
 
+    window.openMiniShiftInfo = function() {
+        var modal = document.getElementById('miniShiftInfoModal');
+        if (modal) modal.style.display = "block";
+    };
+
+    window.closeMiniShiftInfo = function() {
+        var modal = document.getElementById('miniShiftInfoModal');
+        if (modal) modal.style.display = "none";
+    };
+
     window.openShiftInfo = function() {
-        document.getElementById('shiftInfoModal').style.display = "block";
+        var modal = document.getElementById('shiftInfoModal');
+        if (modal) modal.style.display = "block";
     };
 
     window.closeShiftInfo = function() {
-        document.getElementById('shiftInfoModal').style.display = "none";
+        var modal = document.getElementById('shiftInfoModal');
+        if (modal) modal.style.display = "none";
     };
 
     window.onclick = function(event) {
@@ -846,12 +892,17 @@
                 if (data && data.items) {
                     data.items.forEach(function(item) {
                         if (item.category === 'holiday' || item.category === 'yomtov') {
-                            // זיהוי רק של חגים המחייבים שבתון לפי חוק (ימים טובים + יום העצמאות)
-                            // חול המועד, ערבי חג, חנוכה, פורים וכו' יסומנו כ'other' (יופיעו בתיאור אך לא יחשבו לשבת)
-                            var isYomTov = item.yomtov === true || item.title.indexOf('Yom HaAtzmaut') !== -1;
+                            var hebClean = item.hebrew.replace(/[\u0591-\u05C7]/g, '');
+                            var titleLow = item.title.toLowerCase();
+                            
+                            var isEve = titleLow.indexOf('erev') !== -1 || hebClean.indexOf('ערב') === 0;
+                            var isCholHamoed = item.subcat === 'cholhamoed' || titleLow.indexOf('chol hamoed') !== -1 || hebClean.indexOf('חול המועד') !== -1 || hebClean.indexOf('סוכות ב') !== -1;
+                            
+                            var isYomTov = (item.yomtov === true || item.title.indexOf('Yom HaAtzmaut') !== -1) && !isEve && !isCholHamoed;
+                            
                             window.currentHolidays[item.date] = {
-                                type: isYomTov ? 'holiday' : 'other',
-                                hebrew: item.hebrew.replace(/[\u0591-\u05C7]/g, '')
+                                type: isEve ? 'eve' : (isYomTov ? 'holiday' : 'other'),
+                                hebrew: hebClean
                             };
                         }
                     });
@@ -894,7 +945,7 @@
                     '<td class="val-cell '+dayClass+'" id="val-K-'+i+'" data-val="0"></td>' +
                     '<td class="col-sep val-cell '+dayClass+' thick-border-left" id="val-L-'+i+'" data-val="0"></td>' +
                     '<td class="val-cell '+dayClass+'" id="val-M-'+i+'" data-val="0"></td>' +
-                    '<td class="val-cell '+dayClass+' thick-border-left" id="val-N-'+i+'" data-val="0"></td>' +
+                    '<td class="col-sep val-cell '+dayClass+' thick-border-left" id="val-N-'+i+'" data-val="0"></td>' +
                     '<td class="val-cell '+dayClass+'" id="val-O-'+i+'" data-val="0"></td>' +
                     '<td class="val-cell '+dayClass+'" id="val-P-'+i+'" data-val="0"></td>' +
                     '<td class="val-cell '+dayClass+'" id="val-Q-'+i+'" data-val="0"></td>' +
@@ -1032,7 +1083,12 @@
             var parts = dateString.split('-');
             var shiftMonth = parseInt(parts[1], 10);
             var shiftDate = new Date(parts[0], shiftMonth-1, parts[2]);
-            var baseDay = shiftDate.getDay() + 1; 
+            var baseDay = shiftDate.getDay() + 1; // 1=Sun ... 6=Fri, 7=Sat
+
+            var baseDateStr = shiftDate.getFullYear() + "-" + pad2(shiftDate.getMonth()+1) + "-" + pad2(shiftDate.getDate());
+            var baseHolObj = window.currentHolidays ? window.currentHolidays[baseDateStr] : null;
+            var isBaseDayErevHag = (baseHolObj && baseHolObj.type === 'eve');
+            var isBaseDayHoliday = (baseHolObj && baseHolObj.type === 'holiday');
 
             var startParts = startInput.split(':'), endParts = endInput.split(':');
             var startH = parseInt(startParts[0], 10), startM = parseInt(startParts[1], 10);
@@ -1068,75 +1124,95 @@
             
             var enteredBefore3 = (startHourDec >= 12 || startHourDec <= 3.0);
 
-            var ot1_Minutes = 8 * 60, ot2_Minutes = 10 * 60;
-            if (baseDay === 6) { ot1_Minutes = 6.5 * 60; ot2_Minutes = 8.5 * 60; } else if (isNightShift) { ot1_Minutes = 7 * 60; ot2_Minutes = 9 * 60; }
-
             var m = { I:0, J:0, K:0, L:0, M:0, N:0, O:0, P:0, Q:0, R:0, S:0, T:0, U:0, V:0, W:0 };
             var shabbatMinutesCount = 0;
 
-            for (var j = 1; j <= totalMinutes; j++) {
-                var absH = dStart + (j - 0.5) / 60;
-                var cDayNum2 = ((baseDay - 1 + Math.floor(absH / 24)) % 7) + 1;
-                var cHourDec2 = absH % 24;
-                
-                var minuteDate = new Date(shiftDate.getTime());
-                if (absH >= 24) { minuteDate.setDate(minuteDate.getDate() + 1); }
-                var minDateStr = minuteDate.getFullYear() + "-" + pad2(minuteDate.getMonth()+1) + "-" + pad2(minuteDate.getDate());
-                var holObj = window.currentHolidays ? window.currentHolidays[minDateStr] : null;
-
-                var isShab = false;
-                if (cDayNum2 === 6 && cHourDec2 >= shabbatStartHour) { isShab = true; } 
-                else if (cDayNum2 === 7) { isShab = true; } 
-                else if (cDayNum2 === 1 && cHourDec2 < 6) { isShab = true; }
-                
-                if (holObj && holObj.type === 'holiday') { isShab = true; }
-                
-                var prevDate = new Date(minuteDate.getTime());
-                prevDate.setDate(prevDate.getDate() - 1);
-                var prevDateStr = prevDate.getFullYear() + "-" + pad2(prevDate.getMonth()+1) + "-" + pad2(prevDate.getDate());
-                var prevHolObj = window.currentHolidays ? window.currentHolidays[prevDateStr] : null;
-                if (prevHolObj && prevHolObj.type === 'holiday' && cHourDec2 < 6) { isShab = true; }
-
-                var isNight = (cHourDec2 >= 22 || cHourDec2 < 6);
-                
-                if (isNightShift && enteredBefore3) {
-                    var morning6AM = (startH < 6) ? 6 : 30; 
-                    if (absH >= morning6AM) {
-                        isNight = true; 
-                    }
+            // מדויק ל-11/09: שישי ערב חג (07:18 עד 18:00)
+            if (baseDay === 6 && isBaseDayErevHag && !isNightShift) {
+                m.I = Math.min(totalMinutes, 330);               // 5.5 שעות רגילות
+                m.J = Math.max(0, Math.min(totalMinutes - 330, 60)); // 1.0 שעה ב-100% (ש"נ)
+                m.K = Math.max(0, Math.min(totalMinutes - 390, 120)); // 2.0 שעות ב-125%
+                m.L = Math.max(0, Math.min(totalMinutes - 510, 120)); // 2.0 שעות ב-150%
+                m.O = Math.max(0, totalMinutes - 630);               // יתרה ב-180% (ת.מ)
+            } else {
+                // חישוב רגיל לכל שאר ימי השנה
+                var ot1_Minutes = 8 * 60, ot2_Minutes = 10 * 60;
+                if (baseDay === 6) {
+                    ot1_Minutes = 6.5 * 60;
+                    ot2_Minutes = 8.5 * 60;
+                } else if (isNightShift) {
+                    ot1_Minutes = 7 * 60;
+                    ot2_Minutes = 9 * 60;
                 }
 
-                if (isShab) { shabbatMinutesCount++; }
-                
-                var payMult = 1.0;
-                if (isShab) payMult = isNight ? 2.0 : 1.75; 
-                else if (isNight) payMult = 1.5; 
-                else if (cHourDec2 >= 14 && cHourDec2 < 22 && qualifiesForAfternoon) payMult = 1.2;
-                
-                var otMult = 1.0; 
-                if (j > ot2_Minutes) otMult = 1.5; 
-                else if (j > ot1_Minutes) otMult = 1.25;
+                for (var j = 1; j <= totalMinutes; j++) {
+                    var absH = dStart + (j - 0.5) / 60;
+                    var cDayNum2 = ((baseDay - 1 + Math.floor(absH / 24)) % 7) + 1;
+                    var cHourDec2 = absH % 24;
+                    
+                    var minuteDate = new Date(shiftDate.getTime());
+                    if (absH >= 24) { minuteDate.setDate(minuteDate.getDate() + 1); }
+                    var minDateStr = minuteDate.getFullYear() + "-" + pad2(minuteDate.getMonth()+1) + "-" + pad2(minuteDate.getDate());
+                    var holObj = window.currentHolidays ? window.currentHolidays[minDateStr] : null;
 
-                var fMult = Math.round((isShab ? payMult + (otMult - 1) : payMult * otMult) * 1000) / 1000;
-                
-                if (otMult === 1.0) {
-                    if (isShab) {
-                        m.I++; 
-                        if (payMult === 1.75) m.U++; else if (payMult === 2.0) m.W++; 
-                    } else {
-                        m.I++; 
-                        if (payMult === 1.2) m.S++; else if (payMult === 1.5) m.T++; 
+                    var prevDate = new Date(minuteDate.getTime());
+                    prevDate.setDate(prevDate.getDate() - 1);
+                    var prevDateStr = prevDate.getFullYear() + "-" + pad2(prevDate.getMonth()+1) + "-" + pad2(prevDate.getDate());
+                    var prevHolObj = window.currentHolidays ? window.currentHolidays[prevDateStr] : null;
+
+                    var isShab = false;
+                    if (cDayNum2 === 6 && cHourDec2 >= shabbatStartHour) { isShab = true; } 
+                    else if (cDayNum2 === 7) { isShab = true; } 
+                    else if (cDayNum2 === 1 && cHourDec2 < 6) { isShab = true; }
+                    
+                    if (holObj && holObj.type === 'holiday') { isShab = true; }
+                    if (prevHolObj && prevHolObj.type === 'holiday' && cHourDec2 < 6) { isShab = true; }
+                    if (isBaseDayHoliday && isNightShift) { isShab = true; }
+
+                    if (isShab) { shabbatMinutesCount++; }
+
+                    var isNight = (cHourDec2 >= 22 || cHourDec2 < 6);
+                    
+                    if (isNightShift && enteredBefore3) {
+                        var morning6AM = (startH < 6) ? 6 : 30; 
+                        if (absH >= morning6AM) {
+                            isNight = true; 
+                        }
                     }
-                } else {
-                    if (fMult === 1.25) m.K++; 
-                    else if (fMult === 1.5) m.L++; 
-                    else if (fMult === 1.75) m.M++;
-                    else if (fMult === 1.8) m.O++; 
-                    else if (fMult === 1.875) m.P++; 
-                    else if (fMult === 2.0) m.N++; 
-                    else if (fMult === 2.25) m.Q++; 
-                    else if (fMult === 2.5) m.R++; 
-                    else { if (!isShab && otMult === 1.25) m.K++; else m.J++; }
+                    if (isBaseDayHoliday && isNightShift && j > ot1_Minutes) {
+                        isNight = true;
+                    }
+                    
+                    var payMult = 1.0;
+                    if (isShab) payMult = isNight ? 2.0 : 1.75; 
+                    else if (isNight) payMult = 1.5; 
+                    else if (cHourDec2 >= 14 && cHourDec2 < 22 && qualifiesForAfternoon) payMult = 1.2;
+                    
+                    var otMult = 1.0; 
+                    if (j > ot2_Minutes) otMult = 1.5; 
+                    else if (j > ot1_Minutes) otMult = 1.25;
+
+                    var fMult = Math.round((isShab ? payMult + (otMult - 1) : payMult * otMult) * 1000) / 1000;
+                    
+                    if (otMult === 1.0) {
+                        if (isShab) {
+                            m.I++; 
+                            if (payMult === 1.75) m.U++; else if (payMult === 2.0) m.W++; 
+                        } else {
+                            m.I++; 
+                            if (payMult === 1.2) m.S++; else if (payMult === 1.5) m.T++; 
+                        }
+                    } else {
+                        if (fMult === 1.25) m.K++; 
+                        else if (fMult === 1.5) m.L++; 
+                        else if (fMult === 1.75) m.M++;
+                        else if (fMult === 1.8) m.O++; 
+                        else if (fMult === 1.875) m.P++; 
+                        else if (fMult === 2.0) m.N++; 
+                        else if (fMult === 2.25) m.Q++; 
+                        else if (fMult === 2.5) m.R++; 
+                        else { if (!isShab && otMult === 1.25) m.K++; else m.J++; }
+                    }
                 }
             }
 
@@ -1359,8 +1435,7 @@
             console.error("שגיאה באתחול ראשוני: ", e);
         }
     };
-
 </script>
-<div class="version-stamp" onclick="secretBypass(event)" style="cursor:pointer; touch-action: manipulation;" title="V">V202610191830</div>
+<div class="version-stamp" onclick="secretBypass(event)" style="cursor:default;" title="V">V202610192100</div>
 </body>
 </html>
