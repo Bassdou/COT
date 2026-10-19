@@ -4,84 +4,51 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>COT - Calculate Over Time</title>
-    <!-- סמל הלוגו בלשונית הדפדפן (Favicon) מיוצר כ-SVG כדי לתמוך בצבעים -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 100'><text x='5' y='75' font-family='Arial Black, sans-serif' font-size='60' font-weight='900'><tspan fill='%23FF9800'>C</tspan><tspan fill='%2300E676' dx='-15'>O</tspan><tspan fill='%23FF5252' dx='-15'>T</tspan></text></svg>">
+    
     <style>
         /* === סגנונות בסיסיים === */
         * { box-sizing: border-box; }
         body { font-family: 'Segoe UI', Tahoma, Arial, sans-serif; background-color: #eef5f9; margin: 0; padding: 20px; color: #333; }
-        h2, h4, .version-stamp { touch-action: none; user-select: none; -webkit-user-select: none; }
+        h2, h4, .version-stamp { touch-action: manipulation; user-select: none; -webkit-user-select: none; }
         
-        /* הסרגל העליון (פס כחול) */
+        /* הסרגל העליון */
         #debugBox {
-            background-color: #1976d2;
-            padding: 15px 25px;
-            border-radius: 12px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
+            background-color: #1976d2; padding: 15px 25px; border-radius: 12px; display: flex;
+            justify-content: space-between; align-items: center; margin-bottom: 25px;
             box-shadow: 0 4px 15px rgba(25, 118, 210, 0.3);
         }
 
-        /* עיצוב כללי לכפתורים */
-        .btn-3d {
-            position: relative; top: 0; transition: top 0.1s ease, box-shadow 0.1s ease; border: none; font-weight: bold; cursor: pointer; text-align: center; border-radius: 8px;
-        }
+        /* כפתורים */
+        .btn-3d { position: relative; top: 0; transition: top 0.1s ease, box-shadow 0.1s ease; border: none; font-weight: bold; cursor: pointer; text-align: center; border-radius: 8px; }
         .btn-3d:active { top: 4px; }
-        
         .btn-info { background-color: #fff; color: #1565c0; padding: 8px 15px; display: flex; align-items: center; gap: 8px; font-size: 14px; box-shadow: 0 4px #0d47a1; }
         .btn-info:active { box-shadow: 0 0 #0d47a1; }
         .btn-info .icon { font-size: 20px; }
-        
         .btn-logout { background-color: #0d47a1; color: white; padding: 8px 15px; font-size: 14px; box-shadow: 0 4px #0a367c; }
         .btn-logout:active { box-shadow: 0 0 #0a367c; }
-
         .btn-load { background-color: #42a5f5; color: white; padding: 10px 12px; font-size: 14px; box-shadow: 0 4px #1e88e5; }
         .btn-load:active { box-shadow: 0 0 #1e88e5; }
-        
         .btn-primary { background-color: #1565c0; color: white; padding: 10px 12px; font-size: 14px; box-shadow: 0 4px #0d47a1; }
         .btn-primary:active { box-shadow: 0 0 #0d47a1; }
-        
         .btn-save { background-color: #1e88e5; color: white; padding: 10px 12px; font-size: 14px; box-shadow: 0 4px #1565c0; }
         .btn-save:active { box-shadow: 0 0 #1565c0; }
-        
         .btn-reset { background-color: #546e7a; color: white; padding: 10px 12px; font-size: 14px; box-shadow: 0 4px #37474f; }
         .btn-reset:active { box-shadow: 0 0 #37474f; }
-        
         .btn-print { background-color: #1565c0; color: white; padding: 14px 28px; font-size: 16px; box-shadow: 0 4px #0d47a1; border-radius: 8px; }
         .btn-print:active { box-shadow: 0 0 #0d47a1; }
 
-        /* פאנל נתונים ראשי */
-        .header-panel {
-            background: #fff; padding: 20px 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 25px; 
-            display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 25px;
-        }
-        
+        /* פאנל נתונים */
+        .header-panel { background: #fff; padding: 20px 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 25px; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 25px; }
         .inputs-section { display: flex; flex-wrap: wrap; gap: 12px; flex: 2; }
-        .input-group {
-            background-color: #e3f2fd;
-            border: 1px solid #bbdefb;
-            border-radius: 8px;
-            padding: 5px 8px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            box-shadow: inset 0 1px 3px rgba(0,0,0,0.03);
-            border-bottom: 3px solid #1e88e5;
-        }
-        .input-group label { 
-            font-size: 11px; font-weight: bold; color: #1565c0; margin-bottom: 4px; width: 100%; text-align: center; border-bottom: 1px solid #bbdefb; padding-bottom: 3px;
-        }
-        .input-group input, .input-group select {
-            padding: 4px 2px; border: none; background: transparent; font-size: 14px; font-weight: bold; color: #0d47a1; text-align: center; width: 100%;
-        }
+        .input-group { background-color: #e3f2fd; border: 1px solid #bbdefb; border-radius: 8px; padding: 5px 8px; display: flex; flex-direction: column; align-items: center; box-shadow: inset 0 1px 3px rgba(0,0,0,0.03); border-bottom: 3px solid #1e88e5; }
+        .input-group label { font-size: 11px; font-weight: bold; color: #1565c0; margin-bottom: 4px; width: 100%; text-align: center; border-bottom: 1px solid #bbdefb; padding-bottom: 3px; }
+        .input-group input, .input-group select { padding: 4px 2px; border: none; background: transparent; font-size: 14px; font-weight: bold; color: #0d47a1; text-align: center; width: 100%; }
         .input-group input:focus, .input-group select:focus { outline: none; color: #1565c0; }
-
         .actions-section { display: flex; flex-direction: column; gap: 12px; flex: 1; min-width: 220px; justify-content: flex-end; }
         .action-row { display: flex; gap: 10px; width: 100%; }
         .action-row button { flex: 1; }
-        
+
         /* טבלה */
         .table-container { background: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); overflow-x: auto; max-height: 60vh; margin-bottom: 20px; }
         table { width: max-content; margin: 0 auto; border-collapse: collapse; white-space: nowrap; table-layout: auto; }
@@ -89,11 +56,9 @@
         th, td { border: 1px solid #e0e0e0; padding: 5px 2px; text-align: center; font-size: 13px; vertical-align: middle; }
         th { background-color: #1565c0; color: white; font-size: 12px; }
         tr:nth-child(even) { background-color: #f9fcff; }
-        
         .time-input { width: 65px; padding: 4px; border: 1px solid #90caf9; border-radius: 3px; text-align: center; font-weight: bold; font-family: monospace; font-size: 14px; color: #0d47a1;}
         .time-input::placeholder { color: #bbdefb; font-weight: normal; }
         .shift-type-input { width: 35px; padding: 4px; border: 1px solid #90caf9; border-radius: 3px; text-align: center; font-weight: bold; font-size: 14px; background-color: #e3f2fd; color: #0d47a1; margin: 0 auto; display: block; }
-        
         .val-cell, .calc-th { width: 38px !important; min-width: 38px !important; max-width: 45px !important; text-align: center !important; }
         .val-cell { color: #0d47a1; font-weight: bold; background-color: #f8fbff; }
         .day-sat { color: #1565c0; font-weight: bold; background-color: #e3f2fd !important; }
@@ -104,7 +69,7 @@
         .tfoot-summary.hours-row { bottom: 34px; background-color: #bbdefb; }
         .tfoot-summary.cost-row { bottom: 0; }
         .tfoot-summary td { border: 2px solid #90caf9; color: #0d47a1; }
-        
+
         /* דאשבורד */
         .dashboard { margin-top: 20px; text-align: center; }
         .dash-card { background: #fff; padding: 15px; border-radius: 8px; border-top: 4px solid #1976d2; display: inline-block; width: 140px; margin-left: 10px; margin-bottom: 10px; vertical-align: top; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
@@ -113,8 +78,8 @@
         .shabbat-card { width: 190px !important; text-align: right !important; border-top-color: #0288d1 !important; }
         .shabbat-card .row { display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 4px; }
         .tlush-card { border-top: 4px solid #0d47a1; background: #bbdefb; } .tlush-card .val { color: #0d47a1; font-size: 20px; }
-        
-        /* חלון מודאלי */
+
+        /* חלונות מודאליים (Modal) */
         .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.5); backdrop-filter: blur(2px); }
         .modal-content { background-color: #fff; margin: 3vh auto; padding: 25px; border-radius: 8px; width: 90%; max-width: 700px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); position: relative; animation: modalopen 0.3s;}
         @keyframes modalopen { from {opacity: 0; transform: translateY(-20px);} to {opacity: 1; transform: translateY(0);} }
@@ -133,8 +98,8 @@
         .info-section ul { margin-top: 5px; padding-right: 20px; }
         .info-section li { margin-bottom: 5px; }
 
-        .version-stamp { position: fixed; bottom: 5px; left: 5px; font-size: 10px; font-weight: bold; color: #7f8c8d; z-index: 99999; cursor: default;}
-        
+        .version-stamp { position: fixed; bottom: 5px; left: 5px; font-size: 10px; font-weight: bold; color: #7f8c8d; z-index: 99999; cursor: pointer; touch-action: manipulation;}
+
         .print-only { display: none; }
         .print-only-cell { display: none; }
 
@@ -184,26 +149,23 @@
     <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-auth-compat.js"></script>
 </head>
 <body>
-<!-- מסך התחברות / הרשמה (Overlay) -->
-<div id="authOverlay" style="position: fixed; top:0; left:0; right:0; bottom:0; background: linear-gradient(135deg, #1976d2 0%, #eef5f9 100%); z-index: 10000; overflow-y: auto; display: flex; align-items: flex-start; justify-content: center; padding: 20px; box-sizing: border-box; padding-top: 10vh; padding-bottom: 5vh;">
-    
+
+<!-- מסך התחברות / הרשמה -->
+<div id="authOverlay" style="position: fixed; top:0; left:0; width:100%; height:100%; background: linear-gradient(135deg, #1976d2 0%, #eef5f9 100%); z-index: 10000; display:flex; align-items:flex-start; justify-content:center; overflow-y: auto; padding: 20px; box-sizing: border-box;">
     <div style="background:#fff; padding:35px 25px; border-radius:16px; box-shadow:0 10px 40px rgba(0,0,0,0.2); width:100%; max-width:400px; text-align:center; position:relative; margin: auto; box-sizing: border-box;">
-        <!-- פס קישוט עליון -->
         <div style="position:absolute; top:0; left:0; width:100%; height:6px; background:#1e88e5;"></div>
         
-        <!-- הלוגו של COT במסך התחברות (לחיצה משולשת כאן עוקפת הרשמה) -->
-        <div style="display: flex; align-items: center; justify-content: center; cursor: pointer; margin-bottom: 10px; touch-action:none; user-select:none;" onclick="secretBypass(event)" title="לחץ 3 פעמים רצוף לכניסה מהירה">
-            <div class="icon-logo" dir="ltr" style="position: relative; width: 75px; height: 50px; font-family: 'Arial Black', 'Segoe UI Black', sans-serif; font-size: 48px; line-height: 50px; font-weight: 900; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));">
+        <div style="display: flex; align-items: center; justify-content: center; cursor: pointer; margin-bottom: 10px; user-select:none; touch-action: manipulation;" onclick="secretBypass(event)" title="לחץ 3 פעמים רצוף לכניסה מהירה">
+            <div class="icon-logo" dir="ltr" style="position: relative; width: 75px; height: 50px; font-family: 'Arial Black', 'Segoe UI Black', sans-serif; font-size: 48px; line-height: 50px; font-weight: 900; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1)); pointer-events: none;">
                 <span style="position: absolute; left: 0px; top: 0; color: #FF9800; opacity: 0.9; z-index: 3;">C</span>
                 <span style="position: absolute; left: 19px; top: 0; color: #00BFA5; opacity: 0.85; z-index: 1;">O</span>
                 <span style="position: absolute; left: 40px; top: 0; color: #FF5252; opacity: 0.9; z-index: 2;">T</span>
             </div>
         </div>
         
-        <h2 style="color:#0d47a1; margin-top:0; margin-bottom:5px; font-size:22px; user-select:none; touch-action:none; cursor:pointer;" onclick="secretBypass(event)">בקרת דו"ח פיצול</h2>
+        <h2 style="color:#0d47a1; margin-top:0; margin-bottom:5px; font-size:22px; user-select:none; cursor:pointer; touch-action: manipulation;" onclick="secretBypass(event)">בקרת דו"ח פיצול</h2>
         <h4 style="color:#546e7a; margin-top:0; margin-bottom:20px; font-weight:normal; font-size:14px;">ניהול חכם של משמרות ושכר</h4>
         
-        <!-- תיבת מידע -->
         <div style="background:#e3f2fd; color:#0d47a1; padding:15px; border-radius:10px; font-size:13px; margin-bottom:25px; border:1px solid #bbdefb; text-align:right; line-height:1.5;">
             <strong style="font-size:14px;">ברוכים הבאים! 👋</strong><br>
             כדי לשמור על פרטיות נתוני השכר שלך ולאפשר גישה מכל מכשיר, המערכת דורשת זיהוי קצר.<br><br>
@@ -215,14 +177,12 @@
             <input type="text" id="authName" placeholder="הקלד שם מלא" style="width:100%; box-sizing:border-box; margin-bottom:15px; padding:12px; text-align:right; font-size:15px; border: 2px solid #e3f2fd; border-radius: 8px; background:#f8fbff; outline:none; transition:0.2s;" onfocus="this.style.borderColor='#90caf9'" onblur="this.style.borderColor='#e3f2fd'" dir="rtl">
             
             <label style="font-size:13px; font-weight:bold; color:#1565c0; margin-bottom:6px; display:block;">כתובת אימייל</label>
-            <input type="email" id="authEmail" placeholder="name@example.com" style="width:100%; box-sizing:border-box; margin-bottom:15px; padding:12px; text-align:left; font-size:15px; border: 2px solid #e3f2fd; border-radius: 8px; background:#f8fbff; outline:none; transition:0.2s;" onfocus="this.style.borderColor='#90caf9'" onblur="this.style.borderColor='#e3f2fd'" dir="ltr">
+            <input type="email" id="authEmail" placeholder="name@example.com" style="width:100%; box-sizing:border-box; margin-bottom:15px; padding:12px; text-align:left; font-size:15px; border: 2px solid #e3f2fd; border-radius: 8px; background:#f8fbff; outline:none; transition:0.2s;" onfocus="this.style.borderColor='#90caf9'" onblur="this.style.borderColor='#e3f2fd'" dir="ltr" onkeypress="if(event.key === 'Enter') loginUser()">
             
             <label style="font-size:13px; font-weight:bold; color:#1565c0; margin-bottom:6px; display:block;">סיסמה</label>
-            <input type="password" id="authPassword" placeholder="לפחות 6 תווים" style="width:100%; box-sizing:border-box; margin-bottom:5px; padding:12px; text-align:left; font-size:15px; border: 2px solid #e3f2fd; border-radius: 8px; background:#f8fbff; outline:none; transition:0.2s;" onfocus="this.style.borderColor='#90caf9'" onblur="this.style.borderColor='#e3f2fd'" dir="ltr">
+            <input type="password" id="authPassword" placeholder="לפחות 6 תווים" style="width:100%; box-sizing:border-box; margin-bottom:5px; padding:12px; text-align:left; font-size:15px; border: 2px solid #e3f2fd; border-radius: 8px; background:#f8fbff; outline:none; transition:0.2s;" onfocus="this.style.borderColor='#90caf9'" onblur="this.style.borderColor='#e3f2fd'" dir="ltr" onkeypress="if(event.key === 'Enter') loginUser()">
         </div>
-
         <div id="authError" style="color:#e74c3c; font-size:13px; margin-bottom:20px; font-weight:bold; min-height:18px;"></div>
-        
         <div style="display:flex; gap:12px; flex-direction: column;">
             <button class="btn-3d" onclick="loginUser()" style="width:100%; padding:14px; background:#1976d2; color:white; border-radius:8px; font-size:16px; box-shadow:0 4px #1565c0; margin-bottom: 5px;">כניסה למערכת</button>
             <button class="btn-3d" onclick="registerUser()" style="width:100%; padding:12px; background:#fff; color:#1976d2; border:2px solid #1976d2; border-radius:8px; font-size:15px; box-shadow:0 4px #bbdefb; top:-2px;">הרשמה חדשה</button>
@@ -236,15 +196,14 @@
         <div style="position:absolute; top:0; left:0; width:100%; height:6px; background:#ff9800;"></div>
         <h3 style="color:#0d47a1; margin-top:0; font-size:20px;">השלמת פרטים חסרים</h3>
         <p style="font-size:14px; color:#546e7a; margin-bottom: 20px; line-height: 1.5;">זיהינו שהחשבון שלך נוצר בעבר לפני עדכון המערכת.<br>כדי להמשיך, אנא הזן את שמך המלא (יופיע אוטומטית בדוחות).</p>
-        <input type="text" id="missingNameInput" placeholder="הקלד שם מלא כאן" style="width:100%; box-sizing:border-box; margin-bottom:15px; padding:12px; text-align:right; font-size:15px; border: 2px solid #e3f2fd; border-radius: 8px; background:#f8fbff; outline:none; transition:0.2s;" onfocus="this.style.borderColor='#90caf9'" onblur="this.style.borderColor='#e3f2fd'" dir="rtl">
+        <input type="text" id="missingNameInput" placeholder="הקלד שם מלא כאן" style="width:100%; box-sizing:border-box; margin-bottom:15px; padding:12px; text-align:right; font-size:15px; border: 2px solid #e3f2fd; border-radius: 8px; background:#f8fbff; outline:none; transition:0.2s;" onfocus="this.style.borderColor='#90caf9'" onblur="this.style.borderColor='#e3f2fd'" dir="rtl" onkeypress="if(event.key === 'Enter') saveMissingName()">
         <div id="missingNameError" style="color:#e74c3c; font-size:13px; margin-bottom:15px; font-weight:bold; min-height:15px;"></div>
         <button class="btn-3d" onclick="saveMissingName()" style="width:100%; padding:12px; background:#1976d2; color:white; border-radius:8px; font-size:16px; box-shadow:0 4px #1565c0;">שמור והיכנס למערכת</button>
     </div>
 </div>
 
-<!-- סרגל עליון - פס כחול -->
+<!-- סרגל עליון -->
 <div id="debugBox">
-    <!-- הלוגו של COT בתוך המערכת -->
     <div style="display: flex; align-items: center; gap: 12px;">
         <div dir="ltr" style="position: relative; width: 55px; height: 36px; font-family: 'Arial Black', 'Segoe UI Black', sans-serif; font-size: 34px; line-height: 36px; font-weight: 900; margin-left: 5px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));">
             <span style="position: absolute; left: 0px; top: 0; color: #FF9800; opacity: 0.95; z-index: 3;">C</span>
@@ -256,10 +215,8 @@
             <span style="font-size: 11px; color: #bbdefb; letter-spacing: 0.5px; font-family: Tahoma, sans-serif;">Calculate Over Time</span>
         </div>
     </div>
-    
     <div style="display: flex; gap: 15px; align-items: center;">
         <button class="btn-logout btn-3d" id="logoutBtn" onclick="logoutUser()" style="display:none;" title="התנתק מהמערכת">התנתק</button>
-        <!-- כפתור עליון - פותח רק את הגדרות המערכת הכלליות -->
         <button class="btn-info btn-3d" onclick="openShiftInfo()" title="מידע חשוב על המערכת וההסכמים">
             <span class="icon">ℹ️</span>
             <span>מידע חשוב</span>
@@ -267,51 +224,45 @@
     </div>
 </div>
 
-<!-- חלון עזר ראשי (Modal) רק טקסט הדרכה - ללא רשימת המשמרות -->
+<!-- חלון עזר ראשי (Modal) -->
 <div id="shiftInfoModal" class="modal">
     <div class="modal-content">
         <span class="close-btn" onclick="closeShiftInfo()">&times;</span>
-        <div class="modal-header">
-            <h2>ℹ️ מידע חשוב</h2>
-        </div>
+        <div class="modal-header"><h2>ℹ️ מידע חשוב</h2></div>
         <div style="max-height: 70vh; overflow-y: auto; padding-left: 10px;">
             <div class="info-section">
-                <p>מערכת <strong>"בקרת דו"ח פיצול"</strong> היא יישום רשת חכם ועצמאי שנועד לתכנן, לנהל, לתעד ולנתח את שעות העבודה במשמרות.</p>
-                <p>המערכת מפצלת את השעות הנוספות עפ"י הסכמי העבודה בצורה מדויקת. העובד יוכל לתכנן איזה משמרות כדאי ומשתלם להשתבץ, ויוודא את תקינות חישובי השעות והתוספות מול דוח פיצול ומול תלוש השכר.</p>
+                <p>מערכת <strong>"בקרת דו"ח פיצול"</strong> נועדה לתכנן, לנהל, ולנתח את שעות העבודה במשמרות.</p>
+                <p>המערכת מפצלת את השעות הנוספות עפ"י הסכמי העבודה ומאפשרת בקרת תקינות מול דוח הפיצול והתלוש.</p>
             </div>
             <div class="info-section">
                 <h3>יכולות עיקריות</h3>
                 <ul>
-                    <li><strong>הזנת נתונים חכמה ("קלדנות עיוורת"):</strong> הזנה אוטומטית של זמני כניסה ויציאה על ידי הקלדת קודי משמרת קצרים. הקלדת שעות ללא נקודתיים (למשל: 1904 תהפוך אוטומטית ל-19:04, ו-8 ל-08:00) תוך אכיפת פורמט 24 שעות.</li>
-                    <li><strong>מנוע חישוב מתקדם:</strong> מנתח כל דקת עבודה ומפצל לתעריפים השונים, כולל שבת, שעות נוספות בשבת, ו"תוספת משמרת" (ת.מ.). בסוף הדוח מוצג סך השעות והערך (בש"ח) לכל תעריף, ובשורה התחתונה מחושב סה"כ ערך השעות הנוספות לחודש (להשוואה מול תלוש השכר).</li>
-                    <li><strong>ניהול חופש שבת:</strong> מעקב אוטומטי אחר צבירה, קיזוז ימים מנוצלים (קוד "חש"), וניהול יתרה מצטברת.</li>
-                    <li><strong>לוח בקרה חי:</strong> תצוגה מסכמת של משמרות, שעות תקן/בפועל, דוח אש"ל, והשוואת ערך.</li>
-                    <li><strong>שמירה, טעינה ופרטיות:</strong> הנתונים אינם נשמרים בענן, אלא מאוחסנים מקומית אצל המשתמש. בלחיצת כפתור ניתן לייצא ולשמור קובץ נתונים (JSON) ישירות לתיקייה במחשב, ולטעון אותו מחדש בעתיד.</li>
-                    <li><strong>דוח מותאם (PDF):</strong> המערכת מפיקה בלחיצת כפתור דוח נקי, רשמי ומקצועי המותאם להדפסה לרוחב דף A4 . הדוח דומה מאוד לדוח הפיצול הנשלח מהמשרד.</li>
+                    <li><strong>הזנה חכמה:</strong> הקלדת קודי משמרת קצרים ממלאת אוטומטית שעות. הקלדת שעות ללא נקודתיים (למשל `1904` יהפוך ל-`19:04`).</li>
+                    <li><strong>זיהוי חגים אוטומטי:</strong> המערכת מושכת את חגי ישראל בהתאם לחודש ומחילה תעריף שבת ביום החג עצמו באופן אוטומטי (ללא ערבי חג וחול המועד).</li>
+                    <li><strong>מנוע חישוב:</strong> מנתח כל דקת עבודה ומפצל לתעריפים השונים (שבת, לילה, ש"נ, ת.מ.).</li>
+                    <li><strong>דוח אש"ל וחופש שבת:</strong> חישוב אוטומטי של שווי אש"ל ומעקב אחר יתרת חופש שבת.</li>
+                    <li><strong>דוח מותאם (PDF):</strong> הפקת דוח נקי ומקצועי להדפסה לרוחב A4.</li>
                 </ul>
             </div>
             <div class="info-section">
-                <h3>הסכמי משמרות (חשוב להכיר)</h3>
+                <h3>הסכמי משמרות</h3>
                 <ul>
-                    <li><strong>משמרות בוקר</strong> שגלשו לאחרי השעה 14:00 לא יקבלו תוספת 20% אלא אם נצברו 3 שעות עבודה מלאות (החתמת כניסה לפני 17:00 בדיוק).</li>
-                    <li><strong>משמרת לילה</strong> שהתחילה לפני 03:00 - כל השעות אחרי כן נחשבות לילה. אם ההחתמה הייתה אחרי 03:00, בשעה 06:00 השעות הופכות לבוקר.</li>
-                    <li><strong>דוח אש"ל</strong> מחושב לפי סך שעות העבודה בפועל מחולק ב-8. המספר השלם מוכפל בערך מנת האוכל המעודכנת.</li>
+                    <li><strong>משמרות בוקר:</strong> שגלשו לאחרי 14:00 לא יקבלו 20% ת.מ אלא אם נצברו 3 שעות עבודה (החתמה לפני 17:00).</li>
+                    <li><strong>משמרת לילה:</strong> כניסה לפני 03:00 - כל השעות אחרי כן נחשבות לילה. כניסה אחרי 03:00 - ב-06:00 הופך לבוקר.</li>
                 </ul>
             </div>
         </div>
     </div>
 </div>
 
-<!-- חלון עזר קטן למשמרות (Mini Modal) - נפתח מהטבלה ומציג את סוגי המשמרות -->
+<!-- חלון עזר קטן למשמרות -->
 <div id="miniShiftInfoModal" class="modal">
     <div class="modal-content" style="max-width: 400px; padding: 15px;">
         <span class="close-btn" onclick="closeMiniShiftInfo()">&times;</span>
-        <div class="modal-header">
-            <h2 style="font-size: 18px; margin: 0; color: #0d47a1;">ℹ️ קודי משמרות</h2>
-        </div>
+        <div class="modal-header"><h2 style="font-size: 18px; margin: 0; color: #0d47a1;">ℹ️ קודי משמרות</h2></div>
         <div style="max-height: 50vh; overflow-y: auto;">
             <table class="info-table" style="font-size: 13px;">
-                <thead><tr><th style="width: 25%;">קוד להקלדה</th><th style="width: 20%;">כניסה</th><th style="width: 20%;">יציאה</th><th>הערה</th></tr></thead>
+                <thead><tr><th style="width: 25%;">קוד</th><th style="width: 20%;">כניסה</th><th style="width: 20%;">יציאה</th><th>הערה</th></tr></thead>
                 <tbody>
                     <tr><td><span class="code-badge">ב</span></td><td>07:00</td><td>19:00</td><td>בוקר 12 שעות</td></tr>
                     <tr><td><span class="code-badge">ל</span></td><td>19:00</td><td>07:00</td><td>לילה 12 שעות</td></tr>
@@ -342,7 +293,6 @@
 </div>
 
 <div class="header-panel">
-    <!-- צד ימין: נתוני בסיס -->
     <div class="inputs-section">
         <div class="input-group">
             <label>שם עובד</label>
@@ -375,7 +325,6 @@
         </div>
     </div>
     
-    <!-- צד שמאל: כפתורי פעולה ב-2 שורות -->
     <div class="actions-section">
         <div class="action-row">
             <button class="btn-load btn-3d" onclick="loadData()">טען קובץ</button>
@@ -404,7 +353,6 @@
                 <th colspan="2" rowspan="2" class="col-sep" style="width: 60px; min-width: 60px; max-width: 70px;">תאריך</th>
                 <th rowspan="2" class="col-sep hide-print" style="width: 35px;" title="הזן קוד משמרת">
                     משמרת
-                    <!-- הכפתור הפנימי שפותח את רשימת סוגי המשמרות בלבד -->
                     <span onclick="openMiniShiftInfo()" style="cursor:pointer; font-size:14px; margin-right:3px;" title="הצג רשימת קודים">ℹ️</span>
                 </th>
                 <th rowspan="2" class="print-thick-right" style="width: 75px; min-width: 75px; max-width: 85px;">כניסה</th>
@@ -469,6 +417,14 @@
             </tr>
         </tfoot>
     </table>
+    <div id="printDashboard" class="print-only">
+        <div><strong>משמרות:</strong> <span id="printDashShifts">0</span></div>
+        <div><strong>תקן:</strong> <span id="printDashStandard">0.00 ש'</span></div>
+        <div><strong>בפועל:</strong> <span id="printDashGross">0.00 ש'</span></div>
+        <div><strong>אש"ל:</strong> <span id="printDashEshel">0.00 ₪</span></div>
+        <div><strong>חופש שבת:</strong> קודמת <span id="printDashShabbatPrev">0.00</span> | נצבר <span id="printDashShabbatEarned">0.00</span> | קוזז <span id="printDashShabbatDeducted">0.00</span> | <strong>יתרה: <span id="printDashShabbatTotal">0.00</span></strong></div>
+        <div><strong>ערך ש"נ:</strong> <span id="tlushCostPrint">0.00 ₪</span></div>
+    </div>
 </div>
 
 <div class="dashboard" id="summaryPanel" style="display:none;">
@@ -480,47 +436,44 @@
     <div class="dash-card shabbat-card">
         <h4 style="text-align: center; margin-bottom: 8px;">חופש שבת</h4>
         <div class="row"><span>יתרה קודמת:</span> <strong id="dashShabbatPrev">0.00</strong></div>
-        <div class="row" style="color: #1976d2;"><span>נצבר החודש (+):</span> <strong id="dashShabbatEarned">0.00</strong></div>
+        <div class="row" style="color: #27ae60;"><span>נצבר החודש (+):</span> <strong id="dashShabbatEarned">0.00</strong></div>
         <div class="row" style="color: #c0392b;"><span>קוזז החודש (-):</span> <strong id="dashShabbatDeducted">0.00</strong></div>
         <hr style="margin: 6px 0;">
-        <div class="row" style="font-size: 15px; color: #0d47a1;"><strong>יתרה עדכנית:</strong> <strong id="dashShabbatTotal">0.00</strong></div>
+        <div class="row" style="font-size: 15px; color: #2c3e50;"><strong>יתרה עדכנית:</strong> <strong id="dashShabbatTotal">0.00</strong></div>
     </div>
     
     <div class="dash-card tlush-card"><h4>ערך ש"נ</h4><div id="tlushCost" class="val">0.00 ₪</div></div>
-
-    <div style="margin-top: 30px; margin-bottom: 10px;">
-        <button class="btn-print btn-3d" id="printBtn" onclick="window.print()">🖨️ הפק דוח בקרת פיצול</button>
-    </div>
 </div>
 
 <script>
+    // הגדרות כניסה סמויה 
     window.isBypassed = false;
     let clickCount = 0;
     let clickTimer;
     
-    // מנגנון ה-3 לחיצות שמעביר ישירות למערכת
     window.secretBypass = function(e) {
         if(e) e.preventDefault();
         clickCount++;
         clearTimeout(clickTimer);
         
-        // הבהוב על ידי שקיפות בגלל שלכל אות יש צבע משלה
-        let titleEls = document.querySelectorAll('#authOverlay h2, #authOverlay .icon-logo');
+        let titleEls = document.querySelectorAll('#authOverlay h2, #authOverlay .icon-logo, .version-stamp');
         titleEls.forEach(el => {
-            el.style.opacity = '0.5'; 
+            el.style.opacity = '0.3'; 
             setTimeout(() => { el.style.opacity = '1'; }, 150);
         });
 
         if(clickCount >= 3) {
             window.isBypassed = true;
-            document.getElementById('authOverlay').style.display = 'none';
             
-            // העלמת מסך שם במקרה והיה פתוח
-            var nameOverlay = document.getElementById('updateNameOverlay');
-            if(nameOverlay) nameOverlay.style.display = 'none';
+            let authOv = document.getElementById('authOverlay');
+            if(authOv) authOv.style.display = 'none';
             
-            var btn = document.getElementById('logoutBtn');
+            let nameOv = document.getElementById('updateNameOverlay');
+            if(nameOv) nameOv.style.display = 'none';
+            
+            let btn = document.getElementById('logoutBtn');
             if(btn) btn.style.display = 'inline-block';
+            
             clickCount = 0;
         }
         clickTimer = setTimeout(() => { clickCount = 0; }, 2000);
@@ -705,14 +658,6 @@
         document.title = getFormattedFileName();
     }
 
-    window.openMiniShiftInfo = function() {
-        document.getElementById('miniShiftInfoModal').style.display = "block";
-    };
-
-    window.closeMiniShiftInfo = function() {
-        document.getElementById('miniShiftInfoModal').style.display = "none";
-    };
-
     window.openShiftInfo = function() {
         document.getElementById('shiftInfoModal').style.display = "block";
     };
@@ -842,7 +787,7 @@
         if (!file) return;
 
         var reader = new FileReader();
-        reader.onload = function(e) {
+        reader.onload = async function(e) {
             try {
                 var data = JSON.parse(e.target.result);
                 
@@ -854,7 +799,7 @@
                 if (data.employeeName !== undefined) document.getElementById('employeeName').value = data.employeeName;
 
                 updateTitles();
-                generateTable(); 
+                await generateTable(); 
 
                 var tbody = document.getElementById('tbody');
                 var rows = tbody.querySelectorAll('tr');
@@ -882,13 +827,41 @@
         reader.readAsText(file);
     };
 
-    window.generateTable = function() {
+    window.generateTable = async function() {
         try {
             var month = parseInt(document.getElementById('monthSelect').value, 10);
             var year = parseInt(document.getElementById('yearInput').value, 10);
             if (!year || isNaN(year)) { return; }
 
             updateTitles();
+            
+            window.currentHolidays = {};
+            try {
+                var btn = document.querySelector('.btn-primary');
+                var oldText = btn.innerText;
+                btn.innerText = "טוען חגים...";
+                btn.disabled = true;
+                var response = await fetch(`https://www.hebcal.com/hebcal?v=1&cfg=json&maj=on&il=on&year=${year}&month=${month}`);
+                var data = await response.json();
+                if (data && data.items) {
+                    data.items.forEach(function(item) {
+                        if (item.category === 'holiday' || item.category === 'yomtov') {
+                            // זיהוי רק של חגים המחייבים שבתון לפי חוק (ימים טובים + יום העצמאות)
+                            // חול המועד, ערבי חג, חנוכה, פורים וכו' יסומנו כ'other' (יופיעו בתיאור אך לא יחשבו לשבת)
+                            var isYomTov = item.yomtov === true || item.title.indexOf('Yom HaAtzmaut') !== -1;
+                            window.currentHolidays[item.date] = {
+                                type: isYomTov ? 'holiday' : 'other',
+                                hebrew: item.hebrew.replace(/[\u0591-\u05C7]/g, '')
+                            };
+                        }
+                    });
+                }
+                btn.innerText = oldText;
+                btn.disabled = false;
+            } catch(e) {
+                console.error("Hebcal API error: ", e);
+                if(btn) { btn.innerText = "הכן גיליון"; btn.disabled = false; }
+            }
 
             var daysInMonth = new Date(year, month, 0).getDate();
             var tbody = document.getElementById('tbody');
@@ -902,13 +875,18 @@
                 var rowSatClass = (dayNum === 6) ? "row-sat" : "";
                 var dayClass = (dayNum === 5) ? "day-fri" : (dayNum === 6) ? "day-sat" : "";
 
+                var curDateStr = year + "-" + pad2(month) + "-" + pad2(i);
+                var holObj = window.currentHolidays ? window.currentHolidays[curDateStr] : null;
+                var holText = holObj ? holObj.hebrew : '';
+                var descColor = holObj ? '#e74c3c' : '#1565c0';
+
                 htmlContent += '<tr class="' + rowSatClass + '">' +
                     '<td class="'+dayClass+'" style="width: 30px; min-width: 30px; max-width: 35px;">' + dateStr + '</td>' +
                     '<td class="'+dayClass+' col-sep" style="width: 30px; min-width: 30px; max-width: 35px;">' + daysHebrew[dayNum] + '</td>' +
                     '<td class="'+dayClass+' col-sep hide-print"><input type="text" class="shift-type-input" maxlength="3" style="width: 35px; padding: 2px;" onkeyup="handleShiftType(this)" onchange="handleShiftType(this)" oninput="handleShiftType(this)"></td>' +
                     '<td class="'+dayClass+' print-thick-right"><input type="text" class="time-input empty-print" maxlength="5" placeholder="" onchange="formatTimeInput(this)" data-date="'+year+'-'+month+'-'+i+'"></td>' +
                     '<td class="col-sep '+dayClass+'"><input type="text" class="time-input empty-print" maxlength="5" placeholder="" onchange="formatTimeInput(this)"></td>' +
-                    '<td class="'+dayClass+' col-sep" id="val-desc-'+i+'" style="font-size: 12px; font-weight: bold; color: #1565c0; background-color: #f8fbff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"></td>' +
+                    '<td class="'+dayClass+' col-sep" id="val-desc-'+i+'" style="font-size: 12px; font-weight: bold; color: '+descColor+'; background-color: #f8fbff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" data-hol="'+holText+'">' + holText + '</td>' +
                     '<td class="val-cell '+dayClass+'" id="val-total-hours-'+i+'" data-val="0"></td>' +
                     '<td class="col-sep val-cell '+dayClass+'" id="val-shabbat-hours-'+i+'" data-val="0"></td>' +
                     '<td class="col-sep val-cell '+dayClass+' thick-border-left" id="val-I-'+i+'" data-val="0"></td>' +
@@ -1006,6 +984,7 @@
 
             var descCell = document.getElementById('val-desc-' + rowId);
             if (descCell) {
+                var holText = descCell.getAttribute('data-hol') || '';
                 var descMap = { 
                     'ב': 'נוכחות', 'ל': 'נוכחות', '615': 'נוכחות', '616': 'נוכחות', '617': 'נוכחות', 
                     'ב06': 'נוכחות', 'ב16': 'נוכחות', '102': 'נוכחות', '111': 'נוכחות', '112': 'נוכחות', 
@@ -1013,10 +992,19 @@
                     'ח': 'חופש', 'חש': 'חופש שבת', 'מח': 'מחלה', 'הס': 'עפ"י הסכם', 'בח': 'בחירה', 
                     'מבמ': 'מחלת בן משפחה', 'הכ': 'הכשרה' 
                 };
+                var baseDesc = '';
                 if (shiftVal && descMap[shiftVal]) {
-                    descCell.innerText = descMap[shiftVal];
+                    baseDesc = descMap[shiftVal];
                 } else if (startInput && endInput) {
-                    descCell.innerText = 'נוכחות';
+                    baseDesc = 'נוכחות';
+                }
+                
+                if (baseDesc && holText) {
+                    descCell.innerText = baseDesc + " (" + holText + ")";
+                } else if (baseDesc) {
+                    descCell.innerText = baseDesc;
+                } else if (holText) {
+                    descCell.innerText = holText;
                 } else {
                     descCell.innerText = '';
                 }
@@ -1091,10 +1079,23 @@
                 var cDayNum2 = ((baseDay - 1 + Math.floor(absH / 24)) % 7) + 1;
                 var cHourDec2 = absH % 24;
                 
+                var minuteDate = new Date(shiftDate.getTime());
+                if (absH >= 24) { minuteDate.setDate(minuteDate.getDate() + 1); }
+                var minDateStr = minuteDate.getFullYear() + "-" + pad2(minuteDate.getMonth()+1) + "-" + pad2(minuteDate.getDate());
+                var holObj = window.currentHolidays ? window.currentHolidays[minDateStr] : null;
+
                 var isShab = false;
                 if (cDayNum2 === 6 && cHourDec2 >= shabbatStartHour) { isShab = true; } 
                 else if (cDayNum2 === 7) { isShab = true; } 
                 else if (cDayNum2 === 1 && cHourDec2 < 6) { isShab = true; }
+                
+                if (holObj && holObj.type === 'holiday') { isShab = true; }
+                
+                var prevDate = new Date(minuteDate.getTime());
+                prevDate.setDate(prevDate.getDate() - 1);
+                var prevDateStr = prevDate.getFullYear() + "-" + pad2(prevDate.getMonth()+1) + "-" + pad2(prevDate.getDate());
+                var prevHolObj = window.currentHolidays ? window.currentHolidays[prevDateStr] : null;
+                if (prevHolObj && prevHolObj.type === 'holiday' && cHourDec2 < 6) { isShab = true; }
 
                 var isNight = (cHourDec2 >= 22 || cHourDec2 < 6);
                 
@@ -1259,7 +1260,6 @@
         if(document.getElementById('dashShabbatDeducted')) document.getElementById('dashShabbatDeducted').innerText = deductedShabbatDays.toFixed(2);
         if(document.getElementById('dashShabbatTotal')) document.getElementById('dashShabbatTotal').innerText = finalShabbatTotal.toFixed(2);
 
-        // הושמט הערך של דוח הפיצול מהמסך לפי הבקשה
         document.getElementById('tlushCost').innerText = tlushCost.toFixed(2) + ' ₪';
         
         if(document.getElementById('printDashShifts')) document.getElementById('printDashShifts').innerText = totalShifts;
@@ -1272,7 +1272,6 @@
         if(document.getElementById('printDashShabbatDeducted')) document.getElementById('printDashShabbatDeducted').innerText = deductedShabbatDays.toFixed(2);
         if(document.getElementById('printDashShabbatTotal')) document.getElementById('printDashShabbatTotal').innerText = finalShabbatTotal.toFixed(2);
 
-        // עדכון בהדפסה להצגת הערך של התלוש בלבד
         if(document.getElementById('tlushCostPrint')) document.getElementById('tlushCostPrint').innerText = tlushCost.toFixed(2) + ' ₪';
     };
 
@@ -1331,7 +1330,6 @@
     });
 
     window.clearData = function() {
-        // איפוס שדות למניעת שמירת נתונים בזיכרון המטמון של הדפדפן (Cache)
         document.getElementById('employeeName').value = "";
         document.getElementById('hourlyRate').value = "0.00";
         document.getElementById('eshelRate').value = "52.66";
@@ -1344,7 +1342,6 @@
         document.getElementById('yearInput').value = calcYear;
         document.getElementById('monthSelect').value = prevMonth;
         
-        // מחיקת תוכן הטבלה והסתרתה
         var tbody = document.getElementById('tbody');
         if (tbody) tbody.innerHTML = '';
         
@@ -1364,6 +1361,6 @@
     };
 
 </script>
-<div class="version-stamp" onpointerdown="secretBypass(event)" style="cursor:default;" title="V">V202610191558</div>
+<div class="version-stamp" onclick="secretBypass(event)" style="cursor:pointer; touch-action: manipulation;" title="V">V202610191830</div>
 </body>
 </html>
