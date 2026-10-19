@@ -1,4 +1,4 @@
-// הגדרות כניסה סמויה
+// הגדרות כניסה סמויה משופרת (מבוסס שקיפות, וללא חסימת מגע)
 window.isBypassed = false;
 let clickCount = 0;
 let clickTimer;
@@ -8,22 +8,25 @@ window.secretBypass = function(e) {
     clickCount++;
     clearTimeout(clickTimer);
     
-    // הבהוב על ידי שקיפות
-    let titleEls = document.querySelectorAll('#authOverlay h2, #authOverlay .icon-logo');
+    // שינוי עיצובי לבדיקת לחיצה
+    let titleEls = document.querySelectorAll('#authOverlay h2, #authOverlay .icon-logo, .version-stamp');
     titleEls.forEach(el => {
-        el.style.opacity = '0.4'; 
+        el.style.opacity = '0.3'; 
         setTimeout(() => { el.style.opacity = '1'; }, 150);
     });
 
     if(clickCount >= 3) {
         window.isBypassed = true;
-        document.getElementById('authOverlay').style.display = 'none';
         
-        var nameOverlay = document.getElementById('updateNameOverlay');
-        if(nameOverlay) nameOverlay.style.display = 'none';
+        let authOv = document.getElementById('authOverlay');
+        if(authOv) authOv.style.display = 'none';
         
-        var btn = document.getElementById('logoutBtn');
+        let nameOv = document.getElementById('updateNameOverlay');
+        if(nameOv) nameOv.style.display = 'none';
+        
+        let btn = document.getElementById('logoutBtn');
         if(btn) btn.style.display = 'inline-block';
+        
         clickCount = 0;
     }
     clickTimer = setTimeout(() => { clickCount = 0; }, 2000);
@@ -46,7 +49,7 @@ firebase.auth().onAuthStateChanged(function(user) {
         document.getElementById('authOverlay').style.display = 'none';
         
         if (!user.displayName) {
-            // משתמש ותיק ללא שם
+            // למשתמשים ותיקים אין שם - נציג מסך השלמה
             document.getElementById('updateNameOverlay').style.display = 'flex';
             var btn = document.getElementById('logoutBtn');
             if(btn) btn.style.display = 'none';

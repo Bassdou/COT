@@ -7,8 +7,8 @@
     <!-- סמל הלוגו בלשונית הדפדפן -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 100'><text x='5' y='75' font-family='Arial Black, sans-serif' font-size='60' font-weight='900'><tspan fill='%23FF9800'>C</tspan><tspan fill='%2300E676' dx='-15'>O</tspan><tspan fill='%23FF5252' dx='-15'>T</tspan></text></svg>">
     
-    <!-- טעינת קובץ העיצוב עם חותמת גרסה לנטרול Cache -->
-    <link rel="stylesheet" href="style.css?v=2.0">
+    <!-- טעינת העיצוב עם הגדרת גרסה לשבירת מטמון (Cache Busting) -->
+    <link rel="stylesheet" href="style.css?v=3.0">
     
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-app-compat.js"></script>
@@ -16,24 +16,29 @@
 </head>
 <body>
 
-<!-- מסך התחברות / הרשמה (Overlay) -->
+<!-- מסך התחברות / הרשמה -->
 <div id="authOverlay" style="position: fixed; top:0; left:0; width:100%; height:100%; background: linear-gradient(135deg, #1976d2 0%, #eef5f9 100%); z-index: 10000; display:flex; align-items:flex-start; justify-content:center; overflow-y: auto; padding: 20px; box-sizing: border-box;">
     <div style="background:#fff; padding:35px 25px; border-radius:16px; box-shadow:0 10px 40px rgba(0,0,0,0.2); width:100%; max-width:400px; text-align:center; position:relative; margin: auto; box-sizing: border-box;">
         <div style="position:absolute; top:0; left:0; width:100%; height:6px; background:#1e88e5;"></div>
-        <div style="display: flex; align-items: center; justify-content: center; cursor: pointer; margin-bottom: 10px; user-select:none;" onclick="secretBypass(event)" title="לחץ 3 פעמים רצוף לכניסה מהירה">
+        
+        <!-- כניסה סמויה (touch-action: manipulation מונע עיכוב לחיצות בנייד) -->
+        <div style="display: flex; align-items: center; justify-content: center; cursor: pointer; margin-bottom: 10px; user-select:none; touch-action: manipulation;" onclick="secretBypass(event)" title="לחץ 3 פעמים רצוף לכניסה מהירה">
             <div class="icon-logo" dir="ltr" style="position: relative; width: 75px; height: 50px; font-family: 'Arial Black', 'Segoe UI Black', sans-serif; font-size: 48px; line-height: 50px; font-weight: 900; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1)); pointer-events: none;">
                 <span style="position: absolute; left: 0px; top: 0; color: #FF9800; opacity: 0.9; z-index: 3;">C</span>
                 <span style="position: absolute; left: 19px; top: 0; color: #00BFA5; opacity: 0.85; z-index: 1;">O</span>
                 <span style="position: absolute; left: 40px; top: 0; color: #FF5252; opacity: 0.9; z-index: 2;">T</span>
             </div>
         </div>
-        <h2 style="color:#0d47a1; margin-top:0; margin-bottom:5px; font-size:22px; user-select:none; cursor:pointer;" onclick="secretBypass(event)">בקרת דו"ח פיצול</h2>
+        
+        <h2 style="color:#0d47a1; margin-top:0; margin-bottom:5px; font-size:22px; user-select:none; cursor:pointer; touch-action: manipulation;" onclick="secretBypass(event)">בקרת דו"ח פיצול</h2>
         <h4 style="color:#546e7a; margin-top:0; margin-bottom:20px; font-weight:normal; font-size:14px;">ניהול חכם של משמרות ושכר</h4>
+        
         <div style="background:#e3f2fd; color:#0d47a1; padding:15px; border-radius:10px; font-size:13px; margin-bottom:25px; border:1px solid #bbdefb; text-align:right; line-height:1.5;">
             <strong style="font-size:14px;">ברוכים הבאים! 👋</strong><br>
             כדי לשמור על פרטיות נתוני השכר שלך ולאפשר גישה מכל מכשיר, המערכת דורשת זיהוי קצר.<br><br>
             <span style="font-size:12px; color:#1565c0;"><strong>משתמש חדש?</strong> הקלד אימייל וסיסמה לבחירתך ולחץ על <b>"הרשמה חדשה"</b>.</span>
         </div>
+
         <div style="text-align:right;">
             <label style="font-size:13px; font-weight:bold; color:#1565c0; margin-bottom:6px; display:block;">שם העובד (לרישום בדוח)</label>
             <input type="text" id="authName" placeholder="הקלד שם מלא" style="width:100%; box-sizing:border-box; margin-bottom:15px; padding:12px; text-align:right; font-size:15px; border: 2px solid #e3f2fd; border-radius: 8px; background:#f8fbff; outline:none; transition:0.2s;" onfocus="this.style.borderColor='#90caf9'" onblur="this.style.borderColor='#e3f2fd'" dir="rtl">
@@ -62,7 +67,7 @@
     </div>
 </div>
 
-<!-- סרגל עליון - פס כחול -->
+<!-- סרגל עליון -->
 <div id="debugBox">
     <div style="display: flex; align-items: center; gap: 12px;">
         <div dir="ltr" style="position: relative; width: 55px; height: 36px; font-family: 'Arial Black', 'Segoe UI Black', sans-serif; font-size: 34px; line-height: 36px; font-weight: 900; margin-left: 5px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));">
@@ -84,7 +89,7 @@
     </div>
 </div>
 
-<!-- חלון עזר ראשי -->
+<!-- חלון עזר ראשי (Modal) -->
 <div id="shiftInfoModal" class="modal">
     <div class="modal-content">
         <span class="close-btn" onclick="closeShiftInfo()">&times;</span>
@@ -97,7 +102,7 @@
             <div class="info-section">
                 <h3>יכולות עיקריות</h3>
                 <ul>
-                    <li><strong>הזנה חכמה:</strong> הקלדת קודי משמרת קצרים ממלאת אוטומטית שעות (למשל `ב` לבוקר). הזנת שעות ללא נקודתיים (למשל `1904` יהפוך ל-`19:04`).</li>
+                    <li><strong>הזנה חכמה:</strong> הקלדת קודי משמרת קצרים ממלאת אוטומטית שעות. הקלדת שעות ללא נקודתיים (למשל `1904` יהפוך ל-`19:04`).</li>
                     <li><strong>מנוע חישוב:</strong> מנתח כל דקת עבודה ומפצל לתעריפים השונים (שבת, לילה, ש"נ, ת.מ.).</li>
                     <li><strong>דוח אש"ל וחופש שבת:</strong> חישוב אוטומטי של שווי אש"ל ומעקב אחר יתרת חופש שבת.</li>
                     <li><strong>דוח מותאם (PDF):</strong> הפקת דוח נקי ומקצועי להדפסה לרוחב A4.</li>
@@ -275,14 +280,6 @@
             </tr>
         </tfoot>
     </table>
-    <div id="printDashboard" class="print-only">
-        <div><strong>משמרות:</strong> <span id="printDashShifts">0</span></div>
-        <div><strong>תקן:</strong> <span id="printDashStandard">0.00 ש'</span></div>
-        <div><strong>בפועל:</strong> <span id="printDashGross">0.00 ש'</span></div>
-        <div><strong>אש"ל:</strong> <span id="printDashEshel">0.00 ₪</span></div>
-        <div><strong>חופש שבת:</strong> קודמת <span id="printDashShabbatPrev">0.00</span> | נצבר <span id="printDashShabbatEarned">0.00</span> | קוזז <span id="printDashShabbatDeducted">0.00</span> | <strong>יתרה: <span id="printDashShabbatTotal">0.00</span></strong></div>
-        <div><strong>ערך ש"נ:</strong> <span id="tlushCostPrint">0.00 ₪</span></div>
-    </div>
 </div>
 
 <div class="dashboard" id="summaryPanel" style="display:none;">
@@ -301,14 +298,10 @@
     </div>
     
     <div class="dash-card tlush-card"><h4>ערך ש"נ</h4><div id="tlushCost" class="val">0.00 ₪</div></div>
-
-    <div style="margin-top: 30px; margin-bottom: 10px;">
-        <button class="btn-print btn-3d" id="printBtn" onclick="window.print()">🖨️ הפק דוח בקרת פיצול</button>
-    </div>
 </div>
 
-<!-- טעינת קובץ הלוגיקה וה-JS עם גרסה -->
-<script src="app.js?v=2.0"></script>
-<div class="version-stamp" onclick="secretBypass(event)" style="cursor:default;" title="V">V202610191630</div>
+<!-- טעינת העיצוב עם שובר קאש -->
+<script src="app.js?v=3.0"></script>
+<div class="version-stamp" onclick="secretBypass(event)" style="cursor:pointer; touch-action: manipulation;" title="V">V202610191700</div>
 </body>
 </html>
