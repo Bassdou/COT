@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>מערכת שעות - משמרות ופיצול</title>
     <style>
+        /* === סגנונות בסיסיים של המסך === */
+        h2, .version-stamp { touch-action: none; user-select: none; -webkit-user-select: none; }
         body { font-family: 'Segoe UI', Tahoma, Arial, sans-serif; background-color: #eef5f9; margin: 0; padding: 20px; color: #333; }
         
         /* הסרגל העליון (פס כחול) */
@@ -19,7 +21,7 @@
             box-shadow: 0 4px 15px rgba(25, 118, 210, 0.3);
         }
 
-        /* כפתורי תלת-מימד */
+        /* עיצוב כללי לכפתורי תלת-מימד בגווני כחול */
         .btn-3d {
             position: relative;
             top: 0;
@@ -62,7 +64,7 @@
         
         .inputs-section { display: flex; flex-wrap: wrap; gap: 12px; flex: 2; align-items: flex-end; }
         .input-group {
-            background-color: #e3f2fd;
+            background-color: #e3f2fd; /* רקע תכלת עדין */
             border: 1px solid #bbdefb;
             border-radius: 8px;
             padding: 5px 8px;
@@ -70,7 +72,7 @@
             flex-direction: column;
             align-items: center;
             box-shadow: inset 0 1px 3px rgba(0,0,0,0.03);
-            border-bottom: 3px solid #1e88e5;
+            border-bottom: 3px solid #1e88e5; /* פס עיטור תחתון כחול */
         }
         .input-group label { 
             font-size: 11px; 
@@ -96,7 +98,7 @@
             color: #1565c0;
         }
 
-        .actions-section { display: flex; flex-direction: column; gap: 8px; flex: 1; min-width: 200px; }
+        .actions-section { display: flex; flex-direction: column; gap: 8px; flex: 1; min-width: 180px; }
         .action-row { display: flex; gap: 8px; }
         .action-row button { flex: 1; }
         
@@ -205,12 +207,12 @@
 <body>
 
 <!-- מסך התחברות / הרשמה (Overlay) -->
-<div id="authOverlay" style="position: fixed; top:0; left:0; width:100%; height:100%; background: linear-gradient(135deg, #1976d2 0%, #eef5f9 100%); z-index: 10000; display:flex; justify-content:center; align-items:center; padding: 15px; box-sizing: border-box; overflow-y: auto;">
+<div id="authOverlay" style="position: fixed; top:0; left:0; right:0; bottom:0; background: linear-gradient(135deg, #1976d2 0%, #eef5f9 100%); z-index: 10000; overflow-y: auto; display: flex; padding: 20px; box-sizing: border-box;">
     <div style="background:#fff; padding:35px 25px; border-radius:16px; box-shadow:0 10px 40px rgba(0,0,0,0.2); width:100%; max-width:400px; text-align:center; position:relative; overflow:hidden; margin: auto;">
         <!-- פס קישוט עליון -->
         <div style="position:absolute; top:0; left:0; width:100%; height:6px; background:#1e88e5;"></div>
         
-        <h2 style="color:#0d47a1; margin-top:0; margin-bottom:5px; font-size:26px; cursor:pointer;" onclick="secretBypass()">בקרת דו"ח פיצול</h2>
+        <h2 style="color:#0d47a1; margin-top:0; margin-bottom:5px; font-size:26px; user-select:none; touch-action:none; cursor:pointer;" onpointerdown="secretBypass(event)">בקרת דו"ח פיצול</h2>
         <h4 style="color:#546e7a; margin-top:0; margin-bottom:20px; font-weight:normal; font-size:14px;">ניהול חכם של משמרות ושכר</h4>
         
         <!-- תיבת מידע והנחיות -->
@@ -221,11 +223,14 @@
         </div>
 
         <div style="text-align:right;">
+            <label style="font-size:13px; font-weight:bold; color:#1565c0; margin-bottom:6px; display:block;">שם העובד (לרישום בדוח)</label>
+            <input type="text" id="authName" placeholder="הקלד שם מלא" style="width:100%; box-sizing:border-box; margin-bottom:15px; padding:12px; text-align:right; font-size:15px; border: 2px solid #e3f2fd; border-radius: 8px; background:#f8fbff; outline:none; transition:0.2s;" onfocus="this.style.borderColor='#90caf9'" onblur="this.style.borderColor='#e3f2fd'" dir="rtl">
+            
             <label style="font-size:13px; font-weight:bold; color:#1565c0; margin-bottom:6px; display:block;">כתובת אימייל</label>
-            <input type="email" id="authEmail" placeholder="name@example.com" style="width:100%; box-sizing:border-box; margin-bottom:15px; padding:12px; text-align:left; font-size:15px; border: 2px solid #e3f2fd; border-radius: 8px; background:#f8fbff; outline:none;" dir="ltr">
+            <input type="email" id="authEmail" placeholder="name@example.com" style="width:100%; box-sizing:border-box; margin-bottom:15px; padding:12px; text-align:left; font-size:15px; border: 2px solid #e3f2fd; border-radius: 8px; background:#f8fbff; outline:none; transition:0.2s;" onfocus="this.style.borderColor='#90caf9'" onblur="this.style.borderColor='#e3f2fd'" dir="ltr">
             
             <label style="font-size:13px; font-weight:bold; color:#1565c0; margin-bottom:6px; display:block;">סיסמה</label>
-            <input type="password" id="authPassword" placeholder="לפחות 6 תווים" style="width:100%; box-sizing:border-box; margin-bottom:5px; padding:12px; text-align:left; font-size:15px; border: 2px solid #e3f2fd; border-radius: 8px; background:#f8fbff; outline:none;" dir="ltr">
+            <input type="password" id="authPassword" placeholder="לפחות 6 תווים" style="width:100%; box-sizing:border-box; margin-bottom:5px; padding:12px; text-align:left; font-size:15px; border: 2px solid #e3f2fd; border-radius: 8px; background:#f8fbff; outline:none; transition:0.2s;" onfocus="this.style.borderColor='#90caf9'" onblur="this.style.borderColor='#e3f2fd'" dir="ltr">
         </div>
 
         <div id="authError" style="color:#e74c3c; font-size:13px; margin-bottom:20px; font-weight:bold; min-height:18px;"></div>
@@ -242,7 +247,7 @@
     <span style="font-size: 28px; font-weight: bold; color: #ffffff; letter-spacing: 0.5px;">בקרת דו"ח פיצול</span>
     <div style="display: flex; gap: 15px; align-items: center;">
         <button class="btn-logout btn-3d" id="logoutBtn" onclick="logoutUser()" style="display:none;" title="התנתק מהמערכת">התנתק</button>
-        <button class="btn-info btn-3d" onclick="openShiftInfo()" title="מידע חשוב על ההסכמים וקודי המשמרות">
+        <button class="btn-info btn-3d" onclick="openShiftInfo()" title="מידע חשוב על המערכת וההסכמים">
             <span class="icon">ℹ️</span>
             <span>מידע חשוב</span>
         </button>
@@ -275,15 +280,20 @@
                     <tr><td><span class="code-badge">217</span></td><td>21:00</td><td>07:00</td><td>לילה רגילה</td></tr>
                     <tr><td><span class="code-badge">227</span></td><td>22:00</td><td>07:00</td><td>לילה מאוחרת</td></tr>
                     <tr><td><span class="code-badge">228</span></td><td>22:00</td><td>08:00</td><td>לילה ארוכה</td></tr>
-                    <tr><td><span class="code-badge">ח</span></td><td>-</td><td>-</td><td>חופש רגיל</td></tr>
-                    <tr><td><span class="code-badge">חש</span></td><td>-</td><td>-</td><td>חופש שבת</td></tr>
+                    <tr><td><span class="code-badge">ח</span></td><td>-</td><td>-</td><td>חופש רגיל (8 שעות)</td></tr>
+                    <tr><td><span class="code-badge">חש</span></td><td>-</td><td>-</td><td>חופש שבת (מנכה מהיתרה)</td></tr>
+                    <tr><td><span class="code-badge">מח</span></td><td>-</td><td>-</td><td>מחלה (8 שעות תקן)</td></tr>
+                    <tr><td><span class="code-badge">הס</span></td><td>-</td><td>-</td><td>עפ"י הסכם (8 שעות תקן)</td></tr>
+                    <tr><td><span class="code-badge">בח</span></td><td>-</td><td>-</td><td>בחירה (8 שעות תקן)</td></tr>
+                    <tr><td><span class="code-badge">מבמ</span></td><td>-</td><td>-</td><td>מחלת בן משפחה (8 שעות)</td></tr>
+                    <tr><td><span class="code-badge">הכ</span></td><td>-</td><td>-</td><td>הכשרה (8 שעות תקן)</td></tr>
                 </tbody>
             </table>
         </div>
     </div>
 </div>
 
-<!-- חלון עזר למשמרות (Modal) עם הטקסט המלא -->
+<!-- חלון עזר למשמרות (Modal) עליון - ללא טבלת המשמרות -->
 <div id="shiftInfoModal" class="modal">
     <div class="modal-content">
         <span class="close-btn" onclick="closeShiftInfo()">&times;</span>
@@ -340,7 +350,7 @@
         </div>
         <div class="input-group">
             <label>שעתי בסיס (₪)</label>
-            <input type="number" id="hourlyRate" value="" step="0.01" style="width: 70px;" oninput="updateGrandTotal()">
+            <input type="number" id="hourlyRate" value="0.00" step="0.01" style="width: 70px;" oninput="updateGrandTotal()">
         </div>
         <div class="input-group">
             <label>תעריף אש"ל (₪)</label>
@@ -355,12 +365,12 @@
     <!-- צד שמאל: כפתורי פעולה מסודרים בשתי שורות -->
     <div class="actions-section">
         <div class="action-row">
-            <button class="btn-primary btn-3d" onclick="generateTable()">הכן גיליון</button>
             <button class="btn-load btn-3d" onclick="loadData()">טען קובץ</button>
+            <button class="btn-primary btn-3d" onclick="generateTable()">הכן גיליון</button>
         </div>
         <div class="action-row">
-            <button class="btn-reset btn-3d" onclick="clearData()" title="נקה את כל הנתונים במסך">איפוס גיליון</button>
             <button class="btn-save btn-3d" onclick="saveData()">שמור קובץ</button>
+            <button class="btn-reset btn-3d" onclick="clearData()" title="נקה את כל הנתונים במסך">איפוס גיליון</button>
         </div>
         <input type="file" id="fileLoader" accept=".json" style="display: none;" onchange="handleFileLoad(event)">
     </div>
@@ -478,6 +488,31 @@
 </div>
 
 <script>
+    window.isBypassed = false;
+    let clickCount = 0;
+    let clickTimer;
+    window.secretBypass = function(e) {
+        if(e) e.preventDefault();
+        clickCount++;
+        clearTimeout(clickTimer);
+        
+        let titleEl = document.querySelector('#authOverlay h2');
+        if(titleEl) {
+            let originalColor = titleEl.style.color;
+            titleEl.style.color = '#1e88e5';
+            setTimeout(() => { titleEl.style.color = originalColor; }, 150);
+        }
+
+        if(clickCount >= 3) {
+            window.isBypassed = true;
+            document.getElementById('authOverlay').style.display = 'none';
+            var btn = document.getElementById('logoutBtn');
+            if(btn) btn.style.display = 'inline-block';
+            clickCount = 0;
+        }
+        clickTimer = setTimeout(() => { clickCount = 0; }, 2000);
+    };
+
     // --- Firebase Configuration ---
     const firebaseConfig = {
       apiKey: "AIzaSyDzcW_tXO08BxmWki2Imx6sxq_4YKyxBLQ",
@@ -489,14 +524,18 @@
     };
     firebase.initializeApp(firebaseConfig);
 
-    window.isBypassed = false;
-
     firebase.auth().onAuthStateChanged(function(user) {
-        if (window.isBypassed) return;
+        if (window.isBypassed) return; // לא לנעול חזרה אם הופעל המעקף
         if (user) {
             document.getElementById('authOverlay').style.display = 'none';
             var btn = document.getElementById('logoutBtn');
             if(btn) btn.style.display = 'inline-block';
+            
+            // --- מילוי אוטומטי של שם העובד ---
+            if (user.displayName) {
+                document.getElementById('employeeName').value = user.displayName;
+                updateTitles();
+            }
         } else {
             document.getElementById('authOverlay').style.display = 'flex';
             var btn = document.getElementById('logoutBtn');
@@ -507,8 +546,23 @@
     window.loginUser = function() {
         var email = document.getElementById('authEmail').value;
         var pass = document.getElementById('authPassword').value;
+        var name = document.getElementById('authName').value.trim();
         document.getElementById('authError').innerText = "";
-        firebase.auth().signInWithEmailAndPassword(email, pass).catch(function(error) {
+        
+        firebase.auth().signInWithEmailAndPassword(email, pass)
+        .then(function(userCredential) {
+            // אם המשתמש הזין שם במסך ההתחברות, נעדכן לו את הפרופיל כדי שיישמר לפעם הבאה
+            if (name && userCredential.user.displayName !== name) {
+                userCredential.user.updateProfile({ displayName: name }).then(() => {
+                    document.getElementById('employeeName').value = name;
+                    updateTitles();
+                });
+            } else if (userCredential.user.displayName) {
+                document.getElementById('employeeName').value = userCredential.user.displayName;
+                updateTitles();
+            }
+        })
+        .catch(function(error) {
             var msg = error.message;
             if(error.code === 'auth/invalid-credential' || error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') msg = 'אימייל או סיסמה שגויים.';
             if(error.code === 'auth/invalid-email') msg = 'כתובת אימייל לא חוקית.';
@@ -519,12 +573,28 @@
     window.registerUser = function() {
         var email = document.getElementById('authEmail').value;
         var pass = document.getElementById('authPassword').value;
+        var name = document.getElementById('authName').value.trim();
         document.getElementById('authError').innerText = "";
+        
+        if(!name) {
+            document.getElementById('authError').innerText = "אנא הזן שם עובד לפני ההרשמה.";
+            return;
+        }
         if(pass.length < 6) {
             document.getElementById('authError').innerText = "הסיסמה חייבת להכיל לפחות 6 תווים.";
             return;
         }
-        firebase.auth().createUserWithEmailAndPassword(email, pass).catch(function(error) {
+        
+        firebase.auth().createUserWithEmailAndPassword(email, pass)
+        .then(function(userCredential) {
+            return userCredential.user.updateProfile({
+                displayName: name
+            }).then(function() {
+                document.getElementById('employeeName').value = name;
+                updateTitles();
+            });
+        })
+        .catch(function(error) {
             var msg = error.message;
             if(error.code === 'auth/email-already-in-use') msg = 'האימייל כבר קיים במערכת, נסה להתחבר.';
             if(error.code === 'auth/invalid-email') msg = 'כתובת אימייל לא חוקית.';
@@ -535,22 +605,6 @@
     window.logoutUser = function() {
         window.isBypassed = false;
         firebase.auth().signOut();
-    };
-
-    // --- Backdoor Secret Bypass ---
-    let clickCount = 0;
-    let clickTimer;
-    window.secretBypass = function() {
-        clickCount++;
-        clearTimeout(clickTimer);
-        if(clickCount >= 3) {
-            window.isBypassed = true;
-            document.getElementById('authOverlay').style.display = 'none';
-            var btn = document.getElementById('logoutBtn');
-            if(btn) btn.style.display = 'inline-block';
-            clickCount = 0;
-        }
-        clickTimer = setTimeout(() => clickCount = 0, 1500);
     };
 
     var daysHebrew = ["א'", "ב'", "ג'", "ד'", "ה'", "ו'", "ש'"];
@@ -866,7 +920,7 @@
             timeInputs[1].value = shifts[val][1];
             timeInputs[0].classList.remove('empty-print');
             timeInputs[1].classList.remove('empty-print');
-        } else if (val === 'ח' || val === 'חש' || val === '') {
+        } else if (['ח', 'חש', 'מח', 'הס', 'בח', 'מבמ', 'הכ'].includes(val) || val === '') {
             timeInputs[0].value = '';
             timeInputs[1].value = '';
             timeInputs[0].classList.add('empty-print');
@@ -896,7 +950,7 @@
             
             var shiftInput = tr.querySelector('.shift-type-input');
             var shiftVal = shiftInput ? shiftInput.value.trim().replace(/"/g, '').replace(/'/g, '') : '';
-            var isRegHol = (shiftVal === 'ח');
+            var isRegHol = ['ח', 'מח', 'הס', 'בח', 'מבמ', 'הכ'].includes(shiftVal);
             var isShabHol = (shiftVal === 'חש');
 
             if (!startInput || !endInput || startInput.indexOf(':') === -1 || endInput.indexOf(':') === -1) {
@@ -1070,7 +1124,7 @@
             var shiftInput = document.querySelector('tr:nth-child(' + r + ') .shift-type-input');
             var shiftVal = shiftInput ? shiftInput.value.trim().replace(/"/g, '').replace(/'/g, '') : '';
             var isShabHoliday = (shiftVal === 'חש');
-            var isRegHoliday = (shiftVal === 'ח');
+            var isRegHoliday = ['ח', 'מח', 'הס', 'בח', 'מבמ', 'הכ'].includes(shiftVal);
             var hasShift = cell.getAttribute('data-is-shift') === '1';
 
             if (isShabHoliday) {
@@ -1136,6 +1190,7 @@
         if(document.getElementById('dashShabbatDeducted')) document.getElementById('dashShabbatDeducted').innerText = deductedShabbatDays.toFixed(2);
         if(document.getElementById('dashShabbatTotal')) document.getElementById('dashShabbatTotal').innerText = finalShabbatTotal.toFixed(2);
 
+        // הושמט הערך של דוח הפיצול מהמסך לפי הבקשה
         document.getElementById('tlushCost').innerText = tlushCost.toFixed(2) + ' ₪';
         
         if(document.getElementById('printDashShifts')) document.getElementById('printDashShifts').innerText = totalShifts;
@@ -1148,6 +1203,7 @@
         if(document.getElementById('printDashShabbatDeducted')) document.getElementById('printDashShabbatDeducted').innerText = deductedShabbatDays.toFixed(2);
         if(document.getElementById('printDashShabbatTotal')) document.getElementById('printDashShabbatTotal').innerText = finalShabbatTotal.toFixed(2);
 
+        // עדכון בהדפסה להצגת הערך של התלוש בלבד
         if(document.getElementById('tlushCostPrint')) document.getElementById('tlushCostPrint').innerText = tlushCost.toFixed(2) + ' ₪';
     };
 
@@ -1206,8 +1262,9 @@
     });
 
     window.clearData = function() {
+        // איפוס שדות למניעת שמירת נתונים בזיכרון המטמון של הדפדפן (Cache)
         document.getElementById('employeeName').value = "";
-        document.getElementById('hourlyRate').value = "";
+        document.getElementById('hourlyRate').value = "0.00";
         document.getElementById('eshelRate').value = "52.66";
         document.getElementById('shabbatBalance').value = "0.00";
         
@@ -1218,6 +1275,7 @@
         document.getElementById('yearInput').value = calcYear;
         document.getElementById('monthSelect').value = prevMonth;
         
+        // מחיקת תוכן הטבלה והסתרתה
         var tbody = document.getElementById('tbody');
         if (tbody) tbody.innerHTML = '';
         
@@ -1237,6 +1295,6 @@
     };
 
 </script>
-<div class="version-stamp" title="V">V202610181930</div>
+<div class="version-stamp" onpointerdown="secretBypass(event)" style="cursor:default;" title="V">V202610190620</div>
 </body>
 </html>
