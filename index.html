@@ -4,55 +4,45 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>COT - Calculate Over Time</title>
-    <!-- סמל הלוגו בלשונית הדפדפן (Favicon) -->
+    <!-- סמל הלוגו בלשונית הדפדפן -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 100'><text x='5' y='75' font-family='Arial Black, sans-serif' font-size='60' font-weight='900'><tspan fill='%23FF9800'>C</tspan><tspan fill='%2300E676' dx='-15'>O</tspan><tspan fill='%23FF5252' dx='-15'>T</tspan></text></svg>">
-    <!-- קישור לקובץ העיצוב -->
-    <link rel="stylesheet" href="style.css">
+    
+    <!-- טעינת קובץ העיצוב עם חותמת גרסה לנטרול Cache -->
+    <link rel="stylesheet" href="style.css?v=2.0">
     
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-auth-compat.js"></script>
 </head>
 <body>
+
 <!-- מסך התחברות / הרשמה (Overlay) -->
-<div id="authOverlay" style="position: fixed; top:0; left:0; right:0; bottom:0; background: linear-gradient(135deg, #1976d2 0%, #eef5f9 100%); z-index: 10000; overflow-y: auto; display: flex; align-items: flex-start; justify-content: center; padding: 20px; box-sizing: border-box; padding-top: 10vh; padding-bottom: 5vh;">
-    
+<div id="authOverlay" style="position: fixed; top:0; left:0; width:100%; height:100%; background: linear-gradient(135deg, #1976d2 0%, #eef5f9 100%); z-index: 10000; display:flex; align-items:flex-start; justify-content:center; overflow-y: auto; padding: 20px; box-sizing: border-box;">
     <div style="background:#fff; padding:35px 25px; border-radius:16px; box-shadow:0 10px 40px rgba(0,0,0,0.2); width:100%; max-width:400px; text-align:center; position:relative; margin: auto; box-sizing: border-box;">
-        <!-- פס קישוט עליון -->
         <div style="position:absolute; top:0; left:0; width:100%; height:6px; background:#1e88e5;"></div>
-        
-        <!-- הלוגו של COT במסך התחברות (לחיצה משולשת כאן עוקפת הרשמה) -->
-        <div style="display: flex; align-items: center; justify-content: center; cursor: pointer; margin-bottom: 10px; touch-action:none; user-select:none;" onclick="secretBypass(event)" title="לחץ 3 פעמים רצוף לכניסה מהירה">
-            <div class="icon-logo" dir="ltr" style="position: relative; width: 75px; height: 50px; font-family: 'Arial Black', 'Segoe UI Black', sans-serif; font-size: 48px; line-height: 50px; font-weight: 900; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));">
+        <div style="display: flex; align-items: center; justify-content: center; cursor: pointer; margin-bottom: 10px; user-select:none;" onclick="secretBypass(event)" title="לחץ 3 פעמים רצוף לכניסה מהירה">
+            <div class="icon-logo" dir="ltr" style="position: relative; width: 75px; height: 50px; font-family: 'Arial Black', 'Segoe UI Black', sans-serif; font-size: 48px; line-height: 50px; font-weight: 900; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1)); pointer-events: none;">
                 <span style="position: absolute; left: 0px; top: 0; color: #FF9800; opacity: 0.9; z-index: 3;">C</span>
                 <span style="position: absolute; left: 19px; top: 0; color: #00BFA5; opacity: 0.85; z-index: 1;">O</span>
                 <span style="position: absolute; left: 40px; top: 0; color: #FF5252; opacity: 0.9; z-index: 2;">T</span>
             </div>
         </div>
-        
-        <h2 style="color:#0d47a1; margin-top:0; margin-bottom:5px; font-size:22px; user-select:none; touch-action:none; cursor:pointer;" onclick="secretBypass(event)">בקרת דו"ח פיצול</h2>
+        <h2 style="color:#0d47a1; margin-top:0; margin-bottom:5px; font-size:22px; user-select:none; cursor:pointer;" onclick="secretBypass(event)">בקרת דו"ח פיצול</h2>
         <h4 style="color:#546e7a; margin-top:0; margin-bottom:20px; font-weight:normal; font-size:14px;">ניהול חכם של משמרות ושכר</h4>
-        
-        <!-- תיבת מידע והנחיות -->
         <div style="background:#e3f2fd; color:#0d47a1; padding:15px; border-radius:10px; font-size:13px; margin-bottom:25px; border:1px solid #bbdefb; text-align:right; line-height:1.5;">
             <strong style="font-size:14px;">ברוכים הבאים! 👋</strong><br>
             כדי לשמור על פרטיות נתוני השכר שלך ולאפשר גישה מכל מכשיר, המערכת דורשת זיהוי קצר.<br><br>
             <span style="font-size:12px; color:#1565c0;"><strong>משתמש חדש?</strong> הקלד אימייל וסיסמה לבחירתך ולחץ על <b>"הרשמה חדשה"</b>.</span>
         </div>
-
         <div style="text-align:right;">
             <label style="font-size:13px; font-weight:bold; color:#1565c0; margin-bottom:6px; display:block;">שם העובד (לרישום בדוח)</label>
             <input type="text" id="authName" placeholder="הקלד שם מלא" style="width:100%; box-sizing:border-box; margin-bottom:15px; padding:12px; text-align:right; font-size:15px; border: 2px solid #e3f2fd; border-radius: 8px; background:#f8fbff; outline:none; transition:0.2s;" onfocus="this.style.borderColor='#90caf9'" onblur="this.style.borderColor='#e3f2fd'" dir="rtl">
-            
             <label style="font-size:13px; font-weight:bold; color:#1565c0; margin-bottom:6px; display:block;">כתובת אימייל</label>
             <input type="email" id="authEmail" placeholder="name@example.com" style="width:100%; box-sizing:border-box; margin-bottom:15px; padding:12px; text-align:left; font-size:15px; border: 2px solid #e3f2fd; border-radius: 8px; background:#f8fbff; outline:none; transition:0.2s;" onfocus="this.style.borderColor='#90caf9'" onblur="this.style.borderColor='#e3f2fd'" dir="ltr">
-            
             <label style="font-size:13px; font-weight:bold; color:#1565c0; margin-bottom:6px; display:block;">סיסמה</label>
             <input type="password" id="authPassword" placeholder="לפחות 6 תווים" style="width:100%; box-sizing:border-box; margin-bottom:5px; padding:12px; text-align:left; font-size:15px; border: 2px solid #e3f2fd; border-radius: 8px; background:#f8fbff; outline:none; transition:0.2s;" onfocus="this.style.borderColor='#90caf9'" onblur="this.style.borderColor='#e3f2fd'" dir="ltr">
         </div>
-
         <div id="authError" style="color:#e74c3c; font-size:13px; margin-bottom:20px; font-weight:bold; min-height:18px;"></div>
-        
         <div style="display:flex; gap:12px; flex-direction: column;">
             <button class="btn-3d" onclick="loginUser()" style="width:100%; padding:14px; background:#1976d2; color:white; border-radius:8px; font-size:16px; box-shadow:0 4px #1565c0; margin-bottom: 5px;">כניסה למערכת</button>
             <button class="btn-3d" onclick="registerUser()" style="width:100%; padding:12px; background:#fff; color:#1976d2; border:2px solid #1976d2; border-radius:8px; font-size:15px; box-shadow:0 4px #bbdefb; top:-2px;">הרשמה חדשה</button>
@@ -74,7 +64,6 @@
 
 <!-- סרגל עליון - פס כחול -->
 <div id="debugBox">
-    <!-- הלוגו של COT בתוך המערכת -->
     <div style="display: flex; align-items: center; gap: 12px;">
         <div dir="ltr" style="position: relative; width: 55px; height: 36px; font-family: 'Arial Black', 'Segoe UI Black', sans-serif; font-size: 34px; line-height: 36px; font-weight: 900; margin-left: 5px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));">
             <span style="position: absolute; left: 0px; top: 0; color: #FF9800; opacity: 0.95; z-index: 3;">C</span>
@@ -86,10 +75,8 @@
             <span style="font-size: 11px; color: #bbdefb; letter-spacing: 0.5px; font-family: Tahoma, sans-serif;">Calculate Over Time</span>
         </div>
     </div>
-    
     <div style="display: flex; gap: 15px; align-items: center;">
         <button class="btn-logout btn-3d" id="logoutBtn" onclick="logoutUser()" style="display:none;" title="התנתק מהמערכת">התנתק</button>
-        <!-- כפתור עליון - פותח רק את הגדרות המערכת הכלליות -->
         <button class="btn-info btn-3d" onclick="openShiftInfo()" title="מידע חשוב על המערכת וההסכמים">
             <span class="icon">ℹ️</span>
             <span>מידע חשוב</span>
@@ -97,51 +84,44 @@
     </div>
 </div>
 
-<!-- חלון עזר ראשי (Modal) רק טקסט הדרכה - ללא רשימת המשמרות -->
+<!-- חלון עזר ראשי -->
 <div id="shiftInfoModal" class="modal">
     <div class="modal-content">
         <span class="close-btn" onclick="closeShiftInfo()">&times;</span>
-        <div class="modal-header">
-            <h2>ℹ️ מידע חשוב</h2>
-        </div>
+        <div class="modal-header"><h2>ℹ️ מידע חשוב</h2></div>
         <div style="max-height: 70vh; overflow-y: auto; padding-left: 10px;">
             <div class="info-section">
-                <p>מערכת <strong>"בקרת דו"ח פיצול"</strong> היא יישום רשת חכם ועצמאי שנועד לתכנן, לנהל, לתעד ולנתח את שעות העבודה במשמרות.</p>
-                <p>המערכת מפצלת את השעות הנוספות עפ"י הסכמי העבודה בצורה מדויקת. העובד יוכל לתכנן איזה משמרות כדאי ומשתלם להשתבץ, ויוודא את תקינות חישובי השעות והתוספות מול דוח פיצול ומול תלוש השכר.</p>
+                <p>מערכת <strong>"בקרת דו"ח פיצול"</strong> נועדה לתכנן, לנהל, ולנתח את שעות העבודה במשמרות.</p>
+                <p>המערכת מפצלת את השעות הנוספות עפ"י הסכמי העבודה ומאפשרת בקרת תקינות מול דוח הפיצול והתלוש.</p>
             </div>
             <div class="info-section">
                 <h3>יכולות עיקריות</h3>
                 <ul>
-                    <li><strong>הזנת נתונים חכמה ("קלדנות עיוורת"):</strong> הזנה אוטומטית של זמני כניסה ויציאה על ידי הקלדת קודי משמרת קצרים. הקלדת שעות ללא נקודתיים (למשל: 1904 תהפוך אוטומטית ל-19:04, ו-8 ל-08:00) תוך אכיפת פורמט 24 שעות.</li>
-                    <li><strong>מנוע חישוב מתקדם:</strong> מנתח כל דקת עבודה ומפצל לתעריפים השונים, כולל שבת, שעות נוספות בשבת, ו"תוספת משמרת" (ת.מ.). בסוף הדוח מוצג סך השעות והערך (בש"ח) לכל תעריף, ובשורה התחתונה מחושב סה"כ ערך השעות הנוספות לחודש (להשוואה מול תלוש השכר).</li>
-                    <li><strong>ניהול חופש שבת:</strong> מעקב אוטומטי אחר צבירה, קיזוז ימים מנוצלים (קוד "חש"), וניהול יתרה מצטברת.</li>
-                    <li><strong>לוח בקרה חי:</strong> תצוגה מסכמת של משמרות, שעות תקן/בפועל, דוח אש"ל, והשוואת ערך.</li>
-                    <li><strong>שמירה, טעינה ופרטיות:</strong> הנתונים אינם נשמרים בענן, אלא מאוחסנים מקומית אצל המשתמש. בלחיצת כפתור ניתן לייצא ולשמור קובץ נתונים (JSON) ישירות לתיקייה במחשב, ולטעון אותו מחדש בעתיד.</li>
-                    <li><strong>דוח מותאם (PDF):</strong> המערכת מפיקה בלחיצת כפתור דוח נקי, רשמי ומקצועי המותאם להדפסה לרוחב דף A4 . הדוח דומה מאוד לדוח הפיצול הנשלח מהמשרד.</li>
+                    <li><strong>הזנה חכמה:</strong> הקלדת קודי משמרת קצרים ממלאת אוטומטית שעות (למשל `ב` לבוקר). הזנת שעות ללא נקודתיים (למשל `1904` יהפוך ל-`19:04`).</li>
+                    <li><strong>מנוע חישוב:</strong> מנתח כל דקת עבודה ומפצל לתעריפים השונים (שבת, לילה, ש"נ, ת.מ.).</li>
+                    <li><strong>דוח אש"ל וחופש שבת:</strong> חישוב אוטומטי של שווי אש"ל ומעקב אחר יתרת חופש שבת.</li>
+                    <li><strong>דוח מותאם (PDF):</strong> הפקת דוח נקי ומקצועי להדפסה לרוחב A4.</li>
                 </ul>
             </div>
             <div class="info-section">
-                <h3>הסכמי משמרות (חשוב להכיר)</h3>
+                <h3>הסכמי משמרות</h3>
                 <ul>
-                    <li><strong>משמרות בוקר</strong> שגלשו לאחרי השעה 14:00 לא יקבלו תוספת 20% אלא אם נצברו 3 שעות עבודה מלאות (החתמת כניסה לפני 17:00 בדיוק).</li>
-                    <li><strong>משמרת לילה</strong> שהתחילה לפני 03:00 - כל השעות אחרי כן נחשבות לילה. אם ההחתמה הייתה אחרי 03:00, בשעה 06:00 השעות הופכות לבוקר.</li>
-                    <li><strong>דוח אש"ל</strong> מחושב לפי סך שעות העבודה בפועל מחולק ב-8. המספר השלם מוכפל בערך מנת האוכל המעודכנת.</li>
+                    <li><strong>משמרות בוקר:</strong> שגלשו לאחרי 14:00 לא יקבלו 20% ת.מ אלא אם נצברו 3 שעות עבודה (החתמה לפני 17:00).</li>
+                    <li><strong>משמרת לילה:</strong> כניסה לפני 03:00 - כל השעות אחרי כן נחשבות לילה. כניסה אחרי 03:00 - ב-06:00 הופך לבוקר.</li>
                 </ul>
             </div>
         </div>
     </div>
 </div>
 
-<!-- חלון עזר קטן למשמרות (Mini Modal) - נפתח מהטבלה ומציג את סוגי המשמרות -->
+<!-- חלון עזר קטן למשמרות -->
 <div id="miniShiftInfoModal" class="modal">
     <div class="modal-content" style="max-width: 400px; padding: 15px;">
         <span class="close-btn" onclick="closeMiniShiftInfo()">&times;</span>
-        <div class="modal-header">
-            <h2 style="font-size: 18px; margin: 0; color: #0d47a1;">ℹ️ קודי משמרות</h2>
-        </div>
+        <div class="modal-header"><h2 style="font-size: 18px; margin: 0; color: #0d47a1;">ℹ️ קודי משמרות</h2></div>
         <div style="max-height: 50vh; overflow-y: auto;">
             <table class="info-table" style="font-size: 13px;">
-                <thead><tr><th style="width: 25%;">קוד להקלדה</th><th style="width: 20%;">כניסה</th><th style="width: 20%;">יציאה</th><th>הערה</th></tr></thead>
+                <thead><tr><th style="width: 25%;">קוד</th><th style="width: 20%;">כניסה</th><th style="width: 20%;">יציאה</th><th>הערה</th></tr></thead>
                 <tbody>
                     <tr><td><span class="code-badge">ב</span></td><td>07:00</td><td>19:00</td><td>בוקר 12 שעות</td></tr>
                     <tr><td><span class="code-badge">ל</span></td><td>19:00</td><td>07:00</td><td>לילה 12 שעות</td></tr>
@@ -203,7 +183,6 @@
             <input type="number" id="shabbatBalance" value="0.00" step="0.01" style="width: 75px;" oninput="updateGrandTotal()">
         </div>
     </div>
-    
     <div class="actions-section">
         <div class="action-row">
             <button class="btn-load btn-3d" onclick="loadData()">טען קובץ</button>
@@ -211,7 +190,7 @@
         </div>
         <div class="action-row">
             <button class="btn-save btn-3d" onclick="saveData()">שמור קובץ</button>
-            <button class="btn-reset btn-3d" onclick="clearData()" title="נקה את כל הנתונים במסך">איפוס גיליון</button>
+            <button class="btn-reset btn-3d" onclick="clearData()" title="נקה את כל הנתונים במסך">איפוס נתונים</button>
         </div>
         <input type="file" id="fileLoader" accept=".json" style="display: none;" onchange="handleFileLoad(event)">
     </div>
@@ -322,10 +301,14 @@
     </div>
     
     <div class="dash-card tlush-card"><h4>ערך ש"נ</h4><div id="tlushCost" class="val">0.00 ₪</div></div>
+
+    <div style="margin-top: 30px; margin-bottom: 10px;">
+        <button class="btn-print btn-3d" id="printBtn" onclick="window.print()">🖨️ הפק דוח בקרת פיצול</button>
+    </div>
 </div>
 
-<!-- קישור לקובץ ההיגיון / JS -->
-<script src="app.js"></script>
-<div class="version-stamp" onclick="secretBypass(event)" style="cursor:default;" title="V">V202610191558</div>
+<!-- טעינת קובץ הלוגיקה וה-JS עם גרסה -->
+<script src="app.js?v=2.0"></script>
+<div class="version-stamp" onclick="secretBypass(event)" style="cursor:default;" title="V">V202610191630</div>
 </body>
 </html>

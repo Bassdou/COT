@@ -1,17 +1,17 @@
+// הגדרות כניסה סמויה
 window.isBypassed = false;
 let clickCount = 0;
 let clickTimer;
 
-// מנגנון ה-3 לחיצות שמעביר ישירות למערכת
 window.secretBypass = function(e) {
     if(e) e.preventDefault();
     clickCount++;
     clearTimeout(clickTimer);
     
-    // הבהוב על ידי שקיפות בגלל שלכל אות יש צבע משלה
+    // הבהוב על ידי שקיפות
     let titleEls = document.querySelectorAll('#authOverlay h2, #authOverlay .icon-logo');
     titleEls.forEach(el => {
-        el.style.opacity = '0.5'; 
+        el.style.opacity = '0.4'; 
         setTimeout(() => { el.style.opacity = '1'; }, 150);
     });
 
@@ -19,7 +19,6 @@ window.secretBypass = function(e) {
         window.isBypassed = true;
         document.getElementById('authOverlay').style.display = 'none';
         
-        // העלמת מסך שם במקרה והיה פתוח
         var nameOverlay = document.getElementById('updateNameOverlay');
         if(nameOverlay) nameOverlay.style.display = 'none';
         
@@ -47,7 +46,7 @@ firebase.auth().onAuthStateChanged(function(user) {
         document.getElementById('authOverlay').style.display = 'none';
         
         if (!user.displayName) {
-            // למשתמשים ותיקים אין שם - נציג מסך השלמה
+            // משתמש ותיק ללא שם
             document.getElementById('updateNameOverlay').style.display = 'flex';
             var btn = document.getElementById('logoutBtn');
             if(btn) btn.style.display = 'none';
@@ -80,7 +79,6 @@ window.loginUser = function() {
     
     firebase.auth().signInWithEmailAndPassword(email, pass)
     .then(function(userCredential) {
-        // אם המשתמש הזין שם במסך ההתחברות, נעדכן לו את הפרופיל כדי שיישמר לפעם הבאה
         if (name && userCredential.user.displayName !== name) {
             userCredential.user.updateProfile({ displayName: name }).then(() => {
                 document.getElementById('employeeName').value = name;
