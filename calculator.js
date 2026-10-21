@@ -33,7 +33,7 @@ window.customDialog = function(type, msg, title = "COT says") {
         
         modal.style.display = 'block';
         
-        // ניקוי אירועי לחיצה ישנים כדי למנוע כפילויות בפרומיס
+        // ניקוי אירועי לחיצה ישנים
         let newOkBtn = okBtn.cloneNode(true);
         okBtn.parentNode.replaceChild(newOkBtn, okBtn);
         let newCancelBtn = cancelBtn.cloneNode(true);
@@ -74,9 +74,8 @@ window.secretBypass = async function(e) {
     clickCount++;
     clearTimeout(clickTimer);
     
-    // ברגע שמגיע ל-3 לחיצות - נאפס מיד כדי למנוע חלונות כפולים
     if(clickCount >= 3) {
-        clickCount = 0; // איפוס מיידי למניעת באג לחיצות מהירות
+        clickCount = 0; 
         
         let now = new Date();
         let dd = String(now.getDate()).padStart(2, '0');
@@ -539,6 +538,7 @@ window.generateTable = function() {
     tbody.innerHTML = htmlContent;
     document.getElementById('tableContainer').style.display = 'block';
     document.getElementById('summaryPanel').style.display = 'flex';
+    // הטבלה עכשיו נשלטת רק ע"י CSS (מוסתרת במסך, מוצגת בהדפסה)
     document.getElementById('printBtn').style.display = 'inline-block';
     document.getElementById('closeMonthBtn').style.display = 'inline-block';
     updateGrandTotal();
@@ -898,12 +898,33 @@ window.updateGrandTotal = function() {
     document.getElementById('bal_used_cho').innerText = usedCho;
     document.getElementById('bal_used_fam').innerText = usedFam.toFixed(2);
 
+    // הזנת נתונים לטבלת הסיכום החדשה בתחתית הדף
+    document.getElementById('tbl_bal_open_reg').innerText = oReg.toFixed(2);
+    document.getElementById('tbl_bal_used_reg').innerText = usedReg.toFixed(2);
+    document.getElementById('tbl_bal_close_reg').innerText = (oReg - usedReg).toFixed(2);
+
+    document.getElementById('tbl_bal_open_shab').innerText = oShab.toFixed(2);
+    document.getElementById('tbl_bal_used_shab').innerText = (sumTotalShabbatDays > 0 ? "+" : "") + sumTotalShabbatDays.toFixed(2);
+    document.getElementById('tbl_bal_close_shab').innerText = (oShab + sumTotalShabbatDays).toFixed(2);
+
+    document.getElementById('tbl_bal_open_sick').innerText = oSick.toFixed(2);
+    document.getElementById('tbl_bal_used_sick').innerText = usedSick.toFixed(2);
+    document.getElementById('tbl_bal_close_sick').innerText = (oSick - usedSick).toFixed(2);
+
+    var oDec = parseFloat(document.getElementById('bal_open_dec').value) || 0;
+    document.getElementById('tbl_bal_open_dec').innerText = oDec.toFixed(2);
+    document.getElementById('tbl_bal_used_dec').innerText = usedDec;
+    document.getElementById('tbl_bal_close_dec').innerText = (oDec - usedDec).toFixed(2);
+
+    var oCho = parseFloat(document.getElementById('bal_open_cho').value) || 0;
+    document.getElementById('tbl_bal_open_cho').innerText = oCho.toFixed(2);
+    document.getElementById('tbl_bal_used_cho').innerText = usedCho;
+    document.getElementById('tbl_bal_close_cho').innerText = (oCho - usedCho).toFixed(2);
+
     document.getElementById('printDashShifts').innerText = totalShifts;
     document.getElementById('printDashStandard').innerText = (colTotals['I'] || 0).toFixed(2);
     document.getElementById('printDashGross').innerText = (totalGrossMin / 60).toFixed(2);
     document.getElementById('printDashEshel').innerText = eshelCost.toFixed(2) + ' ₪';
-    document.getElementById('printDashRegTotal').innerText = (oReg - usedReg).toFixed(2);
-    document.getElementById('printDashShabbatTotal').innerText = (oShab + sumTotalShabbatDays).toFixed(2);
     document.getElementById('tlushCostPrint').innerText = tlushCost.toFixed(2) + ' ₪';
 };
 

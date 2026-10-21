@@ -16,7 +16,7 @@ h2, h4, .version-stamp { touch-action: manipulation; user-select: none; }
 .btn-logout { background-color: #0d47a1; color: white; padding: 8px 15px; font-size: 14px; box-shadow: 0 4px #0a367c; }
 .btn-logout:active { box-shadow: 0 0 #0a367c; }
 
-/* כפתורי פאנל עליון (רשת 2x2 קומפקטית) */
+/* כפתורי פאנל עליון */
 .btn-load { background-color: #42a5f5; color: white; box-shadow: 0 4px #1e88e5; }
 .btn-load:active { box-shadow: 0 0 #1e88e5; }
 .btn-primary { background-color: #1565c0; color: white; box-shadow: 0 4px #0d47a1; }
@@ -56,10 +56,10 @@ th { background-color: #1565c0; color: white; font-size: 12px; }
 .day-fri { color: #1976d2; font-weight: bold; background-color: rgba(225, 245, 254, 0.7) !important; }
 .thick-border-left { border-left: 2px solid #90caf9 !important; }
 
-.tfoot-summary { background-color: #e3f2fd; font-weight: bold; position: sticky; box-shadow: 0 -2px 5px rgba(0,0,0,0.1); }
-.tfoot-summary.hours-row { bottom: 34px; background-color: #bbdefb; }
-.tfoot-summary.cost-row { bottom: 0; }
+/* שורות סיכום (בוטל ההקפאה כדי שלא יסתירו את הנתונים) */
+.tfoot-summary { background-color: #e3f2fd; font-weight: bold; position: static; box-shadow: none; }
 .tfoot-summary td { border: 2px solid #90caf9; color: #0d47a1; }
+.tfoot-summary.hours-row td { border-top: 3px solid #1565c0 !important; }
 .tfoot-title { text-align: left !important; padding-left: 8px !important; }
 
 .dashboard { margin-top: 20px; display: flex; flex-wrap: wrap; gap: 15px; justify-content: center; }
@@ -77,10 +77,17 @@ th { background-color: #1565c0; color: white; font-size: 12px; }
 .lock-btn:hover { filter: grayscale(0%); transform: scale(1.1); }
 .tlush-card { border-top: 4px solid #0d47a1; background: #bbdefb; width: 180px; } .tlush-card .val { color: #0d47a1; font-size: 22px; margin-top: 10px;}
 
-/* התראת חריגה שבועית */
+/* טבלת יתרות תחתונה */
+.balances-table-wrapper { width: 100%; max-width: 650px; margin: 30px auto; background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); border-top: 4px solid #0d47a1; }
+.balances-table { width: 100%; border-collapse: collapse; text-align: center; margin-top: 15px; }
+.balances-table th { background-color: #1976d2; color: white; padding: 10px; font-size: 14px; border: 1px solid #1565c0; }
+.balances-table td { border: 1px solid #bbdefb; padding: 10px; font-size: 15px; color: #333; }
+.balances-table tr:nth-child(even) { background-color: #f8fbff; }
+.balances-table tr:hover { background-color: #e3f2fd; }
+
 #weeklyWarning { display:none; background-color:#fce4e4; color:#c0392b; padding:12px 20px; border-radius:8px; text-align:center; font-weight:bold; font-size:15px; margin-bottom:20px; border:2px solid #e74c3c; box-shadow:0 4px 10px rgba(231,76,60,0.2); }
 
-.modal { display: none; position: fixed; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.5); backdrop-filter: blur(2px); }
+.modal { display: none; position: fixed; z-index: 20000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.5); backdrop-filter: blur(2px); }
 .modal-content { background-color: #fff; margin: 3vh auto; padding: 25px; border-radius: 8px; width: 90%; max-width: 750px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); position: relative; animation: modalopen 0.3s;}
 @keyframes modalopen { from {opacity: 0; transform: translateY(-20px);} to {opacity: 1; transform: translateY(0);} }
 .close-btn { color: #aaa; float: left; font-size: 28px; font-weight: bold; cursor: pointer; margin-top: -10px; margin-left: -5px; }
@@ -111,8 +118,17 @@ th { background-color: #1565c0; color: white; font-size: 12px; }
     #printEmployeeNameDisplay { font-size: 10pt; font-weight: normal; color: #333; }
     table { width: 100% !important; margin: 0 !important; border-collapse: collapse !important; table-layout: auto !important; border: 2px solid #000 !important; }
     
+    /* ביטול גלילה ותיקון כותרות בהדפסה */
+    thead { position: static !important; display: table-header-group !important; }
+    tbody { display: table-row-group !important; }
+    tr { page-break-inside: avoid !important; }
+    
     th, td { padding: 0px 1px !important; height: 12px !important; line-height: 1 !important; font-size: 8pt !important; border: none !important; border-left: 1px solid #ccc !important; color: #000 !important; background: transparent !important; text-align: center !important; white-space: nowrap !important; }
     th { font-weight: bold !important; border-bottom: 1px solid #000 !important; }
+    
+    /* יישור עמודת התיאור לימין בהדפסה */
+    td[id^="val-desc-"] { text-align: right !important; padding-right: 4px !important; }
+
     .col-sep { border-left: 1.5px solid #000 !important; }
     .print-thick-right { border-right: 1.5px solid #000 !important; }
     .thick-border-left { border-left: 2px solid #000 !important; }
@@ -126,4 +142,9 @@ th { background-color: #1565c0; color: white; font-size: 12px; }
     input[type="text"]::placeholder { color: transparent !important; }
     .empty-print { color: transparent !important; }
     #printDashboard { display: flex !important; justify-content: space-between; align-items: center; border: 2px solid #000; border-top: none; padding: 2px 4px; font-size: 8pt; background-color: transparent !important; width: 100% !important; box-sizing: border-box;}
+    
+    /* טבלת היתרות בהדפסה */
+    .balances-table-wrapper { display: block !important; box-shadow: none !important; margin: 15px auto !important; padding: 0 !important; width: 70% !important; page-break-inside: avoid; border: none !important;}
+    .balances-table th { background-color: #eee !important; color: #000 !important; border: 1px solid #000 !important; font-size: 10pt !important;}
+    .balances-table td { border: 1px solid #000 !important; color: #000 !important; font-size: 10pt !important;}
 }
