@@ -4,229 +4,50 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>COT - Calculate Over Time</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 100'><text x='5' y='75' font-family='Arial Black, sans-serif' font-size='60' font-weight='900'><tspan fill='%23FF9800'>C</tspan><tspan fill='%2300E676' dx='-15'>O</tspan><tspan fill='%23FF5252' dx='-15'>T</tspan></text></svg>">
     
-    <style>
-        /* === סגנונות בסיסיים === */
-        * { box-sizing: border-box; }
-        body { font-family: 'Segoe UI', Tahoma, Arial, sans-serif; background-color: #eef5f9; margin: 0; padding: 20px; color: #333; }
-        h2, h4, .version-stamp { touch-action: manipulation; user-select: none; -webkit-user-select: none; }
-        
-        /* הסרגל העליון */
-        #debugBox {
-            background-color: #1976d2; padding: 12px 25px; border-radius: 12px; display: flex;
-            justify-content: space-between; align-items: center; margin-bottom: 25px;
-            box-shadow: 0 4px 15px rgba(25, 118, 210, 0.3);
-        }
-
-        /* כפתורים */
-        .btn-3d { position: relative; top: 0; transition: top 0.1s ease, box-shadow 0.1s ease; border: none; font-weight: bold; cursor: pointer; text-align: center; border-radius: 8px; }
-        .btn-3d:active { top: 4px; }
-        
-        /* כפתור מידע מרובע - סמל מעל מלל */
-        .btn-info { 
-            background-color: #fff; 
-            color: #1565c0; 
-            width: 72px; 
-            height: 72px; 
-            padding: 6px; 
-            display: flex; 
-            flex-direction: column; 
-            justify-content: center; 
-            align-items: center; 
-            gap: 4px; 
-            font-size: 12px; 
-            line-height: 1.1;
-            box-shadow: 0 4px #0d47a1; 
-            border-radius: 10px;
-        }
-        .btn-info:active { box-shadow: 0 0 #0d47a1; }
-        .btn-info .icon { font-size: 24px; margin-bottom: 2px; }
-        
-        .btn-logout { background-color: #0d47a1; color: white; padding: 8px 15px; font-size: 14px; box-shadow: 0 4px #0a367c; }
-        .btn-logout:active { box-shadow: 0 0 #0a367c; }
-        .btn-load { background-color: #42a5f5; color: white; padding: 10px 12px; font-size: 14px; box-shadow: 0 4px #1e88e5; }
-        .btn-load:active { box-shadow: 0 0 #1e88e5; }
-        .btn-primary { background-color: #1565c0; color: white; padding: 10px 12px; font-size: 14px; box-shadow: 0 4px #0d47a1; }
-        .btn-primary:active { box-shadow: 0 0 #0d47a1; }
-        .btn-save { background-color: #1e88e5; color: white; padding: 10px 12px; font-size: 14px; box-shadow: 0 4px #1565c0; }
-        .btn-save:active { box-shadow: 0 0 #1565c0; }
-        .btn-reset { background-color: #546e7a; color: white; padding: 10px 12px; font-size: 14px; box-shadow: 0 4px #37474f; }
-        .btn-reset:active { box-shadow: 0 0 #37474f; }
-        .btn-print { background-color: #1565c0; color: white; padding: 14px 28px; font-size: 16px; box-shadow: 0 4px #0d47a1; border-radius: 8px; }
-        .btn-print:active { box-shadow: 0 0 #0d47a1; }
-
-        /* פאנל נתונים */
-        .header-panel { background: #fff; padding: 20px 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 25px; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 25px; }
-        .inputs-section { display: flex; flex-wrap: wrap; gap: 12px; flex: 2; }
-        .input-group { background-color: #e3f2fd; border: 1px solid #bbdefb; border-radius: 8px; padding: 5px 8px; display: flex; flex-direction: column; align-items: center; box-shadow: inset 0 1px 3px rgba(0,0,0,0.03); border-bottom: 3px solid #1e88e5; }
-        .input-group label { font-size: 11px; font-weight: bold; color: #1565c0; margin-bottom: 4px; width: 100%; text-align: center; border-bottom: 1px solid #bbdefb; padding-bottom: 3px; }
-        .input-group input, .input-group select { padding: 4px 2px; border: none; background: transparent; font-size: 14px; font-weight: bold; color: #0d47a1; text-align: center; width: 100%; }
-        .input-group input:focus, .input-group select:focus { outline: none; color: #1565c0; }
-        .actions-section { display: flex; flex-direction: column; gap: 12px; flex: 1; min-width: 220px; justify-content: flex-end; }
-        .action-row { display: flex; gap: 10px; width: 100%; }
-        .action-row button { flex: 1; }
-
-        /* טבלה */
-        .table-container { background: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); overflow-x: auto; max-height: 60vh; margin-bottom: 20px; }
-        table { width: max-content; margin: 0 auto; border-collapse: collapse; white-space: nowrap; table-layout: auto; }
-        thead { position: sticky; top: 0; z-index: 10; }
-        th, td { border: 1px solid #e0e0e0; padding: 5px 2px; text-align: center; font-size: 13px; vertical-align: middle; }
-        th { background-color: #1565c0; color: white; font-size: 12px; }
-        tr:nth-child(even) { background-color: #f9fcff; }
-        .time-input { width: 65px; padding: 4px; border: 1px solid #90caf9; border-radius: 3px; text-align: center; font-weight: bold; font-family: monospace; font-size: 14px; color: #0d47a1;}
-        .time-input::placeholder { color: #bbdefb; font-weight: normal; }
-        .shift-type-input { width: 35px; padding: 4px; border: 1px solid #90caf9; border-radius: 3px; text-align: center; font-weight: bold; font-size: 14px; background-color: #e3f2fd; color: #0d47a1; margin: 0 auto; display: block; }
-        .val-cell, .calc-th { width: 38px !important; min-width: 38px !important; max-width: 45px !important; text-align: center !important; }
-        .val-cell { color: #0d47a1; font-weight: bold; background-color: #f8fbff; }
-        .day-sat { color: #1565c0; font-weight: bold; background-color: #e3f2fd !important; }
-        .day-fri { color: #1976d2; font-weight: bold; background-color: #e1f5fe !important; }
-        .thick-border-left { border-left: 2px solid #90caf9 !important; }
-
-        .tfoot-summary { background-color: #e3f2fd; font-weight: bold; position: sticky; box-shadow: 0 -2px 5px rgba(0,0,0,0.1); }
-        .tfoot-summary.hours-row { bottom: 34px; background-color: #bbdefb; }
-        .tfoot-summary.cost-row { bottom: 0; }
-        .tfoot-summary td { border: 2px solid #90caf9; color: #0d47a1; }
-
-        /* דאשבורד */
-        .dashboard { margin-top: 20px; text-align: center; }
-        .dash-card { background: #fff; padding: 15px; border-radius: 8px; border-top: 4px solid #1976d2; display: inline-block; width: 140px; margin-left: 10px; margin-bottom: 10px; vertical-align: top; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-        .dash-card h4 { margin: 0 0 10px 0; font-size: 13px; color: #546e7a; }
-        .dash-card .val { font-size: 18px; font-weight: bold; color: #0d47a1; }
-        .shabbat-card { width: 190px !important; text-align: right !important; border-top-color: #0288d1 !important; }
-        .shabbat-card .row { display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 4px; }
-        .tlush-card { border-top: 4px solid #0d47a1; background: #bbdefb; } .tlush-card .val { color: #0d47a1; font-size: 20px; }
-
-        /* חלונות מודאליים (Modal) */
-        .modal { display: none; position: fixed; z-index: 20000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.5); backdrop-filter: blur(2px); }
-        .modal-content { background-color: #fff; margin: 3vh auto; padding: 25px; border-radius: 8px; width: 90%; max-width: 700px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); position: relative; animation: modalopen 0.3s;}
-        @keyframes modalopen { from {opacity: 0; transform: translateY(-20px);} to {opacity: 1; transform: translateY(0);} }
-        .close-btn { color: #aaa; float: left; font-size: 28px; font-weight: bold; cursor: pointer; margin-top: -10px; margin-left: -5px; }
-        .close-btn:hover, .close-btn:focus { color: #e74c3c; text-decoration: none; }
-        .modal-header { border-bottom: 2px solid #1976d2; padding-bottom: 10px; margin-bottom: 15px; }
-        .modal-header h2 { margin: 0; color: #0d47a1; font-size: 22px; }
-        .info-table { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
-        .info-table th { background-color: #1976d2; color: white; padding: 8px; font-size: 14px; text-align: right;}
-        .info-table td { padding: 6px 8px; border-bottom: 1px solid #eee; font-size: 14px; color: #333; text-align: right;}
-        .info-table tr:hover { background-color: #e3f2fd; }
-        .code-badge { background-color: #e3f2fd; color: #0d47a1; padding: 2px 6px; border-radius: 4px; font-weight: bold; font-family: monospace; border: 1px solid #90caf9; display: inline-block; min-width: 30px; text-align: center;}
-        
-        .info-section { margin-bottom: 20px; line-height: 1.6; font-size: 14px; color: #34495e; }
-        .info-section h3 { margin-bottom: 8px; color: #1565c0; font-size: 16px; border-bottom: 1px solid #eee; padding-bottom: 4px; }
-        .info-section ul { margin-top: 5px; padding-right: 20px; }
-        .info-section li { margin-bottom: 5px; }
-
-        .version-stamp { position: fixed; bottom: 5px; left: 5px; font-size: 10px; font-weight: bold; color: #7f8c8d; z-index: 99999; cursor: pointer; touch-action: manipulation;}
-
-        .print-only { display: none; }
-        .print-only-cell { display: none; }
-
-        /* === עיצוב הדפסה === */
-        @media print {
-            @page { size: A4 landscape; margin: 5mm; } 
-            body { background: white !important; padding: 0 !important; margin: 0 !important; font-family: Arial, Helvetica, sans-serif !important; color: #000 !important;}
-            #debugBox, .header-panel, noscript, .dashboard, .modal, .version-stamp, #authOverlay, #updateNameOverlay { display: none !important; }
-            #sheetTitle { display: none !important; } 
-            .print-only { display: block !important; }
-            .print-only-cell { display: table-cell !important; }
-            .hide-print { display: none !important; } 
-            
-            .table-container { box-shadow: none !important; max-height: none !important; overflow: visible !important; border: none !important; margin: 0 auto !important; padding: 0 !important; width: max-content !important; }
-            #printHeader { text-align: center; margin-bottom: 8px; }
-            #printHeader h1 { font-size: 14pt; margin: 0; padding-bottom: 2px; display: flex; justify-content: center; align-items: center; gap: 15px; }
-            #printEmployeeNameDisplay { font-size: 10.5pt; font-weight: normal; color: #333; }
-            table { width: 100% !important; margin: 0 !important; border-collapse: collapse !important; table-layout: auto !important; border: 2px solid #000 !important; }
-            tr { page-break-inside: avoid !important; }
-            
-            thead { display: table-header-group !important; position: static !important; }
-            tfoot { display: table-footer-group !important; position: static !important; }
-            .tfoot-summary { position: static !important; box-shadow: none !important; }
-            th, td { border: none !important; border-left: 1px solid #ccc !important; color: #000 !important; background-color: transparent !important; font-size: 8.5pt !important; padding: 2px 3px !important; height: 12px !important; line-height: 1 !important; text-align: center !important; vertical-align: middle !important; white-space: nowrap !important;}
-            th { font-weight: bold !important; font-size: 8.5pt !important; border-bottom: 1px solid #000 !important; }
-            th:first-child, td:first-child { border-left: none !important; }
-            .col-sep { border-left: 1.5px solid #000 !important; }
-            .print-thick-right { border-right: 1.5px solid #000 !important; }
-            .thick-border-left { border-left: 2.5px solid #000 !important; }
-            tr.row-sat td { border-bottom: 1px solid #000 !important; }
-            thead th { border-top: 1.5px solid #000 !important; border-bottom: 1.5px solid #000 !important; }
-            tfoot td { border-top: 1.5px solid #000 !important; font-weight: bold !important; background-color: transparent !important; }
-            .tfoot-summary.cost-row td { border-top: 1px dashed #666 !important; } 
-            tfoot tr:last-child td { border-bottom: 1.5px solid #000 !important; }
-            .tfoot-summary td[colspan] { text-align: right !important; padding-right: 5px !important; }
-            .hide-on-print { display: none !important; }
-            input[type="text"] { border: none !important; background: transparent !important; font-size: 8.5pt !important; font-family: monospace !important; width: 7ch !important; text-align: center !important; color: #000 !important; padding: 0 !important; margin: 0 auto !important; display: block !important;}
-            input[type="text"]::placeholder { color: transparent !important; }
-            .empty-print { color: transparent !important; background: transparent !important; }
-            #printDashboard { display: flex !important; justify-content: space-between; align-items: center; border: 2px solid #000; border-top: none; padding: 6px 8px; margin-top: 0; font-size: 8.5pt; font-weight: normal; background-color: transparent !important; width: 100% !important; box-sizing: border-box; white-space: nowrap !important;}
-            #printDashboard div { margin: 0 4px; }
-        }
-    </style>
-
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-auth-compat.js"></script>
+    <!-- קישור לקובץ העיצוב החיצוני -->
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <!-- מסך התחברות / הרשמה -->
-<div id="authOverlay" style="position: fixed; top:0; left:0; width:100%; height:100%; background: linear-gradient(135deg, #1976d2 0%, #eef5f9 100%); z-index: 10000; display:flex; align-items:flex-start; justify-content:center; overflow-y: auto; padding: 20px; box-sizing: border-box;">
-    <div style="background:#fff; padding:35px 25px; border-radius:16px; box-shadow:0 10px 40px rgba(0,0,0,0.2); width:100%; max-width:400px; text-align:center; position:relative; margin: auto; box-sizing: border-box;">
+<div id="authOverlay" style="position: fixed; top:0; left:0; width:100%; height:100%; background: linear-gradient(135deg, #1976d2 0%, #eef5f9 100%); z-index: 10000; display:flex; align-items:flex-start; justify-content:center; padding: 40px 20px;">
+    <div style="background:#fff; padding:35px 25px; border-radius:16px; box-shadow:0 10px 40px rgba(0,0,0,0.2); width:100%; max-width:380px; text-align:center; position:relative;">
         <div style="position:absolute; top:0; left:0; width:100%; height:6px; background:#1e88e5;"></div>
         
-        <div style="display: flex; align-items: center; justify-content: center; cursor: pointer; margin-bottom: 10px; user-select:none; touch-action: manipulation;" onclick="secretBypass(event)" title="לחץ 3 פעמים רצוף לכניסה מהירה">
-            <div class="icon-logo" dir="ltr" style="position: relative; width: 75px; height: 50px; font-family: 'Arial Black', 'Segoe UI Black', sans-serif; font-size: 48px; line-height: 50px; font-weight: 900; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1)); pointer-events: none;">
-                <span style="position: absolute; left: 0px; top: 0; color: #FF9800; opacity: 0.9; z-index: 3;">C</span>
-                <span style="position: absolute; left: 19px; top: 0; color: #00BFA5; opacity: 0.85; z-index: 1;">O</span>
-                <span style="position: absolute; left: 40px; top: 0; color: #FF5252; opacity: 0.9; z-index: 2;">T</span>
+        <div style="display: flex; align-items: center; justify-content: center; cursor: pointer; margin-bottom: 10px; user-select:none;" onclick="secretBypass(event)" title="לחץ 3 פעמים רצוף לכניסה מהירה">
+            <div class="icon-logo" dir="ltr" style="position: relative; width: 75px; height: 50px; font-family: 'Arial Black', sans-serif; font-size: 48px; line-height: 50px; font-weight: 900; pointer-events: none;">
+                <span style="position: absolute; left: 0px; top: 0; color: #FF9800; z-index: 3;">C</span>
+                <span style="position: absolute; left: 19px; top: 0; color: #00BFA5; z-index: 1;">O</span>
+                <span style="position: absolute; left: 40px; top: 0; color: #FF5252; z-index: 2;">T</span>
             </div>
         </div>
         
-        <h2 style="color:#0d47a1; margin-top:0; margin-bottom:5px; font-size:22px; user-select:none; cursor:pointer; touch-action: manipulation;" onclick="secretBypass(event)">בקרת דו"ח פיצול</h2>
-        <h4 style="color:#546e7a; margin-top:0; margin-bottom:20px; font-weight:normal; font-size:14px;">ניהול חכם של משמרות ושכר</h4>
+        <h2 style="color:#0d47a1; margin-top:0; margin-bottom:5px; font-size:22px; cursor:default;">בקרת דו"ח פיצול</h2>
+        <h4 style="color:#546e7a; margin-top:0; margin-bottom:20px; font-weight:normal; font-size:14px;">ניהול חכם של משמרות ושכר בענן</h4>
         
-        <div style="background:#e3f2fd; color:#0d47a1; padding:15px; border-radius:10px; font-size:13px; margin-bottom:25px; border:1px solid #bbdefb; text-align:right; line-height:1.5;">
-            <strong style="font-size:14px;">ברוכים הבאים! 👋</strong><br>
-            כדי לשמור על פרטיות נתוני השכר שלך ולאפשר גישה מכל מכשיר, המערכת דורשת זיהוי קצר.<br><br>
-            <span style="font-size:12px; color:#1565c0;"><strong>משתמש חדש?</strong> הקלד אימייל וסיסמה לבחירתך ולחץ על <b>"הרשמה חדשה"</b>.</span>
-        </div>
-
         <div style="text-align:right;">
-            <label style="font-size:13px; font-weight:bold; color:#1565c0; margin-bottom:6px; display:block;">שם העובד (לרישום בדוח)</label>
-            <input type="text" id="authName" placeholder="הקלד שם מלא" style="width:100%; box-sizing:border-box; margin-bottom:15px; padding:12px; text-align:right; font-size:15px; border: 2px solid #e3f2fd; border-radius: 8px; background:#f8fbff; outline:none; transition:0.2s;" onfocus="this.style.borderColor='#90caf9'" onblur="this.style.borderColor='#e3f2fd'" dir="rtl">
-            
             <label style="font-size:13px; font-weight:bold; color:#1565c0; margin-bottom:6px; display:block;">כתובת אימייל</label>
-            <input type="email" id="authEmail" placeholder="name@example.com" style="width:100%; box-sizing:border-box; margin-bottom:15px; padding:12px; text-align:left; font-size:15px; border: 2px solid #e3f2fd; border-radius: 8px; background:#f8fbff; outline:none; transition:0.2s;" onfocus="this.style.borderColor='#90caf9'" onblur="this.style.borderColor='#e3f2fd'" dir="ltr" onkeypress="if(event.key === 'Enter') loginUser()">
+            <input type="email" id="authEmail" placeholder="name@example.com" style="width:100%; box-sizing:border-box; margin-bottom:15px; padding:12px; text-align:left; font-size:15px; border: 2px solid #e3f2fd; border-radius: 8px; background:#f8fbff; outline:none;" dir="ltr" onkeypress="if(event.key === 'Enter') loginUser()">
             
             <label style="font-size:13px; font-weight:bold; color:#1565c0; margin-bottom:6px; display:block;">סיסמה</label>
-            <input type="password" id="authPassword" placeholder="לפחות 6 תווים" style="width:100%; box-sizing:border-box; margin-bottom:5px; padding:12px; text-align:left; font-size:15px; border: 2px solid #e3f2fd; border-radius: 8px; background:#f8fbff; outline:none; transition:0.2s;" onfocus="this.style.borderColor='#90caf9'" onblur="this.style.borderColor='#e3f2fd'" dir="ltr" onkeypress="if(event.key === 'Enter') loginUser()">
+            <input type="password" id="authPassword" placeholder="לפחות 6 תווים" style="width:100%; box-sizing:border-box; margin-bottom:5px; padding:12px; text-align:left; font-size:15px; border: 2px solid #e3f2fd; border-radius: 8px; background:#f8fbff; outline:none;" dir="ltr" onkeypress="if(event.key === 'Enter') loginUser()">
         </div>
         <div id="authError" style="color:#e74c3c; font-size:13px; margin-bottom:20px; font-weight:bold; min-height:18px;"></div>
         <div style="display:flex; gap:12px; flex-direction: column;">
-            <button class="btn-3d" onclick="loginUser()" style="width:100%; padding:14px; background:#1976d2; color:white; border-radius:8px; font-size:16px; box-shadow:0 4px #1565c0; margin-bottom: 5px;">כניסה למערכת</button>
+            <button class="btn-3d" onclick="loginUser()" style="width:100%; padding:14px; background:#1976d2; color:white; border-radius:8px; font-size:16px; box-shadow:0 4px #1565c0;">כניסה למערכת</button>
             <button class="btn-3d" onclick="registerUser()" style="width:100%; padding:12px; background:#fff; color:#1976d2; border:2px solid #1976d2; border-radius:8px; font-size:15px; box-shadow:0 4px #bbdefb; top:-2px;">הרשמה חדשה</button>
         </div>
-    </div>
-</div>
-
-<!-- מסך השלמת שם למשתמשים ותיקים -->
-<div id="updateNameOverlay" style="display: none; position: fixed; top:0; left:0; right:0; bottom:0; background: linear-gradient(135deg, #1976d2 0%, #eef5f9 100%); z-index: 10001; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box;">
-    <div style="background:#fff; padding:30px 25px; border-radius:16px; box-shadow:0 10px 40px rgba(0,0,0,0.2); width:100%; max-width:350px; text-align:center; position:relative; overflow:hidden;">
-        <div style="position:absolute; top:0; left:0; width:100%; height:6px; background:#ff9800;"></div>
-        <h3 style="color:#0d47a1; margin-top:0; font-size:20px;">השלמת פרטים חסרים</h3>
-        <p style="font-size:14px; color:#546e7a; margin-bottom: 20px; line-height: 1.5;">זיהינו שהחשבון שלך נוצר בעבר לפני עדכון המערכת.<br>כדי להמשיך, אנא הזן את שמך המלא (יופיע אוטומטית בדוחות).</p>
-        <input type="text" id="missingNameInput" placeholder="הקלד שם מלא כאן" style="width:100%; box-sizing:border-box; margin-bottom:15px; padding:12px; text-align:right; font-size:15px; border: 2px solid #e3f2fd; border-radius: 8px; background:#f8fbff; outline:none; transition:0.2s;" onfocus="this.style.borderColor='#90caf9'" onblur="this.style.borderColor='#e3f2fd'" dir="rtl" onkeypress="if(event.key === 'Enter') saveMissingName()">
-        <div id="missingNameError" style="color:#e74c3c; font-size:13px; margin-bottom:15px; font-weight:bold; min-height:15px;"></div>
-        <button class="btn-3d" onclick="saveMissingName()" style="width:100%; padding:12px; background:#1976d2; color:white; border-radius:8px; font-size:16px; box-shadow:0 4px #1565c0;">שמור והיכנס למערכת</button>
     </div>
 </div>
 
 <!-- סרגל עליון -->
 <div id="debugBox">
     <div style="display: flex; align-items: center; gap: 12px;">
-        <div dir="ltr" style="position: relative; width: 55px; height: 36px; font-family: 'Arial Black', 'Segoe UI Black', sans-serif; font-size: 34px; line-height: 36px; font-weight: 900; margin-left: 5px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));">
-            <span style="position: absolute; left: 0px; top: 0; color: #FF9800; opacity: 0.95; z-index: 3;">C</span>
-            <span style="position: absolute; left: 14px; top: 0; color: #00E676; opacity: 0.9; z-index: 1;">O</span>
-            <span style="position: absolute; left: 30px; top: 0; color: #FF5252; opacity: 0.95; z-index: 2;">T</span>
+        <div dir="ltr" style="position: relative; width: 55px; height: 36px; font-family: 'Arial Black', sans-serif; font-size: 34px; line-height: 36px; font-weight: 900; margin-left: 5px;">
+            <span style="position: absolute; left: 0px; top: 0; color: #FF9800; z-index: 3;">C</span>
+            <span style="position: absolute; left: 14px; top: 0; color: #00E676; z-index: 1;">O</span>
+            <span style="position: absolute; left: 30px; top: 0; color: #FF5252; z-index: 2;">T</span>
         </div>
         <div style="display: flex; flex-direction: column; line-height: 1.1; border-right: 2px solid rgba(255,255,255,0.3); padding-right: 12px;">
             <span style="font-size: 18px; font-weight: bold; color: #ffffff;">בקרת דו"ח פיצול</span>
@@ -234,47 +55,52 @@
         </div>
     </div>
     <div style="display: flex; gap: 12px; align-items: center;">
-        <button class="btn-logout btn-3d" id="logoutBtn" onclick="logoutUser()" style="display:none;" title="התנתק מהמערכת">התנתק</button>
-        <button class="btn-info btn-3d" onclick="openShiftInfo()" title="מידע חשוב על המערכת וההסכמים">
-            <span class="icon">ℹ️</span>
-            <span>מידע חשוב</span>
+        <button class="btn-logout btn-3d" id="logoutBtn" onclick="logoutUser()" style="display:none;">התנתק</button>
+        <button class="btn-info btn-3d" onclick="openShiftInfo()" title="מידע חשוב על המערכת">
+            <span class="icon">ℹ️</span><span>מידע חשוב</span>
         </button>
     </div>
 </div>
 
-<!-- חלון עזר ראשי (Modal) -->
+<!-- חלון מידע כללי -->
 <div id="shiftInfoModal" class="modal">
-    <div class="modal-content">
+    <div class="modal-content" style="max-width: 750px; padding: 30px;">
         <span class="close-btn" onclick="closeShiftInfo()">&times;</span>
-        <div class="modal-header"><h2>ℹ️ מידע חשוב</h2></div>
-        <div style="max-height: 70vh; overflow-y: auto; padding-left: 10px;">
-            <div class="info-section">
-                <p>מערכת <strong>"בקרת דו"ח פיצול"</strong> נועדה לתכנן, לנהל, ולנתח את שעות העבודה במשמרות.</p>
-                <p>המערכת מפצלת את השעות הנוספות עפ"י הסכמי העבודה ומאפשרת בקרת תקינות מול דוח הפיצול והתלוש.</p>
-            </div>
-            <div class="info-section">
-                <h3>יכולות עיקריות</h3>
-                <ul>
-                    <li><strong>הזנה חכמה:</strong> הקלדת קודי משמרת קצרים ממלאת אוטומטית שעות. הקלדת שעות ללא נקודתיים (למשל `1904` יהפוך ל-`19:04`).</li>
-                    <li><strong>זיהוי חגים אוטומטי:</strong> המערכת מושכת את חגי ישראל בהתאם לחודש ומחילה תעריף שבת ביום החג עצמו בלבד (ללא חול המועד, סוכות ב' וערבי חג).</li>
-                    <li><strong>מנוע חישוב:</strong> מנתח כל דקת עבודה ומפצל לתעריפים השונים (שבת, לילה, ש"נ, ת.מ.).</li>
-                    <li><strong>דוח אש"ל וחופש שבת:</strong> חישוב אוטומטי של שווי אש"ל ומעקב אחר יתרת חופש שבת. צבירת חופש שבת נפסקת אוטומטית ב-06:00 בבוקר ביציאה משבת/חג.</li>
-                    <li><strong>דוח מותאם (PDF):</strong> הפקת דוח נקי ומקצועי להדפסה לרוחב A4.</li>
+        <div class="modal-header">
+            <h2 style="font-size: 24px; color: #0d47a1;">ℹ️ מידע חשוב ומדריך למשתמש</h2>
+        </div>
+        <div style="max-height: 65vh; overflow-y: auto; padding-left: 15px; font-size: 14.5px; line-height: 1.6; color: #34495e;">
+            <p>מערכת <strong>"בקרת דו"ח פיצול"</strong> נועדה לתכנן, לנהל, ולבקר את שעות העבודה, המשמרות ויתרות החופש שלך בצורה חכמה ומאובטחת.</p>
+            <div style="background: #e3f2fd; padding: 15px; border-radius: 8px; margin-bottom: 20px; border-right: 4px solid #1976d2;">
+                <h3 style="margin-top: 0; color: #1565c0; font-size: 17px; margin-bottom: 10px;">☁️ סנכרון ושמירת נתונים חכמה</h3>
+                <ul style="margin: 0; padding-right: 20px;">
+                    <li><strong>פרופיל אישי בענן:</strong> הגדרות השכר (ערך שעה, אש"ל) ויתרות הפתיחה נשמרות בחשבון המאובטח שלך ומסתנכרנות מכל מכשיר.</li>
+                    <li><strong>מנגנון "סגירת חודש":</strong> בסיום החודש, לחיצה על כפתור <em>"סגור חודש"</em> תיקח את היתרות הסופיות שצברת, ותגדיר אותן אוטומטית כיתרות הפתיחה של החודש הבא.</li>
+                    <li><strong>הגנה מפני טעויות (🔒):</strong> יתרות הפתיחה נעולות כברירת מחדל כדי למנוע דריסה בטעות. ניתן ללחוץ על המנעול כדי לפתוח לעריכה ידנית במקרה של תיקון.</li>
                 </ul>
             </div>
-            <div class="info-section">
-                <h3>הסכמי משמרות</h3>
-                <ul>
-                    <li><strong>משמרות בוקר:</strong> שגלשו לאחרי 14:00 לא יקבלו 20% ת.מ אלא אם נצברו 3 שעות עבודה (החתמה לפני 17:00).</li>
-                    <li><strong>משמרת לילה:</strong> כניסה לפני 03:00 - כל השעות אחרי כן נחשבות לילה. כניסה אחרי 03:00 - ב-06:00 הופך לבוקר.</li>
-                    <li><strong>שישי ערב חג (בוקר):</strong> תקן השעות עומד על 5.5 שעות, השעה שאחריו ב-100%, שעתיים ב-125%, והיתרה ב-150% וב-180%.</li>
+            <div style="margin-bottom: 20px;">
+                <h3 style="color: #1565c0; font-size: 17px; border-bottom: 2px solid #bbdefb; padding-bottom: 5px;">📅 הסכמי עבודה, חגים ובקרה שבועית</h3>
+                <ul style="padding-right: 20px;">
+                    <li><strong>בקרה ומניעת חריגות (5 בשבוע):</strong> המערכת עוקבת אחרי שבועות קלנדריים. בסגירת חודש היא "גוררת" משמרות שבוצעו בסוף החודש אל תוך השבוע הראשון של החודש הבא. אם תעבור מכסה של 5 משמרות בשבוע (כולל נגררות) – <strong>תקפוץ התראת אזהרה אדומה</strong>.</li>
+                    <li><strong>חגי נציבות המדינה 2026:</strong> המערכת מבוססת על בסיס נתונים פנימי של נציבות שירות המדינה.</li>
+                    <li><strong>ערבי חג לעובדי משמרות:</strong> שעות התקן בערבי חג מותאמות לתנאי המשמרות. (לדוגמה, התקן בערב ראש השנה או סוכות עומד על 5.5 שעות, גם אם החג נופל ביום שישי).</li>
+                    <li><strong>תזכורת אש"ל חכמה:</strong> בתחילת כל רבעון קלנדרי המערכת תבדוק אם התעריף השמור אצלך נמוך מהתעריף המעודכן, ותתריע רק במידה ונדרש עדכון.</li>
+                </ul>
+            </div>
+            <div>
+                <h3 style="color: #1565c0; font-size: 17px; border-bottom: 2px solid #bbdefb; padding-bottom: 5px;">⚡ ממשק זורם והקלדה מהירה</h3>
+                <ul style="padding-right: 20px;">
+                    <li><strong>ניווט רציף במקלדת (Enter):</strong> סיימת להקליד שעת כניסה? לחץ על <code>Enter</code> והסמן יקפוץ לשעת היציאה. לחיצה נוספת תקפיץ אותך לשעת הכניסה של היום הבא.</li>
+                    <li><strong>הקלדה ללא נקודתיים:</strong> מספיק להקליד רצף מספרים (לדוגמה <code>1530</code>) והמערכת תמיר זאת אוטומטית לפורמט זמן חוקי (<code>15:30</code>).</li>
+                    <li><strong>קודי משמרות מהירים:</strong> הקלדה של קודים (כמו <code>ב06</code>, <code>227</code>, או <code>חש</code>) תמלא אוטומטית את שעות המשמרת או ההיעדרות בטבלה.</li>
                 </ul>
             </div>
         </div>
     </div>
 </div>
 
-<!-- חלון עזר קטן למשמרות (נפתח מלחיצה על ה-i בעמודת משמרת) -->
+<!-- חלון קודי משמרות -->
 <div id="miniShiftInfoModal" class="modal">
     <div class="modal-content" style="max-width: 420px; padding: 18px;">
         <span class="close-btn" onclick="closeMiniShiftInfo()">&times;</span>
@@ -298,16 +124,28 @@
                     <tr><td><span class="code-badge">217</span></td><td>21:00</td><td>07:00</td><td>לילה רגילה</td></tr>
                     <tr><td><span class="code-badge">227</span></td><td>22:00</td><td>07:00</td><td>לילה מאוחרת</td></tr>
                     <tr><td><span class="code-badge">228</span></td><td>22:00</td><td>08:00</td><td>לילה ארוכה</td></tr>
-                    <tr><td><span class="code-badge">ח</span></td><td>-</td><td>-</td><td>חופש רגיל (8 שעות)</td></tr>
-                    <tr><td><span class="code-badge">חש</span></td><td>-</td><td>-</td><td>חופש שבת (מנכה מהיתרה)</td></tr>
-                    <tr><td><span class="code-badge">מח</span></td><td>-</td><td>-</td><td>מחלה (8 שעות תקן)</td></tr>
-                    <tr><td><span class="code-badge">הס</span></td><td>-</td><td>-</td><td>עפ"י הסכם (8 שעות תקן)</td></tr>
-                    <tr><td><span class="code-badge">בח</span></td><td>-</td><td>-</td><td>בחירה (8 שעות תקן)</td></tr>
-                    <tr><td><span class="code-badge">מבמ</span></td><td>-</td><td>-</td><td>מחלת בן משפחה (8 שעות)</td></tr>
-                    <tr><td><span class="code-badge">הכ</span></td><td>-</td><td>-</td><td>הכשרה (8 שעות תקן)</td></tr>
+                    <tr><td><span class="code-badge">ח</span></td><td>-</td><td>-</td><td>חופש רגיל</td></tr>
+                    <tr><td><span class="code-badge">חש</span></td><td>-</td><td>-</td><td>חופש שבת</td></tr>
+                    <tr><td><span class="code-badge">מח</span></td><td>-</td><td>-</td><td>מחלה</td></tr>
+                    <tr><td><span class="code-badge">הצ</span></td><td>-</td><td>-</td><td>הצהרה</td></tr>
+                    <tr><td><span class="code-badge">בח</span></td><td>-</td><td>-</td><td>בחירה</td></tr>
+                    <tr><td><span class="code-badge">מבמ</span></td><td>-</td><td>-</td><td>מחלת בן משפחה</td></tr>
                 </tbody>
             </table>
         </div>
+    </div>
+</div>
+
+<!-- חלון הזנת משמרות נגררות -->
+<div id="firstMonthCarryModal" class="modal">
+    <div class="modal-content" style="max-width: 400px; text-align: center; padding: 30px;">
+        <h3 style="color: #d35400; margin-top: 0; font-size: 20px;">הזנת משמרות מסוף חודש שעבר</h3>
+        <p style="font-size: 14px; color: #34495e; line-height: 1.6; margin-bottom: 20px;">
+            למעקב 5 משמרות בשבוע, אנא הקלד כמות המשמרות שנקלטו השבוע בדו"ח של החודש הקודם
+        </p>
+        <input type="number" id="manualCarryInput" value="0" min="0" max="6" style="width: 80px; padding: 10px; font-size: 20px; font-weight: bold; text-align: center; border: 2px solid #e3f2fd; border-radius: 8px; margin-bottom: 20px; outline: none;">
+        <br>
+        <button class="btn-3d" onclick="saveFirstMonthCarry()" style="background-color: #d35400; color: white; padding: 12px 25px; border-radius: 8px; font-size: 16px; box-shadow: 0 4px #a04000;">שמור והתחל לעבוד</button>
     </div>
 </div>
 
@@ -315,51 +153,39 @@
     <div class="inputs-section">
         <div class="input-group">
             <label>שם עובד</label>
-            <input type="text" id="employeeName" value="" style="width: 110px;" oninput="updateTitles()">
+            <input type="text" id="employeeName" value="" style="width: 120px;" placeholder="הזן שם..." oninput="updateTitles()">
         </div>
         <div class="input-group">
-            <label>חודש</label>
-            <select id="monthSelect" style="width: 110px;" onchange="updateTitles(); generateTable();">
-                <option value="1">01 - ינואר</option><option value="2">02 - פברואר</option><option value="3">03 - מרץ</option>
-                <option value="4">04 - אפריל</option><option value="5">05 - מאי</option><option value="6">06 - יוני</option>
-                <option value="7">07 - יולי</option><option value="8">08 - אוגוסט</option><option value="9">09 - ספטמבר</option>
-                <option value="10">10 - אוקטובר</option><option value="11">11 - נובמבר</option><option value="12">12 - דצמבר</option>
-            </select>
-        </div>
-        <div class="input-group">
-            <label>שנה</label>
-            <input type="number" id="yearInput" value="2026" style="width: 65px;" oninput="updateTitles(); generateTable();">
+            <label>חודש ושנה</label>
+            <select id="monthYearSelect" style="width: 130px;" onchange="updateTitles(); generateTable();"></select>
         </div>
         <div class="input-group">
             <label>שעתי בסיס (₪)</label>
-            <input type="number" id="hourlyRate" value="0.00" step="0.01" style="width: 70px;" oninput="updateGrandTotal()">
+            <input type="number" id="hourlyRate" value="0.00" step="0.01" style="width: 75px;" oninput="updateGrandTotal()">
         </div>
         <div class="input-group">
             <label>תעריף אש"ל (₪)</label>
-            <input type="number" id="eshelRate" value="52.66" step="0.01" style="width: 70px;" oninput="updateGrandTotal()">
-        </div>
-        <div class="input-group">
-            <label>יתרת קודמת שבת</label>
-            <input type="number" id="shabbatBalance" value="0.00" step="0.01" style="width: 75px;" oninput="updateGrandTotal()">
+            <input type="number" id="eshelRate" value="52.66" step="0.01" style="width: 75px;" oninput="updateGrandTotal()">
         </div>
     </div>
     
     <div class="actions-section">
-        <div class="action-row">
-            <button class="btn-load btn-3d" onclick="loadData()">טען קובץ</button>
-            <button class="btn-primary btn-3d" onclick="generateTable()">הכן גיליון</button>
-        </div>
-        <div class="action-row">
-            <button class="btn-save btn-3d" onclick="saveData()">שמור קובץ</button>
-            <button class="btn-reset btn-3d" onclick="clearData()" title="נקה את כל הנתונים במסך">איפוס נתונים</button>
+        <div class="action-grid">
+            <button class="btn-load btn-3d" onclick="loadData()">טען גליון</button>
+            <button class="btn-save btn-3d" onclick="saveData()">שמור גליון</button>
+            <button class="btn-primary btn-3d" onclick="generateTable()">הכן גליון</button>
+            <button class="btn-reset btn-3d" onclick="clearData()" title="נקה את תוכן הטבלה">אפס גליון</button>
         </div>
         <input type="file" id="fileLoader" accept=".json" style="display: none;" onchange="handleFileLoad(event)">
     </div>
 </div>
 
+<!-- התראת חריגה שבועית -->
+<div id="weeklyWarning"></div>
+
 <div id="printHeader" class="print-only">
     <h1>
-        <span>דוח בקרה פיצול שעות חודש <span id="printMonthYearText"></span></span>
+        <span>דוח בקרה פיצול שעות <span id="printMonthYearText"></span></span>
         <span id="printEmployeeNameDisplay" style="display: none;"></span>
     </h1>
 </div>
@@ -370,15 +196,14 @@
         <thead>
             <tr>
                 <th colspan="2" rowspan="2" class="col-sep" style="width: 60px; min-width: 60px; max-width: 70px;">תאריך</th>
-                <th rowspan="2" class="col-sep hide-print" style="width: 45px;" title="הזן קוד משמרת">
-                    משמרת
-                    <span onclick="openMiniShiftInfo(); event.stopPropagation();" style="cursor:pointer; font-size:15px; display:inline-block; margin-right:2px; background:#fff; color:#1565c0; border-radius:50%; width:18px; height:18px; line-height:18px; text-align:center;" title="הצג רשימת קודים">ℹ️</span>
+                <th rowspan="2" class="col-sep hide-print" style="width: 55px; cursor: pointer; color: white;" onclick="openMiniShiftInfo()" title="לחץ להצגת רשימת הקודים">
+                    משמרת <span style="display: inline-block; width: 14px; height: 14px; border: 1px solid white; border-radius: 50%; text-align: center; line-height: 13px; font-size: 11px; margin-right: 2px;">i</span>
                 </th>
                 <th rowspan="2" class="print-thick-right" style="width: 75px; min-width: 75px; max-width: 85px;">כניסה</th>
                 <th rowspan="2" class="col-sep" style="width: 75px; min-width: 75px; max-width: 85px;">יציאה</th>
-                <th rowspan="2" class="col-sep" style="width: 90px; min-width: 90px; max-width: 110px;">תאור</th>
+                <th rowspan="2" class="col-sep" style="width: 100px; min-width: 100px; max-width: 130px;">תאור</th>
                 <th rowspan="2" class="calc-th">סה"כ<br>שעות</th>
-                <th rowspan="2" class="col-sep calc-th" title="חושב לפי ימים (חלקי 8)">חופש<br>שבת</th>
+                <th rowspan="2" class="col-sep calc-th" title="צבירת ימים בגין עבודת שבת/חג">חופש<br>שבת</th>
                 
                 <th rowspan="2" class="col-sep calc-th thick-border-left" title="עמודה I">רגילות</th>
                 <th colspan="3" class="col-sep thick-border-left">ש"נ</th>
@@ -407,10 +232,10 @@
         <tbody id="tbody"></tbody>
         <tfoot>
             <tr class="tfoot-summary hours-row">
-                <td colspan="6" class="col-sep hide-print" style="text-align: right; padding-right: 10px;">סה"כ שעות לאחר קיזוז:</td>
-                <td colspan="5" class="col-sep print-only-cell" style="text-align: right; padding-right: 10px;">סה"כ שעות לאחר קיזוז:</td>
+                <td colspan="6" class="col-sep hide-print tfoot-title">שורת סיכום:</td>
+                <td colspan="5" class="col-sep print-only-cell tfoot-title">שורת סיכום:</td>
                 <td id="sum-hours-totalShift"></td>
-                <td id="sum-hours-shabbat" class="col-sep" title="סך הכל ימים"></td>
+                <td id="sum-hours-shabbat" class="col-sep"></td>
                 <td id="sum-hours-I" class="col-sep thick-border-left"></td>
                 <td id="sum-hours-J"></td><td id="sum-hours-K"></td><td id="sum-hours-L" class="col-sep thick-border-left"></td>
                 <td id="sum-hours-M"></td><td id="sum-hours-N" class="col-sep thick-border-left"></td><td id="sum-hours-O"></td><td id="sum-hours-P"></td>
@@ -421,8 +246,8 @@
                 <td id="sum-hours-total" class="col-sep"></td>
             </tr>
             <tr class="tfoot-summary cost-row">
-                <td colspan="6" class="col-sep hide-print" style="text-align: right; padding-right: 10px;">עלות עמודה:</td>
-                <td colspan="5" class="col-sep print-only-cell" style="text-align: right; padding-right: 10px;">עלות עמודה:</td>
+                <td colspan="6" class="col-sep hide-print tfoot-title">ערך עמודה:</td>
+                <td colspan="5" class="col-sep print-only-cell tfoot-title">ערך עמודה:</td>
                 <td id="sum-cost-totalShift"></td>
                 <td id="sum-cost-shabbat" class="col-sep"></td>
                 <td id="sum-cost-I" class="col-sep thick-border-left"></td>
@@ -436,1001 +261,97 @@
             </tr>
         </tfoot>
     </table>
+    
     <div id="printDashboard" class="print-only">
         <div><strong>משמרות:</strong> <span id="printDashShifts">0</span></div>
-        <div><strong>תקן:</strong> <span id="printDashStandard">0.00 ש'</span></div>
-        <div><strong>בפועל:</strong> <span id="printDashGross">0.00 ש'</span></div>
-        <div><strong>אש"ל:</strong> <span id="printDashEshel">0.00 ₪</span></div>
-        <div><strong>חופש שבת:</strong> קודמת <span id="printDashShabbatPrev">0.00</span> | נצבר <span id="printDashShabbatEarned">0.00</span> | קוזז <span id="printDashShabbatDeducted">0.00</span> | <strong>יתרה: <span id="printDashShabbatTotal">0.00</span></strong></div>
+        <div><strong>תקן:</strong> <span id="printDashStandard">0.00</span></div>
+        <div><strong>בפועל:</strong> <span id="printDashGross">0.00</span></div>
+        <div><strong>אש"ל:</strong> <span id="printDashEshel">0.00</span></div>
+        <div><strong>חופש:</strong> <span id="printDashRegTotal">0.00</span></div>
+        <div><strong>ח.שבת:</strong> <span id="printDashShabbatTotal">0.00</span></div>
         <div><strong>ערך ש"נ:</strong> <span id="tlushCostPrint">0.00 ₪</span></div>
     </div>
 </div>
 
 <div class="dashboard" id="summaryPanel" style="display:none;">
-    <div class="dash-card"><h4>כמות משמרות</h4><div id="dashShifts" class="val">0</div></div>
+    <div class="dash-card"><h4>סה"כ משמרות</h4><div id="dashShifts" class="val">0</div></div>
     <div class="dash-card"><h4>שעות תקן</h4><div id="dashStandard" class="val">0.00</div></div>
     <div class="dash-card"><h4>שעות בפועל</h4><div id="dashGross" class="val">0.00</div></div>
-    <div class="dash-card" style="border-top-color: #8e44ad;"><h4>אש"ל (₪)</h4><div id="dashEshel" class="val" style="color: #8e44ad;">0.00 ₪</div></div>
+    <div class="dash-card" style="border-top-color:#8e44ad;"><h4>אש"ל (₪)</h4><div id="dashEshel" class="val" style="color:#8e44ad;">0.00 ₪</div></div>
+    <div class="dash-card tlush-card"><h4>ערך ש"נ</h4><div id="tlushCost" class="val">0.00 ₪</div></div>
     
-    <div class="dash-card shabbat-card">
-        <h4 style="text-align: center; margin-bottom: 8px;">חופש שבת</h4>
-        <div class="row"><span>יתרה קודמת:</span> <strong id="dashShabbatPrev">0.00</strong></div>
-        <div class="row" style="color: #27ae60;"><span>נצבר החודש (+):</span> <strong id="dashShabbatEarned">0.00</strong></div>
-        <div class="row" style="color: #c0392b;"><span>קוזז החודש (-):</span> <strong id="dashShabbatDeducted">0.00</strong></div>
-        <hr style="margin: 6px 0;">
-        <div class="row" style="font-size: 15px; color: #2c3e50;"><strong>יתרה עדכנית:</strong> <strong id="dashShabbatTotal">0.00</strong></div>
+    <div style="width: 100%; height: 10px;"></div>
+
+    <div class="dash-card balance-card">
+        <h4>חופש רגיל</h4>
+        <div class="balance-row"><span>פתיחה:</span>
+            <div class="balance-input-wrap">
+                <input type="number" id="bal_open_reg" class="bal-input locked-input" value="0.00" step="0.01" readonly oninput="updateGrandTotal()">
+                <button class="lock-btn" onclick="toggleLock('bal_open_reg', this)" title="פתח לעריכה">🔒</button>
+            </div>
+        </div>
+        <div class="balance-row"><span>נוצל (-):</span><strong id="bal_used_reg" style="color:#c0392b;">0.00</strong></div>
+        <div class="balance-row" style="font-weight:bold; color:#2c3e50;"><span>יתרה סופית:</span><span id="bal_close_reg">0.00</span></div>
     </div>
     
-    <div class="dash-card tlush-card"><h4>ערך ש"נ</h4><div id="tlushCost" class="val">0.00 ₪</div></div>
+    <div class="dash-card balance-card">
+        <h4>חופש שבת</h4>
+        <div class="balance-row"><span>פתיחה:</span>
+            <div class="balance-input-wrap">
+                <input type="number" id="bal_open_shab" class="bal-input locked-input" value="0.00" step="0.01" readonly oninput="updateGrandTotal()">
+                <button class="lock-btn" onclick="toggleLock('bal_open_shab', this)">🔒</button>
+            </div>
+        </div>
+        <div class="balance-row"><span>תנועה החודש:</span><strong id="bal_used_shab" dir="ltr" style="color:#27ae60;">0.00</strong></div>
+        <div class="balance-row" style="font-weight:bold; color:#2c3e50;"><span>יתרה סופית:</span><span id="bal_close_shab">0.00</span></div>
+    </div>
 
-    <div style="margin-top: 30px; margin-bottom: 10px;">
-        <button class="btn-print btn-3d" id="printBtn" onclick="window.print()">🖨️ הפק דוח בקרת פיצול</button>
+    <div class="dash-card balance-card">
+        <h4>מחלה</h4>
+        <div class="balance-row"><span>פתיחה:</span>
+            <div class="balance-input-wrap">
+                <input type="number" id="bal_open_sick" class="bal-input locked-input" value="0.00" step="0.01" readonly oninput="updateGrandTotal()">
+                <button class="lock-btn" onclick="toggleLock('bal_open_sick', this)">🔒</button>
+            </div>
+        </div>
+        <div class="balance-row"><span>נוצל (-):</span><strong id="bal_used_sick" style="color:#c0392b;">0.00</strong></div>
+        <div class="balance-row" style="font-weight:bold; color:#2c3e50;"><span>יתרה סופית:</span><span id="bal_close_sick">0.00</span></div>
+    </div>
+
+    <div class="dash-card balance-card">
+        <h4>הצהרה / בחירה</h4>
+        <div class="balance-row"><span>פתיחה הצהרה:</span>
+            <div class="balance-input-wrap"><input type="number" id="bal_open_dec" class="bal-input locked-input" value="0.00" step="0.01" readonly oninput="updateGrandTotal()"><button class="lock-btn" onclick="toggleLock('bal_open_dec', this)">🔒</button></div>
+        </div>
+        <div class="balance-row"><span>פתיחה בחירה:</span>
+            <div class="balance-input-wrap"><input type="number" id="bal_open_cho" class="bal-input locked-input" value="0.00" step="0.01" readonly oninput="updateGrandTotal()"><button class="lock-btn" onclick="toggleLock('bal_open_cho', this)">🔒</button></div>
+        </div>
+        <div class="balance-row" style="margin-top:10px;"><span>נוצל הצהרה:</span><strong id="bal_used_dec" style="color:#c0392b;">0</strong></div>
+        <div class="balance-row"><span>נוצל בחירה:</span><strong id="bal_used_cho" style="color:#c0392b;">0</strong></div>
+    </div>
+    
+    <div class="dash-card balance-card" style="width:160px;">
+        <h4>מחלת בן משפחה</h4>
+        <div style="font-size:12px; color:#7f8c8d; margin-bottom:10px; text-align:center;">מעקב ניצול בלבד</div>
+        <div class="balance-row" style="font-size: 15px;"><span>נוצל החודש:</span><strong id="bal_used_fam" style="color:#c0392b;">0.00</strong></div>
+    </div>
+
+    <div style="width: 100%; margin-top: 25px; margin-bottom: 20px; display:flex; justify-content:center; gap:20px;">
+        <button class="btn-close-month btn-3d" id="closeMonthBtn" onclick="closeMonth()">סגור חודש</button>
+        <button class="btn-print btn-3d" id="printBtn" onclick="window.print()">🖨️ הדפס גליון / PDF</button>
     </div>
 </div>
 
-<script>
-    // הגדרות כניסה סמויה 
-    window.isBypassed = false;
-    let clickCount = 0;
-    let clickTimer;
-    
-    window.secretBypass = function(e) {
-        if(e) e.preventDefault();
-        clickCount++;
-        clearTimeout(clickTimer);
-        
-        let titleEls = document.querySelectorAll('#authOverlay h2, #authOverlay .icon-logo, .version-stamp');
-        titleEls.forEach(el => {
-            el.style.opacity = '0.3'; 
-            setTimeout(() => { el.style.opacity = '1'; }, 150);
-        });
+<div class="version-stamp" onclick="secretBypass(event)" title="V">V202610221345</div>
 
-        if(clickCount >= 3) {
-            window.isBypassed = true;
-            
-            let authOv = document.getElementById('authOverlay');
-            if(authOv) authOv.style.display = 'none';
-            
-            let nameOv = document.getElementById('updateNameOverlay');
-            if(nameOv) nameOv.style.display = 'none';
-            
-            let btn = document.getElementById('logoutBtn');
-            if(btn) btn.style.display = 'inline-block';
-            
-            clickCount = 0;
-        }
-        clickTimer = setTimeout(() => { clickCount = 0; }, 2000);
-    };
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-firestore-compat.js"></script>
 
-    // --- Firebase Configuration ---
-    const firebaseConfig = {
-      apiKey: "AIzaSyDzcW_tXO08BxmWki2Imx6sxq_4YKyxBLQ",
-      authDomain: "cot2026.firebaseapp.com",
-      projectId: "cot2026",
-      storageBucket: "cot2026.firebasestorage.app",
-      messagingSenderId: "187692524237",
-      appId: "1:187692524237:web:6127236e55a6a763dc3f84"
-    };
-    firebase.initializeApp(firebaseConfig);
+<!-- Scripts -->
+<script src="holidays_db.js"></script>
+<script src="calculator.js"></script>
 
-    firebase.auth().onAuthStateChanged(function(user) {
-        if (window.isBypassed) return; 
-        if (user) {
-            document.getElementById('authOverlay').style.display = 'none';
-            
-            if (!user.displayName) {
-                document.getElementById('updateNameOverlay').style.display = 'flex';
-                var btn = document.getElementById('logoutBtn');
-                if(btn) btn.style.display = 'none';
-            } else {
-                var updateOverlay = document.getElementById('updateNameOverlay');
-                if(updateOverlay) updateOverlay.style.display = 'none';
-                
-                var btn = document.getElementById('logoutBtn');
-                if(btn) btn.style.display = 'inline-block';
-                
-                document.getElementById('employeeName').value = user.displayName;
-                updateTitles();
-            }
-        } else {
-            document.getElementById('authOverlay').style.display = 'flex';
-            var updateOverlay = document.getElementById('updateNameOverlay');
-            if(updateOverlay) updateOverlay.style.display = 'none';
-            
-            var btn = document.getElementById('logoutBtn');
-            if(btn) btn.style.display = 'none';
-        }
-    });
-
-    window.loginUser = function() {
-        var email = document.getElementById('authEmail').value;
-        var pass = document.getElementById('authPassword').value;
-        var name = document.getElementById('authName').value.trim();
-        document.getElementById('authError').innerText = "";
-        
-        firebase.auth().signInWithEmailAndPassword(email, pass)
-        .then(function(userCredential) {
-            if (name && userCredential.user.displayName !== name) {
-                userCredential.user.updateProfile({ displayName: name }).then(() => {
-                    document.getElementById('employeeName').value = name;
-                    updateTitles();
-                });
-            }
-        })
-        .catch(function(error) {
-            var msg = error.message;
-            if(error.code === 'auth/invalid-credential' || error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') msg = 'אימייל או סיסמה שגויים.';
-            if(error.code === 'auth/invalid-email') msg = 'כתובת אימייל לא חוקית.';
-            document.getElementById('authError').innerText = "שגיאה: " + msg;
-        });
-    };
-
-    window.registerUser = function() {
-        var email = document.getElementById('authEmail').value;
-        var pass = document.getElementById('authPassword').value;
-        var name = document.getElementById('authName').value.trim();
-        document.getElementById('authError').innerText = "";
-        
-        if(!name) {
-            document.getElementById('authError').innerText = "אנא הזן שם עובד לפני ההרשמה.";
-            return;
-        }
-        if(pass.length < 6) {
-            document.getElementById('authError').innerText = "הסיסמה חייבת להכיל לפחות 6 תווים.";
-            return;
-        }
-        
-        firebase.auth().createUserWithEmailAndPassword(email, pass)
-        .then(function(userCredential) {
-            return userCredential.user.updateProfile({
-                displayName: name
-            }).then(function() {
-                document.getElementById('employeeName').value = name;
-                updateTitles();
-            });
-        })
-        .catch(function(error) {
-            var msg = error.message;
-            if(error.code === 'auth/email-already-in-use') msg = 'האימייל כבר קיים במערכת, נסה להתחבר.';
-            if(error.code === 'auth/invalid-email') msg = 'כתובת אימייל לא חוקית.';
-            document.getElementById('authError').innerText = "שגיאה: " + msg;
-        });
-    };
-
-    window.saveMissingName = function() {
-        var name = document.getElementById('missingNameInput').value.trim();
-        var errorDiv = document.getElementById('missingNameError');
-        errorDiv.innerText = "";
-        
-        if(!name) {
-            errorDiv.innerText = "נא להזין שם כדי להמשיך.";
-            return;
-        }
-        
-        var user = firebase.auth().currentUser;
-        if(user) {
-            user.updateProfile({
-                displayName: name
-            }).then(function() {
-                document.getElementById('updateNameOverlay').style.display = 'none';
-                var btn = document.getElementById('logoutBtn');
-                if(btn) btn.style.display = 'inline-block';
-                
-                document.getElementById('employeeName').value = name;
-                updateTitles();
-            }).catch(function(error) {
-                errorDiv.innerText = "שגיאה בעדכון השם: " + error.message;
-            });
-        }
-    };
-
-    window.logoutUser = function() {
-        window.isBypassed = false;
-        firebase.auth().signOut();
-    };
-
-    var daysHebrew = ["א'", "ב'", "ג'", "ד'", "ה'", "ו'", "ש'"];
-    var columnsData = [
-        { id: 'I', factor: 0.0 }, { id: 'J', factor: 1.0 }, { id: 'K', factor: 1.25 }, { id: 'L', factor: 1.5 }, 
-        { id: 'M', factor: 1.75 }, { id: 'N', factor: 2.0 }, { id: 'O', factor: 1.8 }, { id: 'P', factor: 1.875 }, 
-        { id: 'Q', factor: 2.25 }, { id: 'R', factor: 2.5 }, { id: 'S', factor: 0.2 }, { id: 'T', factor: 0.5 }, 
-        { id: 'U', factor: 0.75 }, { id: 'V', factor: 0.875 }, { id: 'W', factor: 1.0 }
-    ];
-
-    function pad2(n) { return (n < 10 ? '0' : '') + n; }
-
-    function getFormattedFileName() {
-        var empName = document.getElementById('employeeName').value.trim();
-        var mSelect = document.getElementById('monthSelect');
-        var monthVal = pad2(parseInt(mSelect.value, 10));
-        var yearVal = document.getElementById('yearInput').value;
-
-        var cleanName = empName.replace(/\s+/g, '_');
-        if (!cleanName) { cleanName = "נתוני_משמרות"; }
-
-        return cleanName + "_" + monthVal + "_" + yearVal;
-    }
-
-    function updateTitles() {
-        var mSelect = document.getElementById('monthSelect');
-        var monthNameParts = mSelect.options[mSelect.selectedIndex].text.split('-');
-        var monthNameClean = monthNameParts.length > 1 ? monthNameParts[1].trim() : monthNameParts[0];
-        var year = document.getElementById('yearInput').value;
-        var empName = document.getElementById('employeeName').value.trim();
-
-        document.getElementById('printMonthYearText').innerText = monthNameClean + " " + year;
-        
-        var sheetTitle = document.getElementById('sheetTitle');
-        var printEmpDisplay = document.getElementById('printEmployeeNameDisplay');
-        
-        var baseTitleStr = "דוח שעות משמרות - " + monthNameClean + " " + year;
-        
-        if (empName !== "") {
-            sheetTitle.innerText = baseTitleStr + " | עובד: " + empName;
-            printEmpDisplay.innerText = "| עובד: " + empName;
-            printEmpDisplay.style.display = "inline-block";
-        } else {
-            sheetTitle.innerText = baseTitleStr;
-            printEmpDisplay.style.display = "none";
-        }
-        
-        document.title = getFormattedFileName();
-    }
-
-    window.openMiniShiftInfo = function() {
-        var modal = document.getElementById('miniShiftInfoModal');
-        if (modal) modal.style.display = "block";
-    };
-
-    window.closeMiniShiftInfo = function() {
-        var modal = document.getElementById('miniShiftInfoModal');
-        if (modal) modal.style.display = "none";
-    };
-
-    window.openShiftInfo = function() {
-        var modal = document.getElementById('shiftInfoModal');
-        if (modal) modal.style.display = "block";
-    };
-
-    window.closeShiftInfo = function() {
-        var modal = document.getElementById('shiftInfoModal');
-        if (modal) modal.style.display = "none";
-    };
-
-    window.onclick = function(event) {
-        var modal = document.getElementById('shiftInfoModal');
-        var miniModal = document.getElementById('miniShiftInfoModal');
-        if (event.target == modal) {
-            modal.style.display = "none";
-        }
-        if (event.target == miniModal) {
-            miniModal.style.display = "none";
-        }
-    };
-
-    window.formatTimeInput = function(input) {
-        var originalVal = input.value.trim();
-        if (originalVal === '') {
-            input.value = '';
-            calculateRow(input);
-            return;
-        }
-        
-        var val = originalVal.replace(/[^\d]/g, '');
-        
-        if (val === '') {
-            input.value = '';
-        } else if (val.length === 1 || val.length === 2) {
-            var h = parseInt(val, 10);
-            if (h > 23) h = 23;
-            input.value = pad2(h) + ':00';
-        } else if (val.length === 3) {
-            var h = parseInt(val.substring(0, 1), 10);
-            var m = parseInt(val.substring(1, 3), 10);
-            if (m > 59) m = 59;
-            input.value = '0' + h + ':' + pad2(m);
-        } else if (val.length >= 4) {
-            var h = parseInt(val.substring(0, 2), 10);
-            var m = parseInt(val.substring(2, 4), 10);
-            if (h > 23) h = 23;
-            if (m > 59) m = 59;
-            input.value = pad2(h) + ':' + pad2(m);
-        }
-        
-        calculateRow(input);
-    };
-
-    window.loadData = function() {
-        var fileInput = document.getElementById('fileLoader');
-        if (fileInput) {
-            fileInput.click();
-        } else {
-            alert("שגיאה: כפתור טעינת הקובץ לא הוגדר כראוי.");
-        }
-    };
-
-    window.saveData = async function() {
-        var monthVal = document.getElementById('monthSelect').value;
-        var yearVal = document.getElementById('yearInput').value;
-        
-        var data = {
-            month: monthVal,
-            year: yearVal,
-            hourlyRate: document.getElementById('hourlyRate').value,
-            eshelRate: document.getElementById('eshelRate').value,
-            shabbatBalance: document.getElementById('shabbatBalance').value,
-            employeeName: document.getElementById('employeeName').value,
-            shifts: []
-        };
-        
-        var tbody = document.getElementById('tbody');
-        if (tbody) {
-            var rows = tbody.querySelectorAll('tr:not(.tfoot-summary)');
-            rows.forEach(function(tr) {
-                var shiftInput = tr.querySelector('.shift-type-input');
-                var timeInputs = tr.querySelectorAll('.time-input');
-                if (shiftInput && timeInputs.length >= 2) {
-                    data.shifts.push({
-                        shiftType: shiftInput.value,
-                        start: timeInputs[0].value,
-                        end: timeInputs[1].value
-                    });
-                }
-            });
-        }
-
-        var jsonString = JSON.stringify(data);
-        var filename = getFormattedFileName() + ".json";
-
-        try {
-            if (window.showSaveFilePicker) {
-                const opts = {
-                    suggestedName: filename,
-                    types: [{
-                        description: 'JSON File',
-                        accept: {'application/json': ['.json']},
-                    }],
-                };
-                const handle = await window.showSaveFilePicker(opts);
-                const writable = await handle.createWritable();
-                await writable.write(jsonString);
-                await writable.close();
-            } else {
-                var blob = new Blob([jsonString], {type: "application/json"});
-                var url = URL.createObjectURL(blob);
-                var a = document.createElement('a');
-                a.href = url;
-                a.download = filename;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-            }
-        } catch (err) {
-            if (err.name !== 'AbortError') {
-                alert("שגיאה בשמירת הקובץ.");
-            }
-        }
-    };
-
-    window.handleFileLoad = function(event) {
-        var file = event.target.files[0];
-        if (!file) return;
-
-        var reader = new FileReader();
-        reader.onload = async function(e) {
-            try {
-                var data = JSON.parse(e.target.result);
-                
-                if (data.month) document.getElementById('monthSelect').value = data.month;
-                if (data.year) document.getElementById('yearInput').value = data.year;
-                if (data.hourlyRate) document.getElementById('hourlyRate').value = data.hourlyRate;
-                if (data.eshelRate) document.getElementById('eshelRate').value = data.eshelRate;
-                if (data.shabbatBalance !== undefined) document.getElementById('shabbatBalance').value = data.shabbatBalance;
-                if (data.employeeName !== undefined) document.getElementById('employeeName').value = data.employeeName;
-
-                updateTitles();
-                await generateTable(); 
-
-                var tbody = document.getElementById('tbody');
-                var rows = tbody.querySelectorAll('tr');
-                
-                for (var i = 0; i < rows.length && i < data.shifts.length; i++) {
-                    var tr = rows[i];
-                    if(!tr) continue;
-                    var shiftInput = tr.querySelector('.shift-type-input');
-                    var timeInputs = tr.querySelectorAll('.time-input');
-                    
-                    if (shiftInput) shiftInput.value = data.shifts[i].shiftType || '';
-                    if (timeInputs.length >= 2) {
-                        timeInputs[0].value = data.shifts[i].start || '';
-                        timeInputs[1].value = data.shifts[i].end || '';
-                        calculateRow(timeInputs[0]); 
-                    }
-                }
-                
-                event.target.value = '';
-                alert('הנתונים נטענו בהצלחה!');
-            } catch(err) {
-                alert("שגיאה בטעינת הקובץ.");
-            }
-        };
-        reader.readAsText(file);
-    };
-
-    window.generateTable = async function() {
-        try {
-            var month = parseInt(document.getElementById('monthSelect').value, 10);
-            var year = parseInt(document.getElementById('yearInput').value, 10);
-            if (!year || isNaN(year)) { return; }
-
-            updateTitles();
-            
-            window.currentHolidays = {};
-            try {
-                var btn = document.querySelector('.btn-primary');
-                var oldText = btn.innerText;
-                btn.innerText = "טוען חגים...";
-                btn.disabled = true;
-                var response = await fetch(`https://www.hebcal.com/hebcal?v=1&cfg=json&maj=on&il=on&year=${year}&month=${month}`);
-                var data = await response.json();
-                if (data && data.items) {
-                    data.items.forEach(function(item) {
-                        if (item.category === 'holiday' || item.category === 'yomtov') {
-                            var hebClean = item.hebrew.replace(/[\u0591-\u05C7]/g, '');
-                            var titleLow = item.title.toLowerCase();
-                            
-                            var isEve = titleLow.indexOf('erev') !== -1 || hebClean.indexOf('ערב') === 0;
-                            var isCholHamoed = item.subcat === 'cholhamoed' || titleLow.indexOf('chol hamoed') !== -1 || hebClean.indexOf('חול המועד') !== -1 || hebClean.indexOf('סוכות ב') !== -1;
-                            
-                            var isYomTov = (item.yomtov === true || item.title.indexOf('Yom HaAtzmaut') !== -1) && !isEve && !isCholHamoed;
-                            
-                            window.currentHolidays[item.date] = {
-                                type: isEve ? 'eve' : (isYomTov ? 'holiday' : 'other'),
-                                hebrew: hebClean
-                            };
-                        }
-                    });
-                }
-                btn.innerText = oldText;
-                btn.disabled = false;
-            } catch(e) {
-                console.error("Hebcal API error: ", e);
-                if(btn) { btn.innerText = "הכן גיליון"; btn.disabled = false; }
-            }
-
-            var daysInMonth = new Date(year, month, 0).getDate();
-            var tbody = document.getElementById('tbody');
-            var htmlContent = '';
-            
-            for (var i = 1; i <= daysInMonth; i++) {
-                var dateObj = new Date(year, month - 1, i);
-                var dayNum = dateObj.getDay(); 
-                var dateStr = pad2(i); 
-                
-                var rowSatClass = (dayNum === 6) ? "row-sat" : "";
-                var dayClass = (dayNum === 5) ? "day-fri" : (dayNum === 6) ? "day-sat" : "";
-
-                var curDateStr = year + "-" + pad2(month) + "-" + pad2(i);
-                var holObj = window.currentHolidays ? window.currentHolidays[curDateStr] : null;
-                var holText = holObj ? holObj.hebrew : '';
-                var descColor = holObj ? '#e74c3c' : '#1565c0';
-
-                htmlContent += '<tr class="' + rowSatClass + '">' +
-                    '<td class="'+dayClass+'" style="width: 30px; min-width: 30px; max-width: 35px;">' + dateStr + '</td>' +
-                    '<td class="'+dayClass+' col-sep" style="width: 30px; min-width: 30px; max-width: 35px;">' + daysHebrew[dayNum] + '</td>' +
-                    '<td class="'+dayClass+' col-sep hide-print"><input type="text" class="shift-type-input" maxlength="3" style="width: 35px; padding: 2px;" onkeyup="handleShiftType(this)" onchange="handleShiftType(this)" oninput="handleShiftType(this)"></td>' +
-                    '<td class="'+dayClass+' print-thick-right"><input type="text" class="time-input empty-print" maxlength="5" placeholder="" onchange="formatTimeInput(this)" data-date="'+year+'-'+month+'-'+i+'"></td>' +
-                    '<td class="col-sep '+dayClass+'"><input type="text" class="time-input empty-print" maxlength="5" placeholder="" onchange="formatTimeInput(this)"></td>' +
-                    '<td class="'+dayClass+' col-sep" id="val-desc-'+i+'" style="font-size: 12px; font-weight: bold; color: '+descColor+'; background-color: #f8fbff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" data-hol="'+holText+'">' + holText + '</td>' +
-                    '<td class="val-cell '+dayClass+'" id="val-total-hours-'+i+'" data-val="0"></td>' +
-                    '<td class="col-sep val-cell '+dayClass+'" id="val-shabbat-hours-'+i+'" data-val="0"></td>' +
-                    '<td class="col-sep val-cell '+dayClass+' thick-border-left" id="val-I-'+i+'" data-val="0"></td>' +
-                    '<td class="val-cell '+dayClass+'" id="val-J-'+i+'" data-val="0"></td>' +
-                    '<td class="val-cell '+dayClass+'" id="val-K-'+i+'" data-val="0"></td>' +
-                    '<td class="col-sep val-cell '+dayClass+' thick-border-left" id="val-L-'+i+'" data-val="0"></td>' +
-                    '<td class="val-cell '+dayClass+'" id="val-M-'+i+'" data-val="0"></td>' +
-                    '<td class="col-sep val-cell '+dayClass+' thick-border-left" id="val-N-'+i+'" data-val="0"></td>' +
-                    '<td class="val-cell '+dayClass+'" id="val-O-'+i+'" data-val="0"></td>' +
-                    '<td class="val-cell '+dayClass+'" id="val-P-'+i+'" data-val="0"></td>' +
-                    '<td class="val-cell '+dayClass+'" id="val-Q-'+i+'" data-val="0"></td>' +
-                    '<td class="col-sep val-cell '+dayClass+' thick-border-left" id="val-R-'+i+'" data-val="0"></td>' +
-                    '<td class="val-cell '+dayClass+'" id="val-S-'+i+'" data-val="0"></td>' +
-                    '<td class="val-cell '+dayClass+'" id="val-T-'+i+'" data-val="0"></td>' +
-                    '<td class="val-cell '+dayClass+'" id="val-U-'+i+'" data-val="0"></td>' +
-                    '<td class="val-cell '+dayClass+'" id="val-V-'+i+'" data-val="0"></td>' +
-                    '<td class="col-sep val-cell '+dayClass+' thick-border-left" id="val-W-'+i+'" data-val="0"></td>' +
-                    '<td class="col-sep val-cell '+dayClass+' thick-border-left" id="val-cost-'+i+'" data-is-shift="0" data-cost="0" data-gross="0" data-shabbat="0" data-isholiday="0" data-isregholiday="0"></td>' +
-                '</tr>';
-            }
-            tbody.innerHTML = htmlContent;
-            document.getElementById('tableContainer').style.display = 'block';
-            document.getElementById('summaryPanel').style.display = 'block';
-            document.getElementById('printBtn').style.display = 'inline-block';
-            updateGrandTotal();
-        } catch (error) {
-            console.error("שגיאה ביצירת הטבלה: ", error);
-        }
-    };
-
-    window.handleShiftType = function(input) {
-        var val = input.value.trim().replace(/"/g, '').replace(/'/g, ''); 
-        var tr = input;
-        while (tr && tr.tagName !== 'TR') { tr = tr.parentNode; }
-        if (!tr) return;
-
-        var timeInputs = tr.querySelectorAll('.time-input');
-        if (!timeInputs || timeInputs.length < 2) return;
-
-        var shifts = {
-            'ב': ['07:00', '19:00'],
-            'ל': ['19:00', '07:00'],
-            '615': ['06:00', '15:00'],
-            '616': ['06:00', '16:00'],
-            '617': ['06:00', '17:00'],
-            'ב06': ['07:00', '18:00'],
-            'ב16': ['07:00', '16:00'],
-            '102': ['10:00', '20:00'],
-            '111': ['11:00', '20:00'],
-            '112': ['11:00', '22:15'],
-            '132': ['13:00', '22:15'],
-            '207': ['20:00', '07:00'],
-            '217': ['21:00', '07:00'],
-            '227': ['22:00', '07:00'],
-            '228': ['22:00', '08:00']
-        };
-
-        if (shifts[val]) {
-            timeInputs[0].value = shifts[val][0];
-            timeInputs[1].value = shifts[val][1];
-            timeInputs[0].classList.remove('empty-print');
-            timeInputs[1].classList.remove('empty-print');
-        } else if (['ח', 'חש', 'מח', 'הס', 'בח', 'מבמ', 'הכ'].includes(val) || val === '') {
-            timeInputs[0].value = '';
-            timeInputs[1].value = '';
-            timeInputs[0].classList.add('empty-print');
-            timeInputs[1].classList.add('empty-print');
-        }
-        
-        calculateRow(timeInputs[0]);
-    };
-
-    window.calculateRow = function(inputElem) {
-        try {
-            var tr = inputElem;
-            while (tr && tr.tagName !== 'TR') { tr = tr.parentNode; }
-            
-            var timeInputs = tr.querySelectorAll('.time-input');
-            var startInput = timeInputs[0].value;
-            var endInput = timeInputs[1].value;
-            
-            if (startInput) { timeInputs[0].classList.remove('empty-print'); } else { timeInputs[0].classList.add('empty-print'); }
-            if (endInput) { timeInputs[1].classList.remove('empty-print'); } else { timeInputs[1].classList.add('empty-print'); }
-
-            var dateString = timeInputs[0].getAttribute('data-date');
-            var rowId = dateString.split('-')[2]; 
-            var costCell = document.getElementById('val-cost-' + rowId);
-            var totalHoursCell = document.getElementById('val-total-hours-' + rowId);
-            var shabbatHoursCell = document.getElementById('val-shabbat-hours-' + rowId);
-            
-            var shiftInput = tr.querySelector('.shift-type-input');
-            var shiftVal = shiftInput ? shiftInput.value.trim().replace(/"/g, '').replace(/'/g, '') : '';
-            var isRegHol = ['ח', 'מח', 'הס', 'בח', 'מבמ', 'הכ'].includes(shiftVal);
-            var isShabHol = (shiftVal === 'חש');
-
-            var descCell = document.getElementById('val-desc-' + rowId);
-            if (descCell) {
-                var holText = descCell.getAttribute('data-hol') || '';
-                var descMap = { 
-                    'ב': 'נוכחות', 'ל': 'נוכחות', '615': 'נוכחות', '616': 'נוכחות', '617': 'נוכחות', 
-                    'ב06': 'נוכחות', 'ב16': 'נוכחות', '102': 'נוכחות', '111': 'נוכחות', '112': 'נוכחות', 
-                    '132': 'נוכחות', '207': 'נוכחות', '217': 'נוכחות', '227': 'נוכחות', '228': 'נוכחות', 
-                    'ח': 'חופש', 'חש': 'חופש שבת', 'מח': 'מחלה', 'הס': 'עפ"י הסכם', 'בח': 'בחירה', 
-                    'מבמ': 'מחלת בן משפחה', 'הכ': 'הכשרה' 
-                };
-                var baseDesc = '';
-                if (shiftVal && descMap[shiftVal]) {
-                    baseDesc = descMap[shiftVal];
-                } else if (startInput && endInput) {
-                    baseDesc = 'נוכחות';
-                }
-                
-                if (baseDesc && holText) {
-                    descCell.innerText = baseDesc + " (" + holText + ")";
-                } else if (baseDesc) {
-                    descCell.innerText = baseDesc;
-                } else if (holText) {
-                    descCell.innerText = holText;
-                } else {
-                    descCell.innerText = '';
-                }
-            }
-
-            if (!startInput || !endInput || startInput.indexOf(':') === -1 || endInput.indexOf(':') === -1) {
-                if (totalHoursCell) { totalHoursCell.innerText = ''; totalHoursCell.setAttribute('data-val', '0'); }
-                if (shabbatHoursCell) {
-                    if (isShabHol) { shabbatHoursCell.innerText = '-1.00'; shabbatHoursCell.setAttribute('data-val', '-1'); } 
-                    else { shabbatHoursCell.innerText = ''; shabbatHoursCell.setAttribute('data-val', '0'); }
-                }
-                
-                for(var c = 0; c < columnsData.length; c++) {
-                    var cell1 = document.getElementById('val-' + columnsData[c].id + '-' + rowId);
-                    if(cell1) { 
-                        if (columnsData[c].id === 'I' && (isRegHol || isShabHol)) { cell1.innerText = '8.00'; cell1.setAttribute('data-val', '8'); } 
-                        else { cell1.innerText = ''; cell1.setAttribute('data-val', '0'); }
-                    }
-                }
-                if(costCell) { costCell.innerText = ''; costCell.setAttribute('data-is-shift', '0'); costCell.setAttribute('data-cost', '0'); costCell.setAttribute('data-gross', '0'); costCell.setAttribute('data-shabbat', '0'); }
-                updateGrandTotal(); return;
-            }
-
-            var rate = parseFloat(document.getElementById('hourlyRate').value) || 0;
-            var parts = dateString.split('-');
-            var shiftMonth = parseInt(parts[1], 10);
-            var shiftDate = new Date(parts[0], shiftMonth-1, parts[2]);
-            var baseDay = shiftDate.getDay() + 1; 
-
-            var startParts = startInput.split(':'), endParts = endInput.split(':');
-            var startH = parseInt(startParts[0], 10), startM = parseInt(startParts[1], 10);
-            var endH = parseInt(endParts[0], 10), endM = parseInt(endParts[1], 10);
-
-            var dStart = startH + startM / 60, dEnd = endH + endM / 60;
-            if (dEnd <= dStart) dEnd += 24;
-
-            var totalMinutes = Math.round((dEnd - dStart) * 60);
-            
-            if (totalHoursCell) {
-                var displayHours = (totalMinutes / 60);
-                if (displayHours > 0) { totalHoursCell.innerText = displayHours.toFixed(2); totalHoursCell.setAttribute('data-val', displayHours); } 
-                else { totalHoursCell.innerText = ''; totalHoursCell.setAttribute('data-val', '0'); }
-            }
-
-            var shabbatStartHour = (shiftMonth >= 4 && shiftMonth <= 9) ? 18 : 17;
-            
-            var nightMinutesCount = 0;
-            var afternoonMinutesCount = 0; 
-            for (var i = 1; i <= totalMinutes; i++) {
-                var cHourDec = (dStart + (i - 0.5) / 60) % 24;
-                if (cHourDec >= 22 || cHourDec < 6) nightMinutesCount++;
-                if (cHourDec >= 14 && cHourDec < 22) afternoonMinutesCount++; 
-            }
-            var isNightShift = nightMinutesCount >= 120;
-            
-            var startHourDec = startH + startM / 60;
-            var qualifiesForAfternoon = true;
-            if (startHourDec < 14 && afternoonMinutesCount < 180) {
-                qualifiesForAfternoon = false;
-            }
-            
-            var enteredBefore3 = (startHourDec >= 12 || startHourDec <= 3.0);
-
-            var m = { I:0, J:0, K:0, L:0, M:0, N:0, O:0, P:0, Q:0, R:0, S:0, T:0, U:0, V:0, W:0 };
-            var shabbatMinutesCount = 0;
-
-            var baseDateStr = shiftDate.getFullYear() + "-" + pad2(shiftDate.getMonth()+1) + "-" + pad2(shiftDate.getDate());
-            var baseHolObj = window.currentHolidays ? window.currentHolidays[baseDateStr] : null;
-            var isBaseDayErevHag = (baseHolObj && baseHolObj.type === 'eve');
-            var isBaseDayHoliday = (baseHolObj && baseHolObj.type === 'holiday');
-
-            if (baseDay === 6 && isBaseDayErevHag && !isNightShift) {
-                m.I = Math.min(totalMinutes, 330);                  // 5.50 שעות תקן
-                m.J = Math.max(0, Math.min(totalMinutes - 330, 60)); // 1.00 שעה ב-100%
-                m.K = Math.max(0, Math.min(totalMinutes - 390, 120)); // 2.00 שעות ב-125%
-                var remMins = Math.max(0, totalMinutes - 510);       // יתרת השעות (2.20 שעות)
-                m.L = remMins;                                       // 2.20 שעות ב-150%
-                m.O = remMins;                                       // 2.20 שעות ב-180%
-            } else {
-                // חישוב רגיל לכל שאר ימי השנה
-                var ot1_Minutes = 8 * 60, ot2_Minutes = 10 * 60;
-                if (baseDay === 6) {
-                    ot1_Minutes = 6.5 * 60;
-                    ot2_Minutes = 8.5 * 60;
-                } else if (isNightShift) {
-                    ot1_Minutes = 7 * 60;
-                    ot2_Minutes = 9 * 60;
-                }
-
-                for (var j = 1; j <= totalMinutes; j++) {
-                    var absH = dStart + (j - 0.5) / 60;
-                    var cDayNum2 = ((baseDay - 1 + Math.floor(absH / 24)) % 7) + 1;
-                    var cHourDec2 = absH % 24;
-                    
-                    var minuteDate = new Date(shiftDate.getTime());
-                    if (absH >= 24) { minuteDate.setDate(minuteDate.getDate() + 1); }
-                    var minDateStr = minuteDate.getFullYear() + "-" + pad2(minuteDate.getMonth()+1) + "-" + pad2(minuteDate.getDate());
-                    var holObj = window.currentHolidays ? window.currentHolidays[minDateStr] : null;
-
-                    var prevDate = new Date(minuteDate.getTime());
-                    prevDate.setDate(prevDate.getDate() - 1);
-                    var prevDateStr = prevDate.getFullYear() + "-" + pad2(prevDate.getMonth()+1) + "-" + pad2(prevDate.getDate());
-                    var prevHolObj = window.currentHolidays ? window.currentHolidays[prevDateStr] : null;
-
-                    // 1. חישוב שבת קשיח (נעצר ב-06:00 בבוקר שאחרי החג/שבת)
-                    var isStrictShab = false;
-                    if (cDayNum2 === 6 && cHourDec2 >= shabbatStartHour) { isStrictShab = true; } 
-                    else if (cDayNum2 === 7) { isStrictShab = true; } 
-                    else if (cDayNum2 === 1 && cHourDec2 < 6) { isStrictShab = true; }
-                    
-                    if (holObj && holObj.type === 'holiday') { isStrictShab = true; }
-                    if (prevHolObj && prevHolObj.type === 'holiday' && cHourDec2 < 6) { isStrictShab = true; }
-
-                    // 2. חישוב לשכר עבודה: משמרת לילה שהתחילה בחג ממשיכה כשבת למשך כל המשמרת
-                    var isShab = isStrictShab;
-                    if (isBaseDayHoliday && isNightShift) { isShab = true; }
-
-                    // 3. צבירת חופש שבת (לפי הכלל הקשיח שעוצר ב-06:00, וללא צבירה בבוקר של שישי ערב חג)
-                    var isShabForVacation = isStrictShab;
-                    if (baseDay === 6 && isBaseDayErevHag && !isNightShift) {
-                        isShabForVacation = false;
-                    }
-                    if (isShabForVacation) { shabbatMinutesCount++; }
-
-                    var isNight = (cHourDec2 >= 22 || cHourDec2 < 6);
-                    
-                    if (isNightShift && enteredBefore3) {
-                        var morning6AM = (startH < 6) ? 6 : 30; 
-                        if (absH >= morning6AM) {
-                            isNight = true; 
-                        }
-                    }
-                    if (isBaseDayHoliday && isNightShift && j > ot1_Minutes) {
-                        isNight = true;
-                    }
-                    
-                    var payMult = 1.0;
-                    if (isShab) payMult = isNight ? 2.0 : 1.75; 
-                    else if (isNight) payMult = 1.5; 
-                    else if (cHourDec2 >= 14 && cHourDec2 < 22 && qualifiesForAfternoon) payMult = 1.2;
-                    
-                    var otMult = 1.0; 
-                    if (j > ot2_Minutes) otMult = 1.5; 
-                    else if (j > ot1_Minutes) otMult = 1.25;
-
-                    var fMult = Math.round((isShab ? payMult + (otMult - 1) : payMult * otMult) * 1000) / 1000;
-                    
-                    if (otMult === 1.0) {
-                        if (isShab) {
-                            m.I++; 
-                            if (payMult === 1.75) m.U++; else if (payMult === 2.0) m.W++; 
-                        } else {
-                            m.I++; 
-                            if (payMult === 1.2) m.S++; else if (payMult === 1.5) m.T++; 
-                        }
-                    } else {
-                        if (fMult === 1.25) m.K++; 
-                        else if (fMult === 1.5) m.L++; 
-                        else if (fMult === 1.75) m.M++;
-                        else if (fMult === 1.8) m.O++; 
-                        else if (fMult === 1.875) m.P++; 
-                        else if (fMult === 2.0) m.N++; 
-                        else if (fMult === 2.25) m.Q++; 
-                        else if (fMult === 2.5) m.R++; 
-                        else { if (!isShab && otMult === 1.25) m.K++; else m.J++; }
-                    }
-                }
-            }
-
-            if (isRegHol || isShabHol) { m.I += 480; }
-
-            if (shabbatHoursCell) {
-                var displayShabDays = (shabbatMinutesCount / 60) / 8;
-                if (isShabHol) displayShabDays -= 1; 
-
-                if (displayShabDays !== 0) { shabbatHoursCell.innerText = displayShabDays.toFixed(2); shabbatHoursCell.setAttribute('data-val', displayShabDays); } 
-                else { shabbatHoursCell.innerText = ''; shabbatHoursCell.setAttribute('data-val', '0'); }
-            }
-
-            var dailyCost = 0;
-            for(var idx = 0; idx < columnsData.length; idx++) {
-                var col2 = columnsData[idx];
-                var cell2 = document.getElementById('val-' + col2.id + '-' + rowId);
-                if(cell2) {
-                    if (m[col2.id] > 0) {
-                        var hours = m[col2.id] / 60;
-                        cell2.innerText = hours.toFixed(2); cell2.setAttribute('data-val', hours);
-                        dailyCost += (hours * col2.factor * rate);
-                    } else { cell2.innerText = ''; cell2.setAttribute('data-val', '0'); }
-                }
-            }
-            if(costCell) {
-                costCell.innerText = dailyCost > 0 ? dailyCost.toFixed(2) : '';
-                costCell.setAttribute('data-is-shift', '1'); 
-                costCell.setAttribute('data-cost', dailyCost);
-                costCell.setAttribute('data-gross', totalMinutes); 
-            }
-            window.updateGrandTotal();
-        } catch(e) { alert("שגיאה בחישוב השורה: " + e.message); }
-    };
-
-    window.updateGrandTotal = function() {
-        var rate = parseFloat(document.getElementById('hourlyRate').value) || 0;
-        var totalDailyCostSum = 0, totalGrossMin = 0, totalShifts = 0;
-        var totalHoursOverall = 0, sumTotalShiftHours = 0, sumTotalShabbatDays = 0;
-        var deductedShabbatDays = 0; 
-        
-        var colTotals = {};
-        for(var c=0; c<columnsData.length; c++) { colTotals[columnsData[c].id] = 0; }
-
-        for(var r=1; r<=31; r++) {
-            var cell = document.getElementById('val-cost-' + r);
-            if(!cell) continue;
-
-            var cellTH = document.getElementById('val-total-hours-' + r);
-            if (cellTH) sumTotalShiftHours += parseFloat(cellTH.getAttribute('data-val') || 0);
-            
-            var cellSH = document.getElementById('val-shabbat-hours-' + r);
-            if (cellSH) sumTotalShabbatDays += parseFloat(cellSH.getAttribute('data-val') || 0);
-
-            var shiftInput = document.querySelector('tr:nth-child(' + r + ') .shift-type-input');
-            var shiftVal = shiftInput ? shiftInput.value.trim().replace(/"/g, '').replace(/'/g, '') : '';
-            var isShabHoliday = (shiftVal === 'חש');
-            var isRegHoliday = ['ח', 'מח', 'הס', 'בח', 'מבמ', 'הכ'].includes(shiftVal);
-            var hasShift = cell.getAttribute('data-is-shift') === '1';
-
-            if (isShabHoliday) {
-                deductedShabbatDays += 1; 
-            }
-
-            if (hasShift || isShabHoliday || isRegHoliday) {
-                if (hasShift) {
-                    totalShifts++;
-                    totalDailyCostSum += parseFloat(cell.getAttribute('data-cost') || 0);
-                    totalGrossMin += parseInt(cell.getAttribute('data-gross') || 0, 10);
-                }
-                for(var i=0; i<columnsData.length; i++) {
-                    var cellValElem = document.getElementById('val-' + columnsData[i].id + '-' + r);
-                    if(cellValElem) colTotals[columnsData[i].id] += parseFloat(cellValElem.getAttribute('data-val') || 0);
-                }
-            }
-        }
-        
-        var sumHoursTotalShiftCell = document.getElementById('sum-hours-totalShift');
-        if (sumHoursTotalShiftCell) sumHoursTotalShiftCell.innerText = sumTotalShiftHours > 0 ? sumTotalShiftHours.toFixed(2) : ''; 
-
-        var sumHoursShabbatCell = document.getElementById('sum-hours-shabbat');
-        if (sumHoursShabbatCell) sumHoursShabbatCell.innerText = sumTotalShabbatDays !== 0 ? sumTotalShabbatDays.toFixed(2) : ''; 
-
-        var tlushCost = 0;
-        for(var k=0; k<columnsData.length; k++) { 
-            var colX = columnsData[k];
-            var colHours = colTotals[colX.id];
-            var colCost = colHours * colX.factor * rate;
-            tlushCost += colCost;
-            totalHoursOverall += colHours;
-            
-            var sumHoursCell = document.getElementById('sum-hours-' + colX.id);
-            if (sumHoursCell) sumHoursCell.innerText = colHours > 0 ? colHours.toFixed(2) : ''; 
-
-            var sumCostCell = document.getElementById('sum-cost-' + colX.id);
-            if (sumCostCell) sumCostCell.innerText = colCost > 0 ? colCost.toFixed(2) : ''; 
-        }
-        
-        var sumHoursTotalCell = document.getElementById('sum-hours-total');
-        if (sumHoursTotalCell) sumHoursTotalCell.innerText = totalHoursOverall > 0 ? totalHoursOverall.toFixed(2) : '0.00'; 
-
-        var sumTotalCell = document.getElementById('sum-cost-total');
-        if (sumTotalCell) sumTotalCell.innerText = tlushCost > 0 ? tlushCost.toFixed(2) : '0.00'; 
-        
-        var eshelRate = parseFloat(document.getElementById('eshelRate').value) || 0;
-        var eshelCost = Math.floor((totalGrossMin / 60) / 8) * eshelRate;
-        
-        var prevShabbatBalance = parseFloat(document.getElementById('shabbatBalance').value) || 0;
-        var earnedShabbatDays = sumTotalShabbatDays + deductedShabbatDays; 
-        var finalShabbatTotal = prevShabbatBalance + sumTotalShabbatDays; 
-        
-        var totalStandardHours = colTotals['I'] || 0;
-
-        document.getElementById('dashShifts').innerText = totalShifts;
-        document.getElementById('dashStandard').innerText = totalStandardHours.toFixed(2);
-        document.getElementById('dashGross').innerText = (totalGrossMin / 60).toFixed(2);
-        document.getElementById('dashEshel').innerText = eshelCost.toFixed(2) + ' ₪';
-        
-        if(document.getElementById('dashShabbatPrev')) document.getElementById('dashShabbatPrev').innerText = prevShabbatBalance.toFixed(2);
-        if(document.getElementById('dashShabbatEarned')) document.getElementById('dashShabbatEarned').innerText = earnedShabbatDays.toFixed(2);
-        if(document.getElementById('dashShabbatDeducted')) document.getElementById('dashShabbatDeducted').innerText = deductedShabbatDays.toFixed(2);
-        if(document.getElementById('dashShabbatTotal')) document.getElementById('dashShabbatTotal').innerText = finalShabbatTotal.toFixed(2);
-
-        document.getElementById('tlushCost').innerText = tlushCost.toFixed(2) + ' ₪';
-        
-        if(document.getElementById('printDashShifts')) document.getElementById('printDashShifts').innerText = totalShifts;
-        if(document.getElementById('printDashStandard')) document.getElementById('printDashStandard').innerText = totalStandardHours.toFixed(2) + " ש'";
-        if(document.getElementById('printDashGross')) document.getElementById('printDashGross').innerText = (totalGrossMin / 60).toFixed(2) + " ש'";
-        if(document.getElementById('printDashEshel')) document.getElementById('printDashEshel').innerText = eshelCost.toFixed(2) + ' ₪';
-        
-        if(document.getElementById('printDashShabbatPrev')) document.getElementById('printDashShabbatPrev').innerText = prevShabbatBalance.toFixed(2);
-        if(document.getElementById('printDashShabbatEarned')) document.getElementById('printDashShabbatEarned').innerText = earnedShabbatDays.toFixed(2);
-        if(document.getElementById('printDashShabbatDeducted')) document.getElementById('printDashShabbatDeducted').innerText = deductedShabbatDays.toFixed(2);
-        if(document.getElementById('printDashShabbatTotal')) document.getElementById('printDashShabbatTotal').innerText = finalShabbatTotal.toFixed(2);
-
-        if(document.getElementById('tlushCostPrint')) document.getElementById('tlushCostPrint').innerText = tlushCost.toFixed(2) + ' ₪';
-    };
-
-    document.addEventListener('keydown', function(e) {
-        if (['ArrowDown', 'ArrowUp', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
-            var el = e.target;
-            if (el.tagName === 'INPUT' && (el.classList.contains('shift-type-input') || el.classList.contains('time-input'))) {
-                if (el.classList.contains('time-input') && (e.key === 'ArrowLeft' || e.key === 'ArrowRight')) {
-                    return; 
-                }
-                var tbody = document.getElementById('tbody');
-                var tr = el.closest('tr');
-                if (!tr) return;
-                var inputsInRow = Array.from(tr.querySelectorAll('input.shift-type-input, input.time-input'));
-                var inputIndex = inputsInRow.indexOf(el);
-                var targetInput = null;
-
-                if (e.key === 'ArrowDown') {
-                    var targetTr = tr.nextElementSibling;
-                    if (targetTr) {
-                        var targetInputs = Array.from(targetTr.querySelectorAll('input.shift-type-input, input.time-input'));
-                        if (targetInputs[inputIndex]) targetInput = targetInputs[inputIndex];
-                    }
-                } else if (e.key === 'ArrowUp') {
-                    var targetTr = tr.previousElementSibling;
-                    if (targetTr) {
-                        var targetInputs = Array.from(targetTr.querySelectorAll('input.shift-type-input, input.time-input'));
-                        if (targetInputs[inputIndex]) targetInput = targetInputs[inputIndex];
-                    }
-                } else if (e.key === 'ArrowLeft') {
-                    if (inputIndex < inputsInRow.length - 1) { targetInput = inputsInRow[inputIndex + 1]; } 
-                    else {
-                        var nextTr = tr.nextElementSibling;
-                        if (nextTr) {
-                            var nextInputs = Array.from(nextTr.querySelectorAll('input.shift-type-input, input.time-input'));
-                            if (nextInputs.length > 0) targetInput = nextInputs[0];
-                        }
-                    }
-                } else if (e.key === 'ArrowRight') {
-                    if (inputIndex > 0) { targetInput = inputsInRow[inputIndex - 1]; } 
-                    else {
-                        var prevTr = tr.previousElementSibling;
-                        if (prevTr) {
-                            var prevInputs = Array.from(prevTr.querySelectorAll('input.shift-type-input, input.time-input'));
-                            if (prevInputs.length > 0) targetInput = prevInputs[prevInputs.length - 1];
-                        }
-                    }
-                }
-                if (targetInput) {
-                    e.preventDefault(); 
-                    targetInput.focus();
-                    if(targetInput.type === 'text') targetInput.select();
-                }
-            }
-        }
-    });
-
-    window.clearData = function() {
-        document.getElementById('employeeName').value = "";
-        document.getElementById('hourlyRate').value = "0.00";
-        document.getElementById('eshelRate').value = "52.66";
-        document.getElementById('shabbatBalance').value = "0.00";
-        
-        var now = new Date();
-        var prevMonth = now.getMonth(); 
-        var calcYear = now.getFullYear();
-        if (prevMonth === 0) { prevMonth = 12; calcYear--; }
-        document.getElementById('yearInput').value = calcYear;
-        document.getElementById('monthSelect').value = prevMonth;
-        
-        var tbody = document.getElementById('tbody');
-        if (tbody) tbody.innerHTML = '';
-        
-        document.getElementById('tableContainer').style.display = 'none';
-        document.getElementById('summaryPanel').style.display = 'none';
-        document.getElementById('printBtn').style.display = 'none';
-        
-        updateTitles();
-    };
-
-    window.onload = function() {
-        try {
-            clearData();
-        } catch(e) {
-            console.error("שגיאה באתחול ראשוני: ", e);
-        }
-    };
-
-</script>
-<div class="version-stamp" onclick="secretBypass(event)" style="cursor:default;" title="V">V202610200700</div>
 </body>
 </html>
