@@ -1,19 +1,83 @@
 // קובץ מנוע חישוב: calculator.js
 
 window.carryOverData = {};
-const MINIMUM_ESHEL_RATE = 52.66; // תעריף האש"ל הרבעוני הנוכחי
+const MINIMUM_ESHEL_RATE = 52.66; 
+
+// ==========================================
+// מנגנון חלונות קופצים חכמים - COT says
+// ==========================================
+window.customDialog = function(type, msg, title = "COT says") {
+    return new Promise((resolve) => {
+        let modal = document.getElementById('customDialogModal');
+        let titleEl = document.getElementById('customDialogTitle');
+        let msgEl = document.getElementById('customDialogMessage');
+        let inputEl = document.getElementById('customDialogInput');
+        let okBtn = document.getElementById('customDialogOkBtn');
+        let cancelBtn = document.getElementById('customDialogCancelBtn');
+        
+        titleEl.innerText = title;
+        msgEl.innerHTML = msg;
+        inputEl.value = '';
+        
+        if (type === 'alert') {
+            inputEl.style.display = 'none';
+            cancelBtn.style.display = 'none';
+        } else if (type === 'confirm') {
+            inputEl.style.display = 'none';
+            cancelBtn.style.display = 'inline-block';
+        } else if (type === 'prompt') {
+            inputEl.style.display = 'block';
+            cancelBtn.style.display = 'inline-block';
+            setTimeout(() => inputEl.focus(), 100);
+        }
+        
+        modal.style.display = 'block';
+        
+        // ניקוי אירועי לחיצה ישנים כדי למנוע כפילויות בפרומיס
+        let newOkBtn = okBtn.cloneNode(true);
+        okBtn.parentNode.replaceChild(newOkBtn, okBtn);
+        let newCancelBtn = cancelBtn.cloneNode(true);
+        cancelBtn.parentNode.replaceChild(newCancelBtn, cancelBtn);
+        
+        newOkBtn.onclick = function() {
+            modal.style.display = 'none';
+            if (type === 'prompt') resolve(inputEl.value);
+            else resolve(true);
+        };
+        
+        newCancelBtn.onclick = function() {
+            modal.style.display = 'none';
+            if (type === 'prompt') resolve(null);
+            else resolve(false);
+        };
+
+        if(type === 'prompt') {
+            inputEl.onkeydown = function(e) {
+                if (e.key === 'Enter') { e.preventDefault(); newOkBtn.click(); }
+            };
+        }
+    });
+};
+
+window.customAlert = (msg) => customDialog('alert', msg);
+window.customConfirm = (msg) => customDialog('confirm', msg);
+window.customPrompt = (msg) => customDialog('prompt', msg);
+
 
 // --- כניסה סמויה ומאובטחת ---
 window.isBypassed = false;
 let clickCount = 0;
 let clickTimer;
 
-window.secretBypass = function(e) {
+window.secretBypass = async function(e) {
     if(e) e.preventDefault();
     clickCount++;
     clearTimeout(clickTimer);
     
+    // ברגע שמגיע ל-3 לחיצות - נאפס מיד כדי למנוע חלונות כפולים
     if(clickCount >= 3) {
+        clickCount = 0; // איפוס מיידי למניעת באג לחיצות מהירות
+        
         let now = new Date();
         let dd = String(now.getDate()).padStart(2, '0');
         let mm = String(now.getMonth() + 1).padStart(2, '0');
@@ -21,7 +85,7 @@ window.secretBypass = function(e) {
         let dateInt = parseInt(dd + mm + yy, 10);
         let expectedPass = String(999999 - dateInt); 
         
-        let pwd = prompt("הזן קוד אבטחה:");
+        let pwd = await customPrompt("הזן קוד אבטחה:");
         if (pwd === expectedPass) {
             window.isBypassed = true;
             document.getElementById('authOverlay').style.display = 'none';
@@ -29,12 +93,12 @@ window.secretBypass = function(e) {
             document.getElementById('employeeName').value = 'בדיקות';
             initMonthYearSelect();
             updateTitles();
-        } else {
-            alert("קוד שגוי.");
+        } else if (pwd !== null) {
+            customAlert("קוד שגוי.");
         }
-        clickCount = 0;
+    } else {
+        clickTimer = setTimeout(() => { clickCount = 0; }, 2000);
     }
-    clickTimer = setTimeout(() => { clickCount = 0; }, 2000);
 };
 
 // --- Firebase Configuration & Auth ---
@@ -102,10 +166,10 @@ window.registerUser = function() {
     });
 };
 
-window.logoutUser = function() {
+window.logoutUser = async function() {
     var empName = document.getElementById('employeeName').value.trim();
     if (!empName && !window.isBypassed) {
-        alert("חובה להזין ולשמור שם עובד לפני ההתנתקות.");
+        customAlert("חובה להזין ולשמור שם עובד לפני ההתנתקות.");
         document.getElementById('employeeName').focus();
         return;
     }
@@ -113,7 +177,8 @@ window.logoutUser = function() {
     var b_reg = document.getElementById('bal_open_reg').value;
     var b_shab = document.getElementById('bal_open_shab').value;
     if (b_reg === "0.00" && b_shab === "0.00") {
-        if (!confirm("שים לב, טרם הוקלדו יתרות פתיחה לחלק מהסעיפים. האם אתה בטוח שברצונך להתנתק?")) return;
+        let ans = await customConfirm("שים לב, טרם הוקלדו יתרות פתיחה לחלק מהסעיפים. האם אתה בטוח שברצונך להתנתק?");
+        if (!ans) return;
     }
     
     window.isBypassed = false;
@@ -277,16 +342,16 @@ window.handleFileLoad = function(event) {
                 }
             }
             event.target.value = '';
-            alert('הנתונים נטענו בהצלחה!');
-        } catch(err) { alert("שגיאה בטעינת הקובץ."); }
+            customAlert('הנתונים נטענו בהצלחה!');
+        } catch(err) { customAlert("שגיאה בטעינת הקובץ."); }
     };
     reader.readAsText(file);
 };
 
-window.saveData = function(silent = false) {
+window.saveData = async function(silent = false) {
     var empName = document.getElementById('employeeName').value.trim();
     if(!empName) { 
-        if(!silent) alert("הכנס שם עובד לפני השמירה."); 
+        if(!silent) customAlert("הכנס שם עובד לפני השמירה."); 
         return; 
     }
     
@@ -299,7 +364,8 @@ window.saveData = function(silent = false) {
     });
     
     if (isUnlocked && !silent) {
-        if(!confirm("שמנו לב ששינית את יתרת הפתיחה באופן ידני. האם לשמור את היתרה החדשה?")) return;
+        let ans = await customConfirm("שמנו לב ששינית את יתרת הפתיחה באופן ידני. האם לשמור את היתרה החדשה?");
+        if(!ans) return;
     }
     
     var data = {
@@ -317,20 +383,21 @@ window.saveData = function(silent = false) {
     if (user) {
         user.updateProfile({ displayName: empName }).then(() => {
             db.collection("users").doc(user.uid).set(data, { merge: true }).then(() => {
-                if(!silent) alert("הנתונים נשמרו בהצלחה.");
+                if(!silent) customAlert("הנתונים נשמרו בהצלחה.");
                 ['bal_open_reg', 'bal_open_shab', 'bal_open_sick', 'bal_open_dec', 'bal_open_cho'].forEach(id => {
                     let inp = document.getElementById(id);
                     inp.readOnly = true;
                     inp.classList.add('locked-input');
                     inp.nextElementSibling.innerText = '🔒';
                 });
-            }).catch(err => { if(!silent) alert("שגיאה בשמירה: " + err.message); });
+            }).catch(err => { if(!silent) customAlert("שגיאה בשמירה: " + err.message); });
         });
     }
 };
 
-window.closeMonth = function() {
-    if(!confirm("שים לב, אתה עומד לשמור את היתרות החדשות האם להמשיך?")) return;
+window.closeMonth = async function() {
+    let ans = await customConfirm("שים לב, אתה עומד לשמור את היתרות החדשות האם להמשיך?");
+    if(!ans) return;
     
     document.getElementById('bal_open_reg').value = document.getElementById('bal_close_reg').innerText;
     document.getElementById('bal_open_shab').value = document.getElementById('bal_close_shab').innerText;
@@ -376,7 +443,7 @@ window.closeMonth = function() {
     window.carryOverData[nextKey] = tailShifts;
 
     window.saveData(true); 
-    alert("חודש נסגר בהצלחה. יתרות ומידע חריגות עודכנו למערכת.");
+    customAlert("חודש נסגר בהצלחה. יתרות ומידע חריגות עודכנו למערכת.");
 };
 
 window.saveFirstMonthCarry = function() {
@@ -396,7 +463,7 @@ window.saveFirstMonthCarry = function() {
 window.generateTable = function() {
     var empName = document.getElementById('employeeName').value.trim();
     if (!empName) {
-        alert("הכנס שם עובד");
+        customAlert("הכנס שם עובד");
         document.getElementById('employeeName').focus();
         return;
     }
@@ -406,14 +473,11 @@ window.generateTable = function() {
     var month = ym.m;
     var curKey = year + "-" + pad2(month);
     
-    // בדיקת אש"ל חכמה - רק אם הערך קטן מהמינימום
     var currentEshel = parseFloat(document.getElementById('eshelRate').value) || 0;
     if ([1, 4, 7, 10].includes(month) && currentEshel < MINIMUM_ESHEL_RATE) {
-        alert("שים לב, תחילת רבעון: תעריף האש\"ל המעודכן הוא " + MINIMUM_ESHEL_RATE + " ₪. נא לעדכן בהתאם.");
+        customAlert("שים לב, תחילת רבעון: תעריף האש\"ל המעודכן הוא " + MINIMUM_ESHEL_RATE + " ₪. נא לעדכן בהתאם.");
     }
 
-    // הקפצת חלון משמרות נגררות אם מדובר בחודש חדש ללא נתונים נגררים
-    // בודק רק אם אין נתון (ולא אם הנתון הוא 0, כי 0 זה נתון תקין לחודש שנגמר בשבת)
     if (window.carryOverData[curKey] === undefined) {
         document.getElementById('firstMonthCarryModal').style.display = 'block';
     }
@@ -707,7 +771,7 @@ window.calculateRow = function(inputElem) {
             costCell.setAttribute('data-gross', totalMinutes); 
         }
         window.updateGrandTotal();
-    } catch(e) { alert("שגיאה בחישוב השורה: " + e.message); }
+    } catch(e) { customAlert("שגיאה בחישוב השורה: " + e.message); }
 };
 
 window.updateGrandTotal = function() {
@@ -771,7 +835,6 @@ window.updateGrandTotal = function() {
         }
     }
     
-    // בדיקת התראת מכסת משמרות (5 בשבוע)
     weekShiftsCount[0] = (weekShiftsCount[0] || 0) + carryOverShifts;
     var isOverLimit = false;
     for (var w in weekShiftsCount) {
@@ -844,7 +907,6 @@ window.updateGrandTotal = function() {
     document.getElementById('tlushCostPrint').innerText = tlushCost.toFixed(2) + ' ₪';
 };
 
-// --- ניווט חכם במקלדת (Enter + חצים) ---
 document.addEventListener('keydown', function(e) {
     var el = e.target;
     if (el.tagName === 'INPUT' && (el.classList.contains('shift-type-input') || el.classList.contains('time-input'))) {

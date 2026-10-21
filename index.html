@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>COT - Calculate Over Time</title>
     
-    <!-- קישור לקובץ העיצוב החיצוני -->
+    <!-- חיבור לקובץ העיצוב המפוצל שיצרנו -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -62,46 +62,69 @@
     </div>
 </div>
 
-<!-- חלון מידע כללי -->
-<div id="shiftInfoModal" class="modal">
-    <div class="modal-content" style="max-width: 750px; padding: 30px;">
+<!-- חלון מידע כללי והוראות הפעלה -->
+<div id="shiftInfoModal" class="modal" style="z-index: 20000;">
+    <div class="modal-content" style="max-width: 800px; padding: 30px;">
         <span class="close-btn" onclick="closeShiftInfo()">&times;</span>
         <div class="modal-header">
             <h2 style="font-size: 24px; color: #0d47a1;">ℹ️ מידע חשוב ומדריך למשתמש</h2>
         </div>
         <div style="max-height: 65vh; overflow-y: auto; padding-left: 15px; font-size: 14.5px; line-height: 1.6; color: #34495e;">
-            <p>מערכת <strong>"בקרת דו"ח פיצול"</strong> נועדה לתכנן, לנהל, ולבקר את שעות העבודה, המשמרות ויתרות החופש שלך בצורה חכמה ומאובטחת.</p>
-            <div style="background: #e3f2fd; padding: 15px; border-radius: 8px; margin-bottom: 20px; border-right: 4px solid #1976d2;">
-                <h3 style="margin-top: 0; color: #1565c0; font-size: 17px; margin-bottom: 10px;">☁️ סנכרון ושמירת נתונים חכמה</h3>
+            
+            <h3 style="color: #1565c0; font-size: 18px; margin-top: 0;">מבוא: למה נועדה המערכת?</h3>
+            <p>מערכת <strong>COT (Calculate Over Time)</strong> פותחה במיוחד בעקבות הקושי הרב הקיים בהבנת ומעקב אחר דו"חות הפיצול המורכבים של <strong>עובדי מעברי הגבולות</strong>. חישוב תגמול המשמרות, השעות הנוספות והיתרות בסביבת העבודה הזו דורש בקיאות רבה, ולעיתים קרובות מוביל לחוסר ודאות.</p>
+            <p>מטרת המערכת היא לעשות סדר, לשקף את הנתונים בצורה פשוטה, ובעיקר: <strong style="color:#d35400;">לאפשר לך לתכנן ולאמוד את שכרך העתידי!</strong><br>באמצעות הזנת המשמרות המתוכננות שלך מראש, תוכל לראות בזמן אמת את אומדן ערך השעות הנוספות, לבקר את יתרות החופש שלך, ולדעת לקראת מה אתה הולך לקראת סוף החודש – בלי הפתעות בתלוש השכר.</p>
+
+            <div style="background: #e3f2fd; padding: 15px; border-radius: 8px; margin-bottom: 20px; border-right: 4px solid #1976d2; margin-top: 20px;">
+                <h3 style="margin-top: 0; color: #1565c0; font-size: 17px; margin-bottom: 10px;">🌟 במה המערכת מיוחדת?</h3>
                 <ul style="margin: 0; padding-right: 20px;">
-                    <li><strong>פרופיל אישי בענן:</strong> הגדרות השכר (ערך שעה, אש"ל) ויתרות הפתיחה נשמרות בחשבון המאובטח שלך ומסתנכרנות מכל מכשיר.</li>
-                    <li><strong>מנגנון "סגירת חודש":</strong> בסיום החודש, לחיצה על כפתור <em>"סגור חודש"</em> תיקח את היתרות הסופיות שצברת, ותגדיר אותן אוטומטית כיתרות הפתיחה של החודש הבא.</li>
-                    <li><strong>הגנה מפני טעויות (🔒):</strong> יתרות הפתיחה נעולות כברירת מחדל כדי למנוע דריסה בטעות. ניתן ללחוץ על המנעול כדי לפתוח לעריכה ידנית במקרה של תיקון.</li>
+                    <li><strong>התאמה מלאה להסכמי נציבות שירות המדינה:</strong> המערכת מזהה אוטומטית חגים, ערבי חג, ימי בחירה וימי חופשה הסכמיים. היא יודעת לחשב נכון את שעות התקן בערבי חג במיוחד לעובדי משמרות (לדוגמה, תקן 5.5 שעות בערב חג גם אם חל ביום שישי).</li>
+                    <li><strong>בקרה שבועית חכמה (עד 5 משמרות):</strong> המערכת מונעת חריגות. היא עוקבת אחרי שבועות קלנדריים (ראשון-שבת) ויודעת "למשוך" משמרות שבוצעו בסוף החודש הקודם אל תוך חישוב השבוע הנוכחי. חרגת מ-5 משמרות בשבוע? המערכת תזהיר אותך מיד.</li>
+                    <li><strong>גיבוי וסנכרון בענן:</strong> הגדרות השכר והיתרות שלך נשמרות מאובטחות בענן. אתה יכול להתחיל להקליד משמרות מהמחשב בעבודה ולהמשיך מהטלפון בבית.</li>
+                    <li><strong>ניהול יתרות אוטומטי ("סגירת חודש"):</strong> אין צורך להעתיק יתרות. פעולת "סגירת חודש" מעבירה את יתרות הסגירה שצברת להיות יתרות הפתיחה של החודש הבא בלחיצת כפתור.</li>
                 </ul>
             </div>
+
             <div style="margin-bottom: 20px;">
-                <h3 style="color: #1565c0; font-size: 17px; border-bottom: 2px solid #bbdefb; padding-bottom: 5px;">📅 הסכמי עבודה, חגים ובקרה שבועית</h3>
-                <ul style="padding-right: 20px;">
-                    <li><strong>בקרה ומניעת חריגות (5 בשבוע):</strong> המערכת עוקבת אחרי שבועות קלנדריים. בסגירת חודש היא "גוררת" משמרות שבוצעו בסוף החודש אל תוך השבוע הראשון של החודש הבא. אם תעבור מכסה של 5 משמרות בשבוע (כולל נגררות) – <strong>תקפוץ התראת אזהרה אדומה</strong>.</li>
-                    <li><strong>חגי נציבות המדינה 2026:</strong> המערכת מבוססת על בסיס נתונים פנימי של נציבות שירות המדינה.</li>
-                    <li><strong>ערבי חג לעובדי משמרות:</strong> שעות התקן בערבי חג מותאמות לתנאי המשמרות. (לדוגמה, התקן בערב ראש השנה או סוכות עומד על 5.5 שעות, גם אם החג נופל ביום שישי).</li>
-                    <li><strong>תזכורת אש"ל חכמה:</strong> בתחילת כל רבעון קלנדרי המערכת תבדוק אם התעריף השמור אצלך נמוך מהתעריף המעודכן, ותתריע רק במידה ונדרש עדכון.</li>
+                <h3 style="color: #1565c0; font-size: 17px; border-bottom: 2px solid #bbdefb; padding-bottom: 5px;">🛠️ הוראות הפעלה ועבודה שוטפת</h3>
+                
+                <h4 style="margin-bottom: 5px; color: #2c3e50;">שלב א': כניסה והגדרות ראשוניות</h4>
+                <ul style="padding-right: 20px; margin-top: 5px;">
+                    <li><strong>כניסה למערכת:</strong> היכנס באמצעות האימייל והסיסמה שלך.</li>
+                    <li><strong>הגדרות בסיס:</strong> בפאנל העליון, ודא ששמך, תעריף שעת הבסיס שלך ותעריף האש"ל מעודכנים.</li>
+                    <li><strong>הזנת יתרות ראשוניות (חודש ראשון בלבד):</strong> בחלק התחתון של המסך, לחץ על סמלי המנעול (🔒) כדי לפתוח את שדות "יתרת פתיחה" לעריכה. הזן את היתרות מתוך התלוש האחרון, ונעל אותן חזרה.</li>
+                </ul>
+
+                <h4 style="margin-bottom: 5px; color: #2c3e50;">שלב ב': הזנת משמרות מהירה</h4>
+                <ul style="padding-right: 20px; margin-top: 5px;">
+                    <li><strong>קודי משמרת:</strong> אין צורך להקליד שעות! פשוט הקלד קוד משמרת בתיבת ה"תאור" (כמו <code>ב06</code>, <code>227</code>, <code>102</code> או קודי היעדרות כמו <code>ח</code>, <code>מח</code>), והשעות יתמלאו אוטומטית.</li>
+                    <li><strong>הקלדה רצופה:</strong> מעדיף להקליד שעות ידנית? פשוט הקלד רצף מספרים (למשל <code>1530</code>) והמערכת תהפוך זאת ל-<code>15:30</code>.</li>
+                    <li><strong>ניווט חכם:</strong> הקש <code>Enter</code> כדי לעבור משעת הכניסה לשעת היציאה. הקשה נוספת תעביר אותך לשעת הכניסה של היום הבא.</li>
+                </ul>
+
+                <h4 style="margin-bottom: 5px; color: #2c3e50;">שלב ג': בקרת הדו"ח וסגירת חודש</h4>
+                <ul style="padding-right: 20px; margin-top: 5px;">
+                    <li><strong>לוח סיכומים:</strong> בתחתית המסך תמצא את כל הנתונים החשובים: סך המשמרות, שעות התקן, אש"ל ואת <strong>אומדן ערך השעות הנוספות</strong> (₪).</li>
+                    <li><strong>סגירת חודש:</strong> סיימת את החודש והדו"ח תקין? לחץ על כפתור <strong>"סגור חודש"</strong>. המערכת תשמור את היתרות החדשות ותעביר משמרות קצה לחודש הבא.</li>
+                    <li><strong>הדפסה / PDF:</strong> לחץ על כפתור ההדפסה כדי להפיק דו"ח מסודר שניתן לשמור או להגיש הלאה.</li>
                 </ul>
             </div>
-            <div>
-                <h3 style="color: #1565c0; font-size: 17px; border-bottom: 2px solid #bbdefb; padding-bottom: 5px;">⚡ ממשק זורם והקלדה מהירה</h3>
-                <ul style="padding-right: 20px;">
-                    <li><strong>ניווט רציף במקלדת (Enter):</strong> סיימת להקליד שעת כניסה? לחץ על <code>Enter</code> והסמן יקפוץ לשעת היציאה. לחיצה נוספת תקפיץ אותך לשעת הכניסה של היום הבא.</li>
-                    <li><strong>הקלדה ללא נקודתיים:</strong> מספיק להקליד רצף מספרים (לדוגמה <code>1530</code>) והמערכת תמיר זאת אוטומטית לפורמט זמן חוקי (<code>15:30</code>).</li>
-                    <li><strong>קודי משמרות מהירים:</strong> הקלדה של קודים (כמו <code>ב06</code>, <code>227</code>, או <code>חש</code>) תמלא אוטומטית את שעות המשמרת או ההיעדרות בטבלה.</li>
-                </ul>
+
+            <!-- כפתור הורדת ספרון המידע בסוף הטקסט -->
+            <div style="text-align: center; margin: 30px 0 10px 0; background: #f8fbff; padding: 20px; border-radius: 12px; border: 2px dashed #90caf9;">
+                <h3 style="margin-top: 0; color: #1976d2; font-size: 18px;">📚 ספרון הדרכה ומידע מקצועי</h3>
+                <p style="font-size: 14.5px; margin-bottom: 15px; color: #546e7a;">להורדת המדריך המלא כקובץ PDF לקריאה נוחה או הדפסה, לחץ על הכפתור מטה:</p>
+                <a href="cot_user_manual.pdf" download="מדריך_למשתמש_COT.pdf" class="btn-3d" style="background-color: #1976d2; color: white; padding: 12px 25px; border-radius: 8px; text-decoration: none; display: inline-block; font-size: 15px; box-shadow: 0 4px #1565c0;">
+                    📥 הורד ספרון הדרכה למשתמש (PDF)
+                </a>
             </div>
+
         </div>
     </div>
 </div>
 
 <!-- חלון קודי משמרות -->
-<div id="miniShiftInfoModal" class="modal">
+<div id="miniShiftInfoModal" class="modal" style="z-index: 20000;">
     <div class="modal-content" style="max-width: 420px; padding: 18px;">
         <span class="close-btn" onclick="closeMiniShiftInfo()">&times;</span>
         <div class="modal-header"><h2 style="font-size: 18px; margin: 0; color: #0d47a1;">ℹ️ קודי משמרות להקלדה מהירה</h2></div>
@@ -137,7 +160,7 @@
 </div>
 
 <!-- חלון הזנת משמרות נגררות -->
-<div id="firstMonthCarryModal" class="modal">
+<div id="firstMonthCarryModal" class="modal" style="z-index: 25000;">
     <div class="modal-content" style="max-width: 400px; text-align: center; padding: 30px;">
         <h3 style="color: #d35400; margin-top: 0; font-size: 20px;">הזנת משמרות מסוף חודש שעבר</h3>
         <p style="font-size: 14px; color: #34495e; line-height: 1.6; margin-bottom: 20px;">
@@ -342,7 +365,26 @@
     </div>
 </div>
 
-<div class="version-stamp" onclick="secretBypass(event)" title="V">V202610221345</div>
+<!-- ============================================== -->
+<!-- חלון קופץ מותאם אישית של COT (מחליף את ה-Alert/Confirm) -->
+<!-- ============================================== -->
+<div id="customDialogModal" class="modal" style="z-index: 25000;">
+    <div class="modal-content" style="max-width: 400px; text-align: center; padding: 25px;">
+        <div class="modal-header" style="border-bottom: 2px solid #1976d2; margin-bottom: 15px; padding-bottom: 10px;">
+            <h2 id="customDialogTitle" style="font-size: 20px; color: #0d47a1; margin: 0;">COT says</h2>
+        </div>
+        <p id="customDialogMessage" style="font-size: 15px; color: #34495e; line-height: 1.5; margin-bottom: 20px; font-weight: bold;"></p>
+        
+        <input type="text" id="customDialogInput" style="display:none; width: 80%; padding: 10px; font-size: 16px; margin: 0 auto 20px auto; border: 2px solid #bbdefb; border-radius: 8px; text-align: center; outline: none;">
+        
+        <div style="display: flex; justify-content: center; gap: 15px;">
+            <button id="customDialogOkBtn" class="btn-3d" style="background-color: #1976d2; color: white; padding: 10px 25px; border-radius: 8px; font-size: 15px; min-width: 90px;">אישור</button>
+            <button id="customDialogCancelBtn" class="btn-3d" style="background-color: #e74c3c; color: white; padding: 10px 25px; border-radius: 8px; font-size: 15px; min-width: 90px; display: none;">ביטול</button>
+        </div>
+    </div>
+</div>
+
+<div class="version-stamp" onclick="secretBypass(event)" title="V">V202610221715</div>
 
 <!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-app-compat.js"></script>
