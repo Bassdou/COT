@@ -101,7 +101,7 @@
 
                 <h4 style="margin-bottom: 5px; color: #2c3e50;">שלב ב': הזנת משמרות מהירה</h4>
                 <ul style="padding-right: 20px; margin-top: 5px;">
-                    <li><strong>קודי משמרת:</strong> אין צורך להקליד שעות! פשוט הקלד קוד משמרת בתיבת ה"תאור" (כמו <code>ב06</code>, <code>227</code>, <code>102</code> או קודי היעדרות כמו <code>ח</code>, <code>מח</code>), והשעות יתמלאו אוטומטית.</li>
+                    <li><strong>קודי משמרת:</strong> אין צורך להקליד שעות! פשוט הקלד קוד משמרת בתיבת ה"תאור" (כמו <code>ב06</code>, <code>227</code>, <code>102</code> או קודי היעדרות כמו <code>ח</code>, <code>הס</code>), והשעות יתמלאו אוטומטית.</li>
                     <li><strong>הקלדה רצופה:</strong> מעדיף להקליד שעות ידנית? פשוט הקלד רצף מספרים (למשל <code>1530</code>) והמערכת תהפוך זאת ל-<code>15:30</code>.</li>
                     <li><strong>ניווט חכם:</strong> הקש <code>Enter</code> כדי לעבור משעת הכניסה לשעת היציאה. הקשה נוספת תעביר אותך לשעת הכניסה של היום הבא.</li>
                 </ul>
@@ -156,6 +156,7 @@
                     <tr><td><span class="code-badge">הצ</span></td><td>-</td><td>-</td><td>הצהרה</td></tr>
                     <tr><td><span class="code-badge">בח</span></td><td>-</td><td>-</td><td>בחירה</td></tr>
                     <tr><td><span class="code-badge">מבמ</span></td><td>-</td><td>-</td><td>מחלת בן משפחה</td></tr>
+                    <tr><td><span class="code-badge">הס</span></td><td>-</td><td>-</td><td>עפ"י הסכם</td></tr>
                 </tbody>
             </table>
         </div>
@@ -231,7 +232,8 @@
                 <th rowspan="2" class="calc-th">סה"כ<br>שעות</th>
                 <th rowspan="2" class="col-sep calc-th" title="צבירת ימים בגין עבודת שבת/חג">חופש<br>שבת</th>
                 
-                <th rowspan="2" class="col-sep calc-th thick-border-left" title="עמודה I">רגילות</th>
+                <th rowspan="2" class="col-sep calc-th" title="עמודה I - תקן למשמרת או היעדרות">תקן</th>
+                <th rowspan="2" class="col-sep calc-th thick-border-left" title="עמודה I2 - תקן משמרות נוכחות">רגילות</th>
                 <th colspan="3" class="col-sep thick-border-left">ש"נ</th>
                 <th colspan="2" class="col-sep thick-border-left">שבת</th>
                 <th colspan="4" class="col-sep thick-border-left">ש"נ</th>
@@ -262,7 +264,8 @@
                 <td colspan="5" class="col-sep print-only-cell tfoot-title">שורת סיכום:</td>
                 <td id="sum-hours-totalShift"></td>
                 <td id="sum-hours-shabbat" class="col-sep"></td>
-                <td id="sum-hours-I" class="col-sep thick-border-left"></td>
+                <td id="sum-hours-I" class="col-sep"></td>
+                <td id="sum-hours-I2" class="col-sep thick-border-left"></td>
                 <td id="sum-hours-J"></td><td id="sum-hours-K"></td><td id="sum-hours-L" class="col-sep thick-border-left"></td>
                 <td id="sum-hours-M"></td><td id="sum-hours-N" class="col-sep thick-border-left"></td><td id="sum-hours-O"></td><td id="sum-hours-P"></td>
                 <td id="sum-hours-Q"></td><td id="sum-hours-R" class="col-sep thick-border-left"></td>
@@ -276,7 +279,8 @@
                 <td colspan="5" class="col-sep print-only-cell tfoot-title">ערך עמודה:</td>
                 <td id="sum-cost-totalShift"></td>
                 <td id="sum-cost-shabbat" class="col-sep"></td>
-                <td id="sum-cost-I" class="col-sep thick-border-left"></td>
+                <td id="sum-cost-I" class="col-sep"></td>
+                <td id="sum-cost-I2" class="col-sep thick-border-left"></td>
                 <td id="sum-cost-J"></td><td id="sum-cost-K"></td><td id="sum-cost-L" class="col-sep thick-border-left"></td>
                 <td id="sum-cost-M"></td><td id="sum-cost-N" class="col-sep thick-border-left"></td><td id="sum-cost-O"></td><td id="sum-cost-P"></td>
                 <td id="sum-cost-Q"></td><td id="sum-cost-R" class="col-sep thick-border-left"></td>
@@ -405,7 +409,7 @@
     </div>
 </div>
 
-<div class="version-stamp" onclick="secretBypass(event)" title="V">V202610222010</div>
+<div class="version-stamp" onclick="secretBypass(event)" title="V">V202610222330</div>
 
 <!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-app-compat.js"></script>

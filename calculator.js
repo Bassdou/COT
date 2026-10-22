@@ -33,7 +33,6 @@ window.customDialog = function(type, msg, title = "COT says") {
         
         modal.style.display = 'block';
         
-        // ניקוי אירועי לחיצה ישנים
         let newOkBtn = okBtn.cloneNode(true);
         okBtn.parentNode.replaceChild(newOkBtn, okBtn);
         let newCancelBtn = cancelBtn.cloneNode(true);
@@ -63,7 +62,6 @@ window.customAlert = (msg) => customDialog('alert', msg);
 window.customConfirm = (msg) => customDialog('confirm', msg);
 window.customPrompt = (msg) => customDialog('prompt', msg);
 
-
 // --- כניסה סמויה ומאובטחת ---
 window.isBypassed = false;
 let clickCount = 0;
@@ -76,7 +74,6 @@ window.secretBypass = async function(e) {
     
     if(clickCount >= 3) {
         clickCount = 0; 
-        
         let now = new Date();
         let dd = String(now.getDate()).padStart(2, '0');
         let mm = String(now.getMonth() + 1).padStart(2, '0');
@@ -181,15 +178,23 @@ window.logoutUser = async function() {
     }
     
     window.isBypassed = false;
+    
+    document.getElementById('authOverlay').style.display = 'flex';
+    document.getElementById('logoutBtn').style.display = 'none';
+
     firebase.auth().signOut().then(() => {
-        clearData();
+        clearData(true); 
+    }).catch(() => {
+        clearData(true);
     });
+    
+    clearData(true);
 };
 
 // --- Utilities ---
 var daysHebrew = ["א'", "ב'", "ג'", "ד'", "ה'", "ו'", "ש'"];
 var columnsData = [
-    { id: 'I', factor: 0.0 }, { id: 'J', factor: 1.0 }, { id: 'K', factor: 1.25 }, { id: 'L', factor: 1.5 }, 
+    { id: 'I', factor: 0.0 }, { id: 'I2', factor: 0.0 }, { id: 'J', factor: 1.0 }, { id: 'K', factor: 1.25 }, { id: 'L', factor: 1.5 }, 
     { id: 'M', factor: 1.75 }, { id: 'N', factor: 2.0 }, { id: 'O', factor: 1.8 }, { id: 'P', factor: 1.875 }, 
     { id: 'Q', factor: 2.25 }, { id: 'R', factor: 2.5 }, { id: 'S', factor: 0.2 }, { id: 'T', factor: 0.5 }, 
     { id: 'U', factor: 0.75 }, { id: 'V', factor: 0.875 }, { id: 'W', factor: 1.0 }
@@ -256,6 +261,8 @@ window.toggleLock = function(inputId, btn) {
         inp.readOnly = false;
         inp.classList.remove('locked-input');
         btn.innerText = '🔓';
+        inp.focus();
+        inp.select();
     } else {
         inp.readOnly = true;
         inp.classList.add('locked-input');
@@ -321,6 +328,11 @@ window.handleFileLoad = function(event) {
             if (data.eshelRate) document.getElementById('eshelRate').value = data.eshelRate;
             if (data.employeeName !== undefined) document.getElementById('employeeName').value = data.employeeName;
 
+            // עדכון נתוני הגרירה מחודש שעבר מתוך הקובץ לפני יצירת הטבלה
+            if (data.carryOver) {
+                window.carryOverData = data.carryOver;
+            }
+
             updateTitles();
             generateTable(); 
 
@@ -355,8 +367,6 @@ window.saveData = async function(silent = false) {
     }
     
     var user = firebase.auth().currentUser;
-    if(!user && !window.isBypassed) return;
-    
     var isUnlocked = false;
     ['bal_open_reg', 'bal_open_shab', 'bal_open_sick', 'bal_open_dec', 'bal_open_cho'].forEach(id => {
         if(!document.getElementById(id).readOnly) isUnlocked = true;
@@ -367,6 +377,22 @@ window.saveData = async function(silent = false) {
         if(!ans) return;
     }
     
+    var ym = getSelectedMonthYear();
+    var shiftsArr = [];
+    for (var i = 1; i <= 31; i++) {
+        var tr = document.querySelector('#tbody tr:nth-child(' + i + ')');
+        if(!tr) continue;
+        var sType = tr.querySelector('.shift-type-input');
+        var tInps = tr.querySelectorAll('.time-input');
+        if(sType && tInps.length >= 2) {
+            shiftsArr.push({
+                shiftType: sType.value,
+                start: tInps[0].value,
+                end: tInps[1].value
+            });
+        }
+    }
+
     var data = {
         employeeName: empName,
         hourlyRate: document.getElementById('hourlyRate').value,
@@ -376,21 +402,62 @@ window.saveData = async function(silent = false) {
         bal_open_sick: document.getElementById('bal_open_sick').value,
         bal_open_dec: document.getElementById('bal_open_dec').value,
         bal_open_cho: document.getElementById('bal_open_cho').value,
-        carryOver: window.carryOverData 
+        carryOver: window.carryOverData,
+        year: ym.y,
+        month: ym.m,
+        shifts: shiftsArr
     };
     
-    if (user) {
-        user.updateProfile({ displayName: empName }).then(() => {
-            db.collection("users").doc(user.uid).set(data, { merge: true }).then(() => {
-                if(!silent) customAlert("הנתונים נשמרו בהצלחה.");
-                ['bal_open_reg', 'bal_open_shab', 'bal_open_sick', 'bal_open_dec', 'bal_open_cho'].forEach(id => {
-                    let inp = document.getElementById(id);
-                    inp.readOnly = true;
-                    inp.classList.add('locked-input');
-                    inp.nextElementSibling.innerText = '🔒';
+    if (user && !window.isBypassed) {
+        var cloudData = { ...data };
+        delete cloudData.shifts;
+        delete cloudData.year;
+        delete cloudData.month;
+        user.updateProfile({ displayName: empName });
+        db.collection("users").doc(user.uid).set(cloudData, { merge: true });
+    }
+    
+    if (!silent) {
+        var dataStr = JSON.stringify(data, null, 2);
+        var blob = new Blob([dataStr], { type: "application/json" });
+        var fileName = "COT_משמרות_" + empName.replace(/\s+/g, '_') + "_" + ym.y + "-" + pad2(ym.m) + ".json";
+        
+        let useFallback = true;
+        if (window.showSaveFilePicker) {
+            try {
+                const handle = await window.showSaveFilePicker({
+                    suggestedName: fileName,
+                    types: [{ description: 'JSON File', accept: {'application/json': ['.json']} }],
                 });
-            }).catch(err => { if(!silent) customAlert("שגיאה בשמירה: " + err.message); });
+                const writable = await handle.createWritable();
+                await writable.write(blob);
+                await writable.close();
+                useFallback = false;
+            } catch (err) {
+                if (err.name === 'AbortError') return; 
+            }
+        }
+        
+        if (useFallback) {
+            var url = URL.createObjectURL(blob);
+            var a = document.createElement('a');
+            a.href = url;
+            a.download = fileName;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        ['bal_open_reg', 'bal_open_shab', 'bal_open_sick', 'bal_open_dec', 'bal_open_cho'].forEach(id => {
+            let inp = document.getElementById(id);
+            if(inp) {
+                inp.readOnly = true;
+                inp.classList.add('locked-input');
+                if(inp.nextElementSibling) inp.nextElementSibling.innerText = '🔒';
+            }
         });
+        customAlert("הגליון נשמר בהצלחה והורד למחשב שלך.");
     }
 };
 
@@ -428,7 +495,7 @@ window.closeMonth = async function() {
             if (!valC) continue;
             var shiftInput = document.querySelector('tr:nth-child(' + r + ') .shift-type-input');
             var sVal = shiftInput ? shiftInput.value.trim() : '';
-            var isAbs = ['ח', 'חש', 'מח', 'הצ', 'בח', 'מבמ'].includes(sVal);
+            var isAbs = ['ח', 'חש', 'מח', 'הצ', 'בח', 'מבמ', 'הס'].includes(sVal);
             var isSft = valC.getAttribute('data-is-shift') === '1';
             if (isAbs || isSft) tailShifts++;
         }
@@ -501,6 +568,7 @@ window.generateTable = function() {
         
         var dateStr = pad2(i); 
         var dayClass = (dayNum === 5) ? "day-fri" : (dayNum === 6) ? "day-sat" : "";
+        var trClass = (dayNum === 6) ? "row-sat" : "";
 
         var curDateStr = year + "-" + pad2(month) + "-" + pad2(i);
         
@@ -508,16 +576,17 @@ window.generateTable = function() {
         var holText = holObj ? holObj.hebrew : '';
         var descColor = holObj ? '#e67e22' : '#1565c0';
 
-        htmlContent += '<tr style="background-color: ' + rowColor + ';">' +
+        htmlContent += '<tr class="' + trClass + '" style="background-color: ' + rowColor + ';">' +
             '<td class="'+dayClass+'" style="width: 30px; min-width: 30px;">' + dateStr + '</td>' +
             '<td class="'+dayClass+' col-sep" style="width: 30px; min-width: 30px;">' + daysHebrew[dayNum] + '</td>' +
-            '<td class="'+dayClass+' col-sep hide-print"><input type="text" class="shift-type-input" maxlength="3" style="width: 35px; padding: 2px;" oninput="handleShiftType(this)"></td>' +
+            '<td class="'+dayClass+' col-sep hide-print"><input type="text" class="shift-type-input" maxlength="3" style="width: 35px;" oninput="handleShiftType(this)"></td>' +
             '<td class="'+dayClass+' print-thick-right"><input type="text" class="time-input empty-print" maxlength="5" placeholder="" onchange="formatTimeInput(this)" data-date="'+year+'-'+month+'-'+i+'"></td>' +
             '<td class="col-sep '+dayClass+'"><input type="text" class="time-input empty-print" maxlength="5" placeholder="" onchange="formatTimeInput(this)"></td>' +
             '<td class="'+dayClass+' col-sep" id="val-desc-'+i+'" style="font-size: 12px; font-weight: bold; color: '+descColor+'; background-color: rgba(248, 251, 255, 0.5); text-align: right; padding-right: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" data-hol="'+holText+'">' + holText + '</td>' +
             '<td class="val-cell '+dayClass+'" id="val-total-hours-'+i+'" data-val="0"></td>' +
             '<td class="col-sep val-cell '+dayClass+'" id="val-shabbat-hours-'+i+'" data-val="0"></td>' +
-            '<td class="col-sep val-cell '+dayClass+' thick-border-left" id="val-I-'+i+'" data-val="0"></td>' +
+            '<td class="col-sep val-cell '+dayClass+'" id="val-I-'+i+'" data-val="0"></td>' +
+            '<td class="col-sep val-cell '+dayClass+' thick-border-left" id="val-I2-'+i+'" data-val="0"></td>' +
             '<td class="val-cell '+dayClass+'" id="val-J-'+i+'" data-val="0"></td>' +
             '<td class="val-cell '+dayClass+'" id="val-K-'+i+'" data-val="0"></td>' +
             '<td class="col-sep val-cell '+dayClass+' thick-border-left" id="val-L-'+i+'" data-val="0"></td>' +
@@ -538,7 +607,6 @@ window.generateTable = function() {
     tbody.innerHTML = htmlContent;
     document.getElementById('tableContainer').style.display = 'block';
     document.getElementById('summaryPanel').style.display = 'flex';
-    // הטבלה עכשיו נשלטת רק ע"י CSS (מוסתרת במסך, מוצגת בהדפסה)
     document.getElementById('printBtn').style.display = 'inline-block';
     document.getElementById('closeMonthBtn').style.display = 'inline-block';
     updateGrandTotal();
@@ -565,7 +633,7 @@ window.handleShiftType = function(input) {
         timeInputs[1].value = shifts[val][1];
         timeInputs[0].classList.remove('empty-print');
         timeInputs[1].classList.remove('empty-print');
-    } else if (['ח', 'חש', 'מח', 'הצ', 'בח', 'מבמ'].includes(val) || val === '') {
+    } else if (['ח', 'חש', 'מח', 'הצ', 'בח', 'מבמ', 'הס'].includes(val) || val === '') {
         timeInputs[0].value = '';
         timeInputs[1].value = '';
         timeInputs[0].classList.add('empty-print');
@@ -593,7 +661,7 @@ window.calculateRow = function(inputElem) {
         
         var shiftInput = tr.querySelector('.shift-type-input');
         var shiftVal = shiftInput ? shiftInput.value.trim().replace(/"/g, '').replace(/'/g, '') : '';
-        var isAbsence = ['ח', 'חש', 'מח', 'הצ', 'בח', 'מבמ'].includes(shiftVal);
+        var isAbsence = ['ח', 'חש', 'מח', 'הצ', 'בח', 'מבמ', 'הס'].includes(shiftVal);
 
         var descCell = document.getElementById('val-desc-' + rowId);
         if (descCell) {
@@ -601,7 +669,7 @@ window.calculateRow = function(inputElem) {
             var baseDesc = '';
             
             if (isAbsence) {
-                let m = {'ח':'חופש','חש':'חופש שבת','מח':'מחלה','הצ':'הצהרה','בח':'בחירה','מבמ':'מחלת בן משפחה'};
+                let m = {'ח':'חופש','חש':'חופש שבת','מח':'מחלה','הצ':'הצהרה','בח':'בחירה','מבמ':'מחלת בן משפחה', 'הס':'עפ"י הסכם'};
                 baseDesc = m[shiftVal];
             } else if (startInput && endInput) {
                 baseDesc = 'נוכחות';
@@ -666,7 +734,7 @@ window.calculateRow = function(inputElem) {
         var qualifiesForAfternoon = (startH + startM/60 >= 14 || afternoonMinutesCount >= 180);
         var enteredBefore3 = (startH + startM/60 >= 12 || startH + startM/60 <= 3.0);
 
-        var m = { I:0, J:0, K:0, L:0, M:0, N:0, O:0, P:0, Q:0, R:0, S:0, T:0, U:0, V:0, W:0 };
+        var m = { I:0, I2:0, J:0, K:0, L:0, M:0, N:0, O:0, P:0, Q:0, R:0, S:0, T:0, U:0, V:0, W:0 };
         var shabbatMinutesCount = 0;
 
         var baseDateStr = shiftDate.getFullYear() + "-" + pad2(shiftDate.getMonth()+1) + "-" + pad2(shiftDate.getDate());
@@ -714,6 +782,8 @@ window.calculateRow = function(inputElem) {
                 var isShab = isStrictShab;
                 if (isBaseDayHoliday && isNightShift) isShab = true;
 
+                if (baseDay === 7) isShab = true;
+
                 var isShabForVacation = isStrictShab;
                 if (baseDay === 6 && isBaseDayErevHag && !isNightShift) isShabForVacation = false;
                 if (isShabForVacation) shabbatMinutesCount++;
@@ -742,6 +812,8 @@ window.calculateRow = function(inputElem) {
                 }
             }
         }
+        
+        m.I2 = m.I;
 
         if (isAbsence) m.I += 480; 
 
@@ -817,7 +889,7 @@ window.updateGrandTotal = function() {
         if(shiftVal === 'בח') usedCho += 1;
         if(shiftVal === 'מבמ') usedFam += 1;
 
-        var isAbsence = ['ח', 'חש', 'מח', 'הצ', 'בח', 'מבמ'].includes(shiftVal);
+        var isAbsence = ['ח', 'חש', 'מח', 'הצ', 'בח', 'מבמ', 'הס'].includes(shiftVal);
         var hasShift = cell.getAttribute('data-is-shift') === '1';
 
         if (hasShift || isAbsence) {
@@ -898,7 +970,6 @@ window.updateGrandTotal = function() {
     document.getElementById('bal_used_cho').innerText = usedCho;
     document.getElementById('bal_used_fam').innerText = usedFam.toFixed(2);
 
-    // הזנת נתונים לטבלת הסיכום החדשה בתחתית הדף
     document.getElementById('tbl_bal_open_reg').innerText = oReg.toFixed(2);
     document.getElementById('tbl_bal_used_reg').innerText = usedReg.toFixed(2);
     document.getElementById('tbl_bal_close_reg').innerText = (oReg - usedReg).toFixed(2);
@@ -930,6 +1001,19 @@ window.updateGrandTotal = function() {
 
 document.addEventListener('keydown', function(e) {
     var el = e.target;
+    
+    if (e.key === 'Enter' && el.classList.contains('bal-input')) {
+        e.preventDefault();
+        el.blur();
+        if (!el.readOnly) {
+            var btn = el.nextElementSibling;
+            if (btn && btn.classList.contains('lock-btn')) {
+                toggleLock(el.id, btn);
+            }
+        }
+        return;
+    }
+
     if (el.tagName === 'INPUT' && (el.classList.contains('shift-type-input') || el.classList.contains('time-input'))) {
         
         if (e.key === 'Enter') {
@@ -940,14 +1024,15 @@ document.addEventListener('keydown', function(e) {
             
             if (el === inputs[0]) {
                 inputs[1].focus(); 
+                inputs[1].select();
             } else if (el === inputs[1]) {
                 var nextTr = tr.nextElementSibling; 
                 if (nextTr) {
                     var nextInput = nextTr.querySelector('.time-input');
-                    if(nextInput) nextInput.focus();
+                    if(nextInput) { nextInput.focus(); nextInput.select(); }
                 }
             } else if (el.classList.contains('shift-type-input')) {
-                if(inputs.length > 0) inputs[0].focus();
+                if(inputs.length > 0) { inputs[0].focus(); inputs[0].select(); }
             }
             return;
         }
@@ -991,23 +1076,36 @@ document.addEventListener('keydown', function(e) {
     }
 });
 
-window.clearData = function() {
-    document.getElementById('employeeName').value = "";
-    document.getElementById('hourlyRate').value = "0.00";
-    document.getElementById('eshelRate').value = "52.66";
+window.clearData = function(isFullReset = false) {
+    if (isFullReset) {
+        document.getElementById('employeeName').value = "";
+        document.getElementById('hourlyRate').value = "0.00";
+        document.getElementById('eshelRate').value = "52.66";
+        ['bal_open_reg', 'bal_open_shab', 'bal_open_sick', 'bal_open_dec', 'bal_open_cho'].forEach(id => {
+            let el = document.getElementById(id);
+            if(el) {
+                el.value = "0.00";
+                el.readOnly = true;
+                el.classList.add('locked-input');
+                if(el.nextElementSibling) el.nextElementSibling.innerText = '🔒';
+            }
+        });
+    }
+    
     initMonthYearSelect();
     
     var tbody = document.getElementById('tbody');
     if (tbody) tbody.innerHTML = '';
     
-    document.getElementById('tableContainer').style.display = 'none';
-    document.getElementById('summaryPanel').style.display = 'none';
-    document.getElementById('printBtn').style.display = 'none';
-    document.getElementById('closeMonthBtn').style.display = 'none';
-    document.getElementById('weeklyWarning').style.display = 'none';
+    if (document.getElementById('tableContainer')) document.getElementById('tableContainer').style.display = 'none';
+    if (document.getElementById('summaryPanel')) document.getElementById('summaryPanel').style.display = 'none';
+    if (document.getElementById('printBtn')) document.getElementById('printBtn').style.display = 'none';
+    if (document.getElementById('closeMonthBtn')) document.getElementById('closeMonthBtn').style.display = 'none';
+    if (document.getElementById('weeklyWarning')) document.getElementById('weeklyWarning').style.display = 'none';
+    
     updateTitles();
 };
 
 window.onload = function() {
-    try { clearData(); } catch(e) { console.error("שגיאה באתחול ראשוני: ", e); }
+    try { clearData(true); } catch(e) { console.error("שגיאה באתחול ראשוני: ", e); }
 };

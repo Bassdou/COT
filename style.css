@@ -41,22 +41,26 @@ h2, h4, .version-stamp { touch-action: manipulation; user-select: none; }
 .action-grid { display: grid; grid-template-columns: 115px 115px; gap: 12px; }
 .action-grid button { width: 100%; padding: 10px 5px; font-size: 14px; }
 
-.table-container { background: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); overflow-x: auto; max-height: 60vh; margin-bottom: 20px; }
+/* צמצום שורות הגליון החודשי */
+.table-container { background: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); overflow-x: auto; max-height: 65vh; margin-bottom: 20px; }
 table { width: max-content; margin: 0 auto; border-collapse: collapse; white-space: nowrap; table-layout: auto; }
 thead { position: sticky; top: 0; z-index: 10; }
-th, td { border: 1px solid #e0e0e0; padding: 5px 2px; text-align: center; font-size: 13px; vertical-align: middle; }
-th { background-color: #1565c0; color: white; font-size: 12px; }
+th, td { border: 1px solid #e0e0e0; padding: 2px 2px; text-align: center; font-size: 13px; vertical-align: middle; }
+th { background-color: #1565c0; color: white; font-size: 12px; padding: 4px 2px;}
 
-.time-input { width: 65px; padding: 4px; border: 1px solid #90caf9; border-radius: 3px; text-align: center; font-weight: bold; font-family: monospace; font-size: 14px; color: #0d47a1; background: rgba(255,255,255,0.7); }
+.time-input { width: 65px; padding: 2px; border: 1px solid #90caf9; border-radius: 3px; text-align: center; font-weight: bold; font-family: monospace; font-size: 14px; color: #0d47a1; background: rgba(255,255,255,0.7); }
 .time-input::placeholder { color: #bbdefb; font-weight: normal; }
-.shift-type-input { width: 35px; padding: 4px; border: 1px solid #90caf9; border-radius: 3px; text-align: center; font-weight: bold; font-size: 14px; background-color: #e3f2fd; color: #0d47a1; margin: 0 auto; display: block; }
+.shift-type-input { width: 35px; padding: 2px; border: 1px solid #90caf9; border-radius: 3px; text-align: center; font-weight: bold; font-size: 14px; background-color: #e3f2fd; color: #0d47a1; margin: 0 auto; display: block; }
 .val-cell, .calc-th { width: 38px !important; min-width: 38px !important; max-width: 45px !important; text-align: center !important; }
 .val-cell { color: #0d47a1; font-weight: bold; background-color: rgba(248, 251, 255, 0.5); }
 .day-sat { color: #1565c0; font-weight: bold; background-color: rgba(227, 242, 253, 0.7) !important; }
 .day-fri { color: #1976d2; font-weight: bold; background-color: rgba(225, 245, 254, 0.7) !important; }
 .thick-border-left { border-left: 2px solid #90caf9 !important; }
 
-/* שורות סיכום (בוטל ההקפאה כדי שלא יסתירו את הנתונים) */
+/* הוספת קו תחתי לסגירת השבוע (שבת) */
+.row-sat td { border-bottom: 2px solid #1565c0 !important; }
+
+/* שורות סיכום */
 .tfoot-summary { background-color: #e3f2fd; font-weight: bold; position: static; box-shadow: none; }
 .tfoot-summary td { border: 2px solid #90caf9; color: #0d47a1; }
 .tfoot-summary.hours-row td { border-top: 3px solid #1565c0 !important; }
@@ -67,17 +71,18 @@ th { background-color: #1565c0; color: white; font-size: 12px; }
 .dash-card h4 { margin: 0 0 10px 0; font-size: 13px; color: #546e7a; }
 .dash-card .val { font-size: 18px; font-weight: bold; color: #0d47a1; }
 
-.balance-card { width: 200px; text-align: right; border-top-color: #0288d1; }
+.balance-card { width: 220px; text-align: right; border-top-color: #0288d1; }
 .balance-card h4 { text-align: center; margin-bottom: 12px; font-size: 14px; border-bottom: 1px solid #eee; padding-bottom: 5px; }
 .balance-row { display: flex; justify-content: space-between; align-items: center; font-size: 13.5px; margin-bottom: 6px; }
 .balance-input-wrap { display: flex; align-items: center; gap: 4px; }
-.bal-input { width: 45px; text-align: center; font-weight: bold; font-size: 13px; padding: 2px; border-radius: 4px; border: 1px solid #ccc; outline: none; transition: 0.2s;}
+/* הרחבת שדה היתרות כך שיראו את כל הספרות ברור */
+.bal-input { width: 65px; text-align: center; font-weight: bold; font-size: 13px; padding: 2px; border-radius: 4px; border: 1px solid #ccc; outline: none; transition: 0.2s;}
 .locked-input { background-color: #f1f3f4; color: #7f8c8d; border-color: #e0e0e0; }
 .lock-btn { cursor: pointer; font-size: 12px; background: none; border: none; padding: 0; filter: grayscale(100%); transition: 0.2s; }
 .lock-btn:hover { filter: grayscale(0%); transform: scale(1.1); }
 .tlush-card { border-top: 4px solid #0d47a1; background: #bbdefb; width: 180px; } .tlush-card .val { color: #0d47a1; font-size: 22px; margin-top: 10px;}
 
-/* טבלת יתרות תחתונה */
+/* טבלת יתרות תחתונה (מוצגת רק בהדפסה) */
 .balances-table-wrapper { width: 100%; max-width: 650px; margin: 30px auto; background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); border-top: 4px solid #0d47a1; }
 .balances-table { width: 100%; border-collapse: collapse; text-align: center; margin-top: 15px; }
 .balances-table th { background-color: #1976d2; color: white; padding: 10px; font-size: 14px; border: 1px solid #1565c0; }
@@ -118,7 +123,6 @@ th { background-color: #1565c0; color: white; font-size: 12px; }
     #printEmployeeNameDisplay { font-size: 10pt; font-weight: normal; color: #333; }
     table { width: 100% !important; margin: 0 !important; border-collapse: collapse !important; table-layout: auto !important; border: 2px solid #000 !important; }
     
-    /* ביטול גלילה ותיקון כותרות בהדפסה */
     thead { position: static !important; display: table-header-group !important; }
     tbody { display: table-row-group !important; }
     tr { page-break-inside: avoid !important; }
@@ -126,13 +130,15 @@ th { background-color: #1565c0; color: white; font-size: 12px; }
     th, td { padding: 0px 1px !important; height: 12px !important; line-height: 1 !important; font-size: 8pt !important; border: none !important; border-left: 1px solid #ccc !important; color: #000 !important; background: transparent !important; text-align: center !important; white-space: nowrap !important; }
     th { font-weight: bold !important; border-bottom: 1px solid #000 !important; }
     
-    /* יישור עמודת התיאור לימין בהדפסה */
     td[id^="val-desc-"] { text-align: right !important; padding-right: 4px !important; }
 
     .col-sep { border-left: 1.5px solid #000 !important; }
     .print-thick-right { border-right: 1.5px solid #000 !important; }
     .thick-border-left { border-left: 2px solid #000 !important; }
-    tr.row-sat td { border-bottom: 1px solid #000 !important; }
+    
+    /* התיקון לקו של שבת בהדפסה */
+    .row-sat td { border-bottom: 2px solid #000 !important; }
+    
     thead th { border-top: 1px solid #000 !important; border-bottom: 1px solid #000 !important; }
     tfoot td { border-top: 1px solid #000 !important; font-weight: bold !important; }
     .tfoot-summary.cost-row td { border-top: 1px dashed #666 !important; } 
