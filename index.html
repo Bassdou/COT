@@ -9,6 +9,15 @@
 </head>
 <body>
 
+<!-- מסך תחזוקה מתפרץ (נשלט מהענן) -->
+<div id="maintenanceOverlay" style="position: fixed; top:0; left:0; width:100%; height:100%; background: linear-gradient(135deg, #1976d2 0%, #eef5f9 100%); z-index: 99999; display:none; align-items:center; justify-content:center; padding: 20px;">
+    <div style="background:#fff; padding:40px; border-radius:16px; box-shadow:0 10px 40px rgba(0,0,0,0.2); text-align:center; max-width:400px; width: 100%;">
+        <div style="font-size: 60px; margin-bottom: 15px;">👨‍💻</div>
+        <h2 style="color:#d35400; margin-top:0; font-size:22px; font-weight:bold; line-height:1.4;">המערכת משתדרגת, בזמן הקרוב תעלה מערכת יותר עדכנית.</h2>
+        <p style="color:#34495e; font-size:18px; font-weight:bold; margin-top:15px; margin-bottom:0;">נחזור לפעילות בקרוב</p>
+    </div>
+</div>
+
 <!-- מסך התחברות / הרשמה -->
 <div id="authOverlay" style="position: fixed; top:0; left:0; width:100%; height:100%; background: linear-gradient(135deg, #1976d2 0%, #eef5f9 100%); z-index: 10000; display:flex; align-items:flex-start; justify-content:center; padding: 40px 20px;">
     <div style="background:#fff; padding:35px 25px; border-radius:16px; box-shadow:0 10px 40px rgba(0,0,0,0.2); width:100%; max-width:400px; text-align:center; position:relative;">
@@ -409,7 +418,7 @@
     </div>
 </div>
 
-<div class="version-stamp" onclick="secretBypass(event)" title="V">V202610222330</div>
+<div class="version-stamp" onclick="secretBypass(event)" title="V">V202610222345</div>
 
 <!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-app-compat.js"></script>
