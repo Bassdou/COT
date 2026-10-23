@@ -408,10 +408,16 @@
     </table>
 </div>
 
-<div style="width: 100%; margin-top: 25px; margin-bottom: 30px; display:flex; justify-content:center; gap:20px;">
+<div style="width: 100%; margin-top: 25px; margin-bottom: 30px; display:flex; justify-content:center; gap:20px; flex-wrap: wrap;">
     <button class="btn-close-month btn-3d" id="closeMonthBtn" onclick="closeMonth()" style="display:none;">סגור חודש</button>
     <button class="btn-print btn-3d" id="printBtn" onclick="window.print()" style="display:none;">🖨️ הדפס גליון / PDF</button>
+    <!-- הכפתור החדש - ייצוא לאקסל -->
+    <button class="btn-3d hide-print" id="exportExcelBtn" onclick="document.getElementById('excelFileLoader').click()" style="display:none; background-color: #27ae60; color: white; padding: 12px 25px; border-radius: 8px; font-size: 15px; border: none; box-shadow: 0 4px #1e8449; cursor: pointer;">📗 ייצא גיליון לאקסל</button>
 </div>
+
+<!-- אינפוט נסתר לבחירת קובץ אקסל קיים -->
+<input type="file" id="excelFileLoader" accept=".xlsx" style="display: none;" onchange="processExcelExport(event)">
+
 
 <!-- חלון קופץ מותאם אישית של COT -->
 <div id="customDialogModal" class="modal" style="z-index: 25000;">
@@ -430,12 +436,16 @@
     </div>
 </div>
 
-<div class="version-stamp" onclick="secretBypass(event)" title="V">V202610231345</div>
+<div class="version-stamp" onclick="secretBypass(event)" title="V">V202610231630</div>
 
 <!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-firestore-compat.js"></script>
+
+<!-- ספריות חדשות לייצוא לאקסל -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
 
 <!-- Scripts -->
 <script src="holidays_db.js"></script>

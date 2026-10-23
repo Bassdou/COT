@@ -134,7 +134,6 @@ function updateCloudBalancesPanel() {
     }
 }
 
-// האזנה למתג התחזוקה בזמן אמת עם ריענון עמוק
 let wasInMaintenance = false;
 const maintenanceOverlay = document.getElementById('maintenanceOverlay');
 db.collection("system").doc("settings").onSnapshot((doc) => {
@@ -184,11 +183,10 @@ firebase.auth().onAuthStateChanged(function(user) {
 
                 updateCloudBalancesPanel(); 
 
-                // --- הלוגיקה החדשה: קידום אוטומטי לחודש הבא שעוד לא נפתח עליו גיליון ---
                 let keys = Object.keys(window.monthlyBalances).filter(k => k.match(/^\d{4}-\d{2}$/));
                 if (keys.length > 0) {
                     keys.sort(); 
-                    let lastClosedMonthStr = keys[keys.length - 1]; // החודש הסגור האחרון בענן
+                    let lastClosedMonthStr = keys[keys.length - 1]; 
                     
                     let parts = lastClosedMonthStr.split('-');
                     let nextY = parseInt(parts[0], 10);
@@ -198,9 +196,9 @@ firebase.auth().onAuthStateChanged(function(user) {
                     
                     let sel = document.getElementById('monthYearSelect');
                     if (sel.querySelector(`option[value="${nextMonthStr}"]`)) {
-                        sel.value = nextMonthStr; // מקדם אוטומטית לחודש שטרם עבדו עליו
+                        sel.value = nextMonthStr; 
                     } else if (sel.querySelector(`option[value="${lastClosedMonthStr}"]`)) {
-                        sel.value = lastClosedMonthStr; // גיבוי - אם משום מה אין את החודש הבא ברשימה
+                        sel.value = lastClosedMonthStr; 
                     }
                 }
 
@@ -736,7 +734,6 @@ window.generateTable = function() {
 
     updateTitles();
     
-    // שליפת היתרות לטבלה מהמערך שבענן (כאשר פותחים חודש ספציפי)
     if (window.monthlyBalances[curKey]) {
         document.getElementById('bal_open_reg').value = window.monthlyBalances[curKey].reg.toFixed(2);
         document.getElementById('bal_open_shab').value = window.monthlyBalances[curKey].shab.toFixed(2);
@@ -819,6 +816,7 @@ window.generateTable = function() {
     document.getElementById('tableContainer').style.display = 'block';
     document.getElementById('summaryPanel').style.display = 'flex';
     document.getElementById('printBtn').style.display = 'inline-block';
+    document.getElementById('exportExcelBtn').style.display = 'inline-block';
     document.getElementById('closeMonthBtn').style.display = 'inline-block';
     updateGrandTotal();
 };
@@ -1314,6 +1312,7 @@ window.clearData = function(isFullReset = false) {
     if (document.getElementById('tableContainer')) document.getElementById('tableContainer').style.display = 'none';
     if (document.getElementById('summaryPanel')) document.getElementById('summaryPanel').style.display = 'none';
     if (document.getElementById('printBtn')) document.getElementById('printBtn').style.display = 'none';
+    if (document.getElementById('exportExcelBtn')) document.getElementById('exportExcelBtn').style.display = 'none';
     if (document.getElementById('closeMonthBtn')) document.getElementById('closeMonthBtn').style.display = 'none';
     if (document.getElementById('weeklyWarning')) document.getElementById('weeklyWarning').style.display = 'none';
     if (document.getElementById('firstMonthCarryModal')) document.getElementById('firstMonthCarryModal').style.display = 'none';
@@ -1323,4 +1322,195 @@ window.clearData = function(isFullReset = false) {
 
 window.onload = function() {
     try { clearData(true); } catch(e) { console.error("שגיאה באתחול ראשוני: ", e); }
+};
+
+// ==========================================
+// פונקציית ייצוא נתונים לאקסל קיים
+// ==========================================
+window.processExcelExport = async function(event) {
+    var file = event.target.files[0];
+    if (!file) return;
+
+    if (typeof ExcelJS === 'undefined') {
+        customAlert("ספריית האקסל עדיין לא נטענה. אנא רענן את העמוד ונסה שוב.");
+        return;
+    }
+
+    var selText = document.getElementById('monthYearSelect').options[document.getElementById('monthYearSelect').selectedIndex].text;
+    var defaultSheetName = selText;
+
+    let targetSheetName = await customPrompt("איך תרצה לקרוא לגיליון החדש בקובץ?");
+    if (targetSheetName === null) {
+        event.target.value = ''; 
+        return;
+    }
+    if (targetSheetName.trim() === '') {
+        targetSheetName = defaultSheetName;
+    }
+
+    var empName = document.getElementById('employeeName').value.trim() || 'ללא_שם';
+    var ym = getSelectedMonthYear();
+
+    var reader = new FileReader();
+    reader.onload = async function(e) {
+        try {
+            var buffer = e.target.result;
+            var workbook = new ExcelJS.Workbook();
+            await workbook.xlsx.load(buffer);
+
+            // מחיקת גיליון קיים עם אותו שם אם קיים, כדי למנוע כפילויות
+            var existingSheet = workbook.getWorksheet(targetSheetName);
+            if (existingSheet) {
+                workbook.removeWorksheet(existingSheet.id);
+            }
+
+            var worksheet = workbook.addWorksheet(targetSheetName, { views: [{ rightToLeft: true }] });
+
+            // בניית מבנה הטבלה - הגדרת עמודות ראשונית
+            worksheet.columns = [
+                { key: 'dateNum', width: 6 },
+                { key: 'dayStr', width: 6 },
+                { key: 'shift', width: 10 },
+                { key: 'in', width: 10 },
+                { key: 'out', width: 10 },
+                { key: 'desc', width: 20 },
+                { key: 'totalHours', width: 10 },
+                { key: 'shabHours', width: 10 },
+                { key: 'I', width: 8 },
+                { key: 'I2', width: 8 },
+                { key: 'J', width: 8 },
+                { key: 'K', width: 8 },
+                { key: 'L', width: 8 },
+                { key: 'M', width: 8 },
+                { key: 'N', width: 8 },
+                { key: 'O', width: 8 },
+                { key: 'P', width: 8 },
+                { key: 'Q', width: 8 },
+                { key: 'R', width: 8 },
+                { key: 'S', width: 8 },
+                { key: 'T', width: 8 },
+                { key: 'U', width: 8 },
+                { key: 'V', width: 8 },
+                { key: 'W', width: 8 },
+                { key: 'cost', width: 12 }
+            ];
+
+            // בניית שורת כותרת ראשונה (קבוצות)
+            var headerRow1 = worksheet.addRow([
+                'תאריך', '', 'משמרת', 'כניסה', 'יציאה', 'תאור', 'סה"כ\nשעות', 'חופש\nשבת', 'תקן', 'רגילות', 
+                'ש"נ', '', '', 'שבת', '', 'ש"נ', '', '', '', 'ת.מ.', '', '', '', '', 'ערך'
+            ]);
+            
+            // בניית שורת כותרת שנייה (אחוזים)
+            var headerRow2 = worksheet.addRow([
+                '', '', '', '', '', '', '', '', '', '', 
+                '100%', '125%', '150%', '175%', '200%', '180%', '187.5%', '225%', '250%', '20%', '50%', '75%', '87.5%', '100%', ''
+            ]);
+
+            // מיזוג תאים כדי לחקות את מראה מסך ה-HTML
+            worksheet.mergeCells('A1:B2'); // תאריך
+            worksheet.mergeCells('C1:C2'); // משמרת
+            worksheet.mergeCells('D1:D2'); // כניסה
+            worksheet.mergeCells('E1:E2'); // יציאה
+            worksheet.mergeCells('F1:F2'); // תאור
+            worksheet.mergeCells('G1:G2'); // סה"כ שעות
+            worksheet.mergeCells('H1:H2'); // חופש שבת
+            worksheet.mergeCells('I1:I2'); // תקן
+            worksheet.mergeCells('J1:J2'); // רגילות
+            
+            worksheet.mergeCells('K1:M1'); // ש"נ קבוצה ראשונה
+            worksheet.mergeCells('N1:O1'); // שבת קבוצה
+            worksheet.mergeCells('P1:S1'); // ש"נ קבוצה שנייה
+            worksheet.mergeCells('T1:X1'); // ת.מ. קבוצה
+            worksheet.mergeCells('Y1:Y2'); // ערך
+
+            // עיצוב שתי שורות הכותרת
+            [headerRow1, headerRow2].forEach(row => {
+                row.height = 25;
+                row.eachCell({ includeEmpty: true }, function(cell) {
+                    cell.font = { name: 'Arial', bold: true, color: { argb: 'FFFFFFFF' }, size: 11 };
+                    cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF0D47A1' } }; // רקע כחול
+                    cell.alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
+                    cell.border = { top: {style:'thin'}, left: {style:'thin'}, bottom: {style:'thin'}, right: {style:'thin'} };
+                });
+            });
+
+            // מילוי הנתונים מהטבלה במסך
+            for (var r = 1; r <= 31; r++) {
+                var tr = document.querySelector('#tbody tr:nth-child(' + r + ')');
+                if (!tr) continue;
+
+                var dateStr = pad2(r);
+                var dayNum = new Date(ym.y, ym.m - 1, r).getDay();
+                var dayStr = daysHebrew[dayNum];
+                
+                var shiftInput = tr.querySelector('.shift-type-input');
+                var timeInputs = tr.querySelectorAll('.time-input');
+                var descCell = document.getElementById('val-desc-' + r);
+                
+                // שליפת כל תאי הנתונים המחושבים
+                var getVal = (id) => {
+                    let cell = document.getElementById(id);
+                    let val = cell ? parseFloat(cell.getAttribute('data-val') || 0) : 0;
+                    return val === 0 ? '' : val.toFixed(2);
+                };
+
+                var shiftVal = shiftInput ? shiftInput.value : '';
+                var inVal = timeInputs.length >= 2 ? timeInputs[0].value : '';
+                var outVal = timeInputs.length >= 2 ? timeInputs[1].value : '';
+                var descVal = descCell ? descCell.innerText : '';
+
+                if (!shiftVal && !inVal && !outVal && !descVal) continue; // שורה ריקה לחלוטין - נדלג
+                
+                var costCell = document.getElementById('val-cost-' + r);
+                var costVal = costCell ? parseFloat(costCell.getAttribute('data-cost') || 0) : 0;
+
+                var rowData = [
+                    dateStr, dayStr, shiftVal, inVal, outVal, descVal,
+                    getVal('val-total-hours-' + r),
+                    getVal('val-shabbat-hours-' + r),
+                    getVal('val-I-' + r), getVal('val-I2-' + r), getVal('val-J-' + r), getVal('val-K-' + r), getVal('val-L-' + r),
+                    getVal('val-M-' + r), getVal('val-N-' + r), getVal('val-O-' + r), getVal('val-P-' + r), getVal('val-Q-' + r), getVal('val-R-' + r),
+                    getVal('val-S-' + r), getVal('val-T-' + r), getVal('val-U-' + r), getVal('val-V-' + r), getVal('val-W-' + r),
+                    costVal === 0 ? '' : costVal.toFixed(2)
+                ];
+
+                var addedRow = worksheet.addRow(rowData);
+
+                // צביעת רקע שורות (זברה) כמו במסך
+                var isEvenWeek = Math.floor((r - 1) / 7) % 2 === 0;
+                var rowColor = isEvenWeek ? 'FFE8F5E9' : 'FFFFF3E0'; // ירוק בהיר או כתום בהיר
+                if (dayNum === 6) rowColor = 'FFBBDEFB'; // שבת בכחול בהיר
+
+                addedRow.eachCell({ includeEmpty: true }, function(cell, colNumber) {
+                    cell.font = { name: 'Arial', size: 11 };
+                    cell.alignment = { vertical: 'middle', horizontal: 'center' };
+                    cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: rowColor } };
+                    cell.border = { top: {style:'thin', color: {argb:'FFCCCCCC'}}, left: {style:'thin', color: {argb:'FFCCCCCC'}}, bottom: {style:'thin', color: {argb:'FFCCCCCC'}}, right: {style:'thin', color: {argb:'FFCCCCCC'}} };
+                    
+                    // הדגשת עמודת הערך
+                    if (colNumber === 25 && cell.value !== '') {
+                        cell.font = { name: 'Arial', size: 11, bold: true, color: { argb: 'FF27AE60' } };
+                    }
+                });
+            }
+
+            // הפקה והורדה של הקובץ המעודכן
+            var outBuffer = await workbook.xlsx.writeBuffer();
+            var blob = new Blob([outBuffer], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+            
+            // שם הקובץ שיוצע למשתמש בעת השמירה
+            var finalFileName = file.name.replace(".xlsx", "") + "_מעודכן.xlsx";
+            saveAs(blob, finalFileName);
+            
+            customAlert("הגיליון נוסף בהצלחה לקובץ! 📗<br>הורדנו למחשב שלך קובץ מעודכן.");
+            event.target.value = ''; // איפוס האינפוט לפעם הבאה
+
+        } catch(err) {
+            console.error(err);
+            customAlert("שגיאה בעיבוד קובץ האקסל. ודא שזהו קובץ תקין ולא פתוח בתוכנה אחרת.");
+            event.target.value = '';
+        }
+    };
+    reader.readAsArrayBuffer(file);
 };
