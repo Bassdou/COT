@@ -120,7 +120,6 @@ db.collection("system").doc("settings").onSnapshot((doc) => {
         maintenanceOverlay.style.display = 'none';
     }
 }, (error) => {
-    // אם אין הרשאות קריאה ב-Rules, ההגנה לא תפעל אבל האתר יעבוד כרגיל
     console.warn("Maintenance mode check failed:", error);
 });
 
@@ -152,12 +151,28 @@ firebase.auth().onAuthStateChanged(function(user) {
                         cho: parseFloat(d.bal_open_cho || 0)
                     };
                 }
+
+                // תיקון: מציאת החודש המעודכן ביותר בענן, בחירתו והצגת הנתונים אוטומטית
+                let keys = Object.keys(window.monthlyBalances).filter(k => k.match(/^\d{4}-\d{2}$/));
+                if (keys.length > 0) {
+                    keys.sort(); // מסדר כרונולוגית
+                    let lastMonth = keys[keys.length - 1];
+                    let sel = document.getElementById('monthYearSelect');
+                    if (sel.querySelector(`option[value="${lastMonth}"]`)) {
+                        sel.value = lastMonth; // בוחר את החודש האחרון שנשמר בענן
+                    }
+                }
+
+                // מונע הקפצת חלון שגיאה ריק אם זה משתמש חדש בלי שם
+                if (document.getElementById('employeeName').value.trim() !== "") {
+                    generateTable();
+                } else {
+                    updateTitles();
+                }
             }
-            updateTitles();
         }).catch(err => console.error("שגיאה במשיכת נתונים:", err));
         
     } else {
-        // מציג את מסך ההתחברות רק אם האתר לא במצב תחזוקה
         if (maintenanceOverlay.style.display !== 'flex') {
             document.getElementById('authOverlay').style.display = 'flex';
         }
@@ -363,6 +378,22 @@ window.handleFileLoad = function(event) {
             if (fileCarryVal !== undefined && fileKey) window.carryOverData[fileKey] = fileCarryVal;
             if (resolvedCarryVal !== undefined && fileKey) window.carryOverData[fileKey] = resolvedCarryVal;
 
+            if (fileKey) {
+                let fReg = data.monthBalances ? data.monthBalances.reg : parseFloat(data.bal_open_reg || 0);
+                let fShab = data.monthBalances ? data.monthBalances.shab : parseFloat(data.bal_open_shab || 0);
+                let fSick = data.monthBalances ? data.monthBalances.sick : parseFloat(data.bal_open_sick || 0);
+                let fDec = data.monthBalances ? data.monthBalances.dec : parseFloat(data.bal_open_dec || 0);
+                let fCho = data.monthBalances ? data.monthBalances.cho : parseFloat(data.bal_open_cho || 0);
+                
+                let cBal = window.monthlyBalances[fileKey];
+                let hasCloudData = cBal && (cBal.reg > 0 || cBal.shab > 0 || cBal.sick > 0 || cBal.dec > 0 || cBal.cho > 0);
+                let hasFileData = (fReg > 0 || fShab > 0 || fSick > 0 || fDec > 0 || fCho > 0);
+
+                if (!cBal || (!hasCloudData && hasFileData)) {
+                    window.monthlyBalances[fileKey] = { reg: fReg, shab: fShab, sick: fSick, dec: fDec, cho: fCho };
+                }
+            }
+
             if (data.month && data.year) {
                 document.getElementById('monthYearSelect').value = data.year + "-" + pad2(data.month);
             }
@@ -372,10 +403,8 @@ window.handleFileLoad = function(event) {
 
             updateTitles();
             
-            // יצירת הטבלה תחילה כדי לאפס את תצוגת הכרטיסיות, ולאחר מכן אנו נשתול את יתרות הקובץ
             generateTable(); 
 
-            // עדכון הכרטיסיות ישירות מהקובץ הנטען (ללא דריסת הענן!)
             if (fileKey) {
                 let fReg = data.monthBalances ? data.monthBalances.reg : parseFloat(data.bal_open_reg || 0);
                 let fShab = data.monthBalances ? data.monthBalances.shab : parseFloat(data.bal_open_shab || 0);
@@ -451,7 +480,6 @@ window.saveData = async function(silent = false) {
     var ym = getSelectedMonthYear();
     var curKey = ym.y + "-" + pad2(ym.m);
 
-    // עדכון הזיכרון הלוקאלי לקובץ
     var currentBalances = {
         reg: parseFloat(document.getElementById('bal_open_reg').value) || 0,
         shab: parseFloat(document.getElementById('bal_open_shab').value) || 0,
@@ -497,7 +525,6 @@ window.saveData = async function(silent = false) {
         };
         
         user.updateProfile({ displayName: empName });
-        // עדכון ענן - שומר את ההגדרות, לא נוגע במערך היתרות אלא אם המשתמש יאשר למטה!
         db.collection("users").doc(user.uid).set(cloudData, { merge: true });
 
         if (isUnlocked && !silent) {
@@ -565,7 +592,6 @@ window.closeMonth = async function() {
     if (nextM > 12) { nextM = 1; nextY++; }
     var nextKey = nextY + "-" + pad2(nextM);
 
-    // עדכון הענן לחודש הנוכחי (למקרה שהיו שינויים)
     window.monthlyBalances[curKey] = {
         reg: parseFloat(document.getElementById('bal_open_reg').value) || 0,
         shab: parseFloat(document.getElementById('bal_open_shab').value) || 0,
@@ -625,7 +651,7 @@ window.closeMonth = async function() {
     }
 
     customAlert("החודש נסגר בהצלחה! היתרות עברו לענן לחודשים הבאים.");
-    clearData(false); // מעלים את הגיליון כפי שביקשת
+    clearData(false);
 };
 
 window.saveFirstMonthCarry = function() {
@@ -711,7 +737,11 @@ window.generateTable = function() {
         var curDateStr = year + "-" + pad2(month) + "-" + pad2(i);
         
         var holObj = (window.HOLIDAYS_DB && window.HOLIDAYS_DB[curDateStr]) ? window.HOLIDAYS_DB[curDateStr] : null;
-        var holText = holObj ? holObj.hebrew : '';
+        
+        // תיקון: הסרת הסוגריים מהחגים
+        var rawHolText = holObj ? holObj.hebrew : '';
+        var holText = rawHolText.replace(/\s*\(.*?\)\s*/g, '').trim(); 
+        
         var descColor = holObj ? '#e67e22' : '#1565c0';
 
         htmlContent += '<tr class="' + trClass + '" style="background-color: ' + rowColor + ';">' +
