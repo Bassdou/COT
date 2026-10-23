@@ -55,18 +55,31 @@
 </div>
 
 <!-- סרגל עליון -->
-<div id="debugBox">
+<div id="debugBox" style="display: flex; justify-content: space-between; align-items: center;">
     <div style="display: flex; align-items: center; gap: 12px;">
         <div dir="ltr" style="position: relative; width: 55px; height: 36px; font-family: 'Arial Black', sans-serif; font-size: 34px; line-height: 36px; font-weight: 900; margin-left: 5px;">
             <span style="position: absolute; left: 0px; top: 0; color: #FF9800; z-index: 3;">C</span>
             <span style="position: absolute; left: 14px; top: 0; color: #00E676; z-index: 1;">O</span>
             <span style="position: absolute; left: 30px; top: 0; color: #FF5252; z-index: 2;">T</span>
         </div>
-        <div style="display: flex; flex-direction: column; line-height: 1.1; border-right: 2px solid rgba(255,255,255,0.3); padding-right: 12px;">
+        <div style="display: flex; flex-direction: column; line-height: 1.1; padding-right: 12px;">
             <span style="font-size: 18px; font-weight: bold; color: #ffffff;">בקרת דו"ח פיצול</span>
             <span style="font-size: 11px; color: #bbdefb; letter-spacing: 0.5px; font-family: Tahoma, sans-serif;">Calculate Over Time</span>
         </div>
     </div>
+
+    <!-- פאנל היתרות החדש שמציג את הנתונים מהענן -->
+    <div id="cloudBalancesPanel" style="display: none; align-items: center; gap: 10px; background: rgba(0, 0, 0, 0.2); padding: 5px 15px; border-radius: 20px; font-size: 13px;">
+        <span style="font-weight: bold; color: #ffeb3b;" id="cloudLastMonthTitle">החודש האחרון:</span>
+        <div style="display: flex; gap: 12px; color: white;">
+            <span title="חופש רגיל">🏖️ רגיל: <strong id="cloudReg">0.00</strong></span>
+            <span title="חופש שבת">⚖️ שבת: <strong id="cloudShab">0.00</strong></span>
+            <span title="ימי מחלה">🤒 מחלה: <strong id="cloudSick">0.00</strong></span>
+            <span title="הצהרה">📝 הצהרה: <strong id="cloudDec">0.00</strong></span>
+            <span title="ימי בחירה">🎯 בחירה: <strong id="cloudCho">0.00</strong></span>
+        </div>
+    </div>
+
     <div style="display: flex; gap: 12px; align-items: center;">
         <button class="btn-logout btn-3d" id="logoutBtn" onclick="logoutUser()" style="display:none;">התנתק</button>
         <button class="btn-info btn-3d" onclick="openShiftInfo()" title="מידע חשוב על המערכת">
@@ -418,7 +431,7 @@
     </div>
 </div>
 
-<div class="version-stamp" onclick="secretBypass(event)" title="V">V202610222345</div>
+<div class="version-stamp" onclick="secretBypass(event)" title="V">V202610231150</div>
 
 <!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-app-compat.js"></script>
