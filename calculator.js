@@ -110,6 +110,31 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
+// פונקציה לעדכון תצוגת פאנל היתרות מהענן
+function updateCloudBalancesPanel() {
+    let keys = Object.keys(window.monthlyBalances).filter(k => k.match(/^\d{4}-\d{2}$/));
+    if (keys.length > 0) {
+        keys.sort(); 
+        let lastMonthKey = keys[keys.length - 1];
+        let bals = window.monthlyBalances[lastMonthKey];
+        
+        let parts = lastMonthKey.split('-');
+        let mNames = ["ינואר", "פברואר", "מרץ", "אפריל", "מאי", "יוני", "יולי", "אוגוסט", "ספטמבר", "אוקטובר", "נובמבר", "דצמבר"];
+        let mStr = mNames[parseInt(parts[1], 10) - 1] + " " + parts[0];
+        
+        document.getElementById('cloudLastMonthTitle').innerText = "יתרות ענן (" + mStr + "):";
+        document.getElementById('cloudReg').innerText = (bals.reg || 0).toFixed(2);
+        document.getElementById('cloudShab').innerText = (bals.shab || 0).toFixed(2);
+        document.getElementById('cloudSick').innerText = (bals.sick || 0).toFixed(2);
+        document.getElementById('cloudDec').innerText = (bals.dec || 0).toFixed(2);
+        document.getElementById('cloudCho').innerText = (bals.cho || 0).toFixed(2);
+        
+        document.getElementById('cloudBalancesPanel').style.display = 'flex';
+    } else {
+        document.getElementById('cloudBalancesPanel').style.display = 'none';
+    }
+}
+
 // האזנה למתג התחזוקה בזמן אמת
 const maintenanceOverlay = document.getElementById('maintenanceOverlay');
 db.collection("system").doc("settings").onSnapshot((doc) => {
@@ -152,7 +177,8 @@ firebase.auth().onAuthStateChanged(function(user) {
                     };
                 }
 
-                // תיקון: מציאת החודש הכי עדכני בענן, בחירתו אוטומטית וטעינת הטבלה והיתרות שלו
+                updateCloudBalancesPanel(); 
+
                 let keys = Object.keys(window.monthlyBalances).filter(k => k.match(/^\d{4}-\d{2}$/));
                 if (keys.length > 0) {
                     keys.sort(); 
@@ -163,7 +189,6 @@ firebase.auth().onAuthStateChanged(function(user) {
                     }
                 }
 
-                // טעינת גליון אוטומטית מיד לאחר ההתחברות (רק אם יש שם עובד)
                 if (document.getElementById('employeeName').value.trim() !== "") {
                     updateTitles();
                     generateTable(); 
@@ -533,6 +558,7 @@ window.saveData = async function(silent = false) {
             if(ans) {
                 window.monthlyBalances[curKey] = currentBalances;
                 db.collection("users").doc(user.uid).set({monthlyBalances: window.monthlyBalances}, { merge: true });
+                updateCloudBalancesPanel(); 
                 customAlert("היתרות החדשות עודכנו בענן בהצלחה.");
             }
         }
@@ -648,7 +674,9 @@ window.closeMonth = async function() {
         db.collection("users").doc(user.uid).set({
             carryOver: window.carryOverData,
             monthlyBalances: window.monthlyBalances
-        }, { merge: true });
+        }, { merge: true }).then(() => {
+            updateCloudBalancesPanel();
+        });
     }
 
     customAlert("החודש נסגר בהצלחה! היתרות עברו לענן לחודשים הבאים.");
@@ -738,8 +766,6 @@ window.generateTable = function() {
         var curDateStr = year + "-" + pad2(month) + "-" + pad2(i);
         
         var holObj = (window.HOLIDAYS_DB && window.HOLIDAYS_DB[curDateStr]) ? window.HOLIDAYS_DB[curDateStr] : null;
-        
-        // תיקון: הסרת כל הטקסט שנמצא בסוגריים (כולל הסוגריים עצמם) מתיאור החג
         var rawHolText = holObj ? holObj.hebrew : '';
         var holText = rawHolText.split('(')[0].trim();
         
@@ -1261,6 +1287,7 @@ window.clearData = function(isFullReset = false) {
         });
         window.carryOverData = {}; 
         window.monthlyBalances = {}; 
+        document.getElementById('cloudBalancesPanel').style.display = 'none'; 
     }
     
     initMonthYearSelect();
