@@ -110,7 +110,6 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
-// פונקציה לעדכון תצוגת פאנל היתרות מהענן
 function updateCloudBalancesPanel() {
     let keys = Object.keys(window.monthlyBalances).filter(k => k.match(/^\d{4}-\d{2}$/));
     if (keys.length > 0) {
@@ -122,7 +121,7 @@ function updateCloudBalancesPanel() {
         let mNames = ["ינואר", "פברואר", "מרץ", "אפריל", "מאי", "יוני", "יולי", "אוגוסט", "ספטמבר", "אוקטובר", "נובמבר", "דצמבר"];
         let mStr = mNames[parseInt(parts[1], 10) - 1] + " " + parts[0];
         
-        document.getElementById('cloudLastMonthTitle').innerText = "יתרות ענן (" + mStr + "):";
+        document.getElementById('cloudLastMonthTitle').innerText = "יתרות סגירה עבור חודש " + mStr;
         document.getElementById('cloudReg').innerText = (bals.reg || 0).toFixed(2);
         document.getElementById('cloudShab').innerText = (bals.shab || 0).toFixed(2);
         document.getElementById('cloudSick').innerText = (bals.sick || 0).toFixed(2);
@@ -135,14 +134,20 @@ function updateCloudBalancesPanel() {
     }
 }
 
-// האזנה למתג התחזוקה בזמן אמת
+// האזנה למתג התחזוקה בזמן אמת עם ריענון עמוק
+let wasInMaintenance = false;
 const maintenanceOverlay = document.getElementById('maintenanceOverlay');
 db.collection("system").doc("settings").onSnapshot((doc) => {
     if (doc.exists && doc.data().maintenanceMode === true) {
         maintenanceOverlay.style.display = 'flex';
         document.getElementById('authOverlay').style.display = 'none';
+        wasInMaintenance = true;
     } else {
-        maintenanceOverlay.style.display = 'none';
+        if (wasInMaintenance) {
+            window.location.href = window.location.pathname + '?v=' + new Date().getTime();
+        } else {
+            maintenanceOverlay.style.display = 'none';
+        }
     }
 }, (error) => {
     console.warn("Maintenance mode check failed:", error);
@@ -179,13 +184,23 @@ firebase.auth().onAuthStateChanged(function(user) {
 
                 updateCloudBalancesPanel(); 
 
+                // --- הלוגיקה החדשה: קידום אוטומטי לחודש הבא שעוד לא נפתח עליו גיליון ---
                 let keys = Object.keys(window.monthlyBalances).filter(k => k.match(/^\d{4}-\d{2}$/));
                 if (keys.length > 0) {
                     keys.sort(); 
-                    let lastMonth = keys[keys.length - 1]; 
+                    let lastClosedMonthStr = keys[keys.length - 1]; // החודש הסגור האחרון בענן
+                    
+                    let parts = lastClosedMonthStr.split('-');
+                    let nextY = parseInt(parts[0], 10);
+                    let nextM = parseInt(parts[1], 10) + 1;
+                    if (nextM > 12) { nextM = 1; nextY++; }
+                    let nextMonthStr = nextY + "-" + pad2(nextM);
+                    
                     let sel = document.getElementById('monthYearSelect');
-                    if (sel.querySelector(`option[value="${lastMonth}"]`)) {
-                        sel.value = lastMonth;
+                    if (sel.querySelector(`option[value="${nextMonthStr}"]`)) {
+                        sel.value = nextMonthStr; // מקדם אוטומטית לחודש שטרם עבדו עליו
+                    } else if (sel.querySelector(`option[value="${lastClosedMonthStr}"]`)) {
+                        sel.value = lastClosedMonthStr; // גיבוי - אם משום מה אין את החודש הבא ברשימה
                     }
                 }
 
@@ -721,6 +736,7 @@ window.generateTable = function() {
 
     updateTitles();
     
+    // שליפת היתרות לטבלה מהמערך שבענן (כאשר פותחים חודש ספציפי)
     if (window.monthlyBalances[curKey]) {
         document.getElementById('bal_open_reg').value = window.monthlyBalances[curKey].reg.toFixed(2);
         document.getElementById('bal_open_shab').value = window.monthlyBalances[curKey].shab.toFixed(2);

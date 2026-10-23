@@ -75,15 +75,15 @@
     </div>
 </div>
 
-<!-- פאנל יתרות ענן נפרד (נשלף עצמאית לרוחב המסך) -->
-<div id="cloudBalancesPanel" style="display: none; background: #0d47a1; color: white; padding: 12px 20px; align-items: center; justify-content: center; gap: 20px; font-size: 14.5px; box-shadow: 0 4px 10px rgba(0,0,0,0.15); border-bottom: 3px solid #ff9800; flex-wrap: wrap;">
-    <span style="font-weight: bold; color: #ffeb3b; font-size: 16px; background: rgba(255,255,255,0.15); padding: 4px 12px; border-radius: 12px;" id="cloudLastMonthTitle">החודש האחרון:</span>
-    <div style="display: flex; gap: 18px; flex-wrap: wrap; justify-content: center;">
-        <span title="חופש רגיל">🏖️ רגיל: <strong id="cloudReg" style="font-size: 16px;">0.00</strong></span>
-        <span title="חופש שבת">⚖️ שבת: <strong id="cloudShab" style="font-size: 16px;">0.00</strong></span>
-        <span title="ימי מחלה">🤒 מחלה: <strong id="cloudSick" style="font-size: 16px;">0.00</strong></span>
-        <span title="הצהרה">📝 הצהרה: <strong id="cloudDec" style="font-size: 16px;">0.00</strong></span>
-        <span title="ימי בחירה">🎯 בחירה: <strong id="cloudCho" style="font-size: 16px;">0.00</strong></span>
+<!-- פאנל יתרות ענן מוקטן במקסימום -->
+<div id="cloudBalancesPanel" style="display: none; background: #0d47a1; color: white; padding: 4px 10px; align-items: center; justify-content: center; gap: 12px; font-size: 12.5px; box-shadow: 0 2px 5px rgba(0,0,0,0.15); border-bottom: 2px solid #ff9800; flex-wrap: wrap;">
+    <span style="font-weight: bold; color: #ffeb3b; font-size: 13px; background: rgba(255,255,255,0.15); padding: 2px 8px; border-radius: 6px;" id="cloudLastMonthTitle">החודש האחרון:</span>
+    <div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;">
+        <span title="חופש רגיל">🏖️ חופש: <strong id="cloudReg" style="font-size: 13.5px;">0.00</strong></span>
+        <span title="חופש שבת">⚖️ ח. שבת: <strong id="cloudShab" style="font-size: 13.5px;">0.00</strong></span>
+        <span title="ימי מחלה">🤒 מחלה: <strong id="cloudSick" style="font-size: 13.5px;">0.00</strong></span>
+        <span title="הצהרה">📝 הצהרה: <strong id="cloudDec" style="font-size: 13.5px;">0.00</strong></span>
+        <span title="ימי בחירה">🎯 בחירה: <strong id="cloudCho" style="font-size: 13.5px;">0.00</strong></span>
     </div>
 </div>
 
@@ -105,19 +105,19 @@
                 <ul style="margin: 0; padding-right: 20px;">
                     <li><strong>התאמה מלאה להסכמי נציבות שירות המדינה:</strong> המערכת מזהה אוטומטית חגים, ערבי חג, ימי בחירה וימי חופשה הסכמיים. היא יודעת לחשב נכון את שעות התקן בערבי חג במיוחד לעובדי משמרות.</li>
                     <li><strong>בקרה שבועית חכמה (עד 5 משמרות):</strong> המערכת מונעת חריגות. היא עוקבת אחרי שבועות קלנדריים ויודעת "למשוך" משמרות שבוצעו בסוף החודש הקודם אל תוך חישוב השבוע הנוכחי. חרגת מ-5 משמרות בשבוע? המערכת תזהיר אותך מיד.</li>
-                    <li><strong>גיבוי וסנכרון בענן:</strong> הגדרות השכר והיתרות שלך נשמרות מאובטחות בענן. אתה יכול להתחיל להקליד משמרות מהמחשב בעבודה ולהמשיך מהטלפון בבית.</li>
-                    <li><strong>ניהול יתרות אוטומטי ("סגירת חודש"):</strong> אין צורך להעתיק יתרות. פעולת "סגירת חודש" מעבירה את יתרות הסגירה שצברת להיות יתרות הפתיחה של החודש הבא בלחיצת כפתור.</li>
+                    <li><strong>גיבוי וסנכרון חכם בענן:</strong> היתרות, המשמרות הנגררות וההגדרות שלך מגובות אוטומטית לענן. הפאנל העליון תמיד יציג לך את היתרות השמורות המעודכנות ביותר.</li>
+                    <li><strong>ניהול יתרות אוטומטי ("סגירת חודש"):</strong> אין צורך להעתיק יתרות. פעולת "סגירת חודש" מעבירה את יתרות הסגירה שצברת להיות יתרות הפתיחה של החודש הבא בלחיצת כפתור ושומרת הכל לענן בצורה בטוחה.</li>
                 </ul>
             </div>
 
             <div style="margin-bottom: 20px;">
                 <h3 style="color: #1565c0; font-size: 17px; border-bottom: 2px solid #bbdefb; padding-bottom: 5px;">🛠️ הוראות הפעלה ועבודה שוטפת</h3>
                 
-                <h4 style="margin-bottom: 5px; color: #2c3e50;">שלב א': כניסה והגדרות ראשוניות</h4>
+                <h4 style="margin-bottom: 5px; color: #2c3e50;">שלב א': כניסה והגדרות יתרות (חשוב!)</h4>
                 <ul style="padding-right: 20px; margin-top: 5px;">
-                    <li><strong>כניסה למערכת:</strong> היכנס באמצעות האימייל והסיסמה שלך.</li>
-                    <li><strong>הגדרות בסיס:</strong> בפאנל העליון, ודא ששמך, תעריף שעת הבסיס שלך ותעריף האש"ל מעודכנים.</li>
-                    <li><strong>הזנת יתרות ראשוניות (חודש ראשון בלבד):</strong> בחלק התחתון של המסך, לחץ על סמלי המנעול (🔒) כדי לפתוח את שדות "יתרת פתיחה" לעריכה. הזן את היתרות מתוך התלוש האחרון, ונעל אותן חזרה.</li>
+                    <li><strong>כניסה למערכת:</strong> היכנס באמצעות האימייל והסיסמה שלך. מיד לאחר ההתחברות, המערכת תשלוף מהענן ותציג בפאנל העליון את היתרות של החודש האחרון שעודכן.</li>
+                    <li><strong>הגדרות בסיס:</strong> ודא ששמך, תעריף שעת הבסיס ותעריף האש"ל מעודכנים.</li>
+                    <li><strong>הזנת יתרות או תיקון:</strong> היתרות מוגנות משינויים מקריים על ידי סמלי מנעול. כדי להזין יתרות מהתלוש, גלול למטה לכרטיסיות היתרות, <strong>לחץ על סמלי המנעול (🔒)</strong> כדי לפתוח אותן לעריכה, הזן את המספרים הנכונים, ולחץ על "שמור גליון". המערכת תשאל אם לעדכן את הענן - אשר זאת, והיתרות החדשות יישמרו לשימוש קבוע!</li>
                 </ul>
 
                 <h4 style="margin-bottom: 5px; color: #2c3e50;">שלב ב': הזנת משמרות מהירה</h4>
@@ -130,7 +130,7 @@
                 <h4 style="margin-bottom: 5px; color: #2c3e50;">שלב ג': בקרת הדו"ח וסגירת חודש</h4>
                 <ul style="padding-right: 20px; margin-top: 5px;">
                     <li><strong>לוח סיכומים:</strong> בתחתית המסך תמצא את כל הנתונים החשובים: סך המשמרות, אש"ל ואת <strong>אומדן ערך השעות הנוספות</strong> (₪).</li>
-                    <li><strong>סגירת חודש:</strong> סיימת את החודש והדו"ח תקין? לחץ על כפתור <strong>"סגור חודש"</strong>. המערכת תשמור את היתרות החדשות.</li>
+                    <li><strong>סגירת חודש:</strong> סיימת את החודש והדו"ח תקין? לחץ על כפתור <strong>"סגור חודש"</strong>. המערכת תגלגל אוטומטית את היתרות לחודש הבא, תשמור אותן בענן, ותכין עבורך גיליון נקי לחודש החדש.</li>
                     <li><strong>הדפסה / PDF:</strong> לחץ על כפתור ההדפסה כדי להפיק דו"ח מסודר שניתן לשמור או להגיש הלאה.</li>
                 </ul>
             </div>
@@ -430,7 +430,7 @@
     </div>
 </div>
 
-<div class="version-stamp" onclick="secretBypass(event)" title="V">V202610231215</div>
+<div class="version-stamp" onclick="secretBypass(event)" title="V">V202610231345</div>
 
 <!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-app-compat.js"></script>
