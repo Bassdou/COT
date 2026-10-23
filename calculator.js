@@ -152,20 +152,21 @@ firebase.auth().onAuthStateChanged(function(user) {
                     };
                 }
 
-                // תיקון: מציאת החודש המעודכן ביותר בענן, בחירתו והצגת הנתונים אוטומטית
+                // תיקון: מציאת החודש הכי עדכני בענן, בחירתו אוטומטית וטעינת הטבלה והיתרות שלו
                 let keys = Object.keys(window.monthlyBalances).filter(k => k.match(/^\d{4}-\d{2}$/));
                 if (keys.length > 0) {
-                    keys.sort(); // מסדר כרונולוגית
-                    let lastMonth = keys[keys.length - 1];
+                    keys.sort(); 
+                    let lastMonth = keys[keys.length - 1]; 
                     let sel = document.getElementById('monthYearSelect');
                     if (sel.querySelector(`option[value="${lastMonth}"]`)) {
-                        sel.value = lastMonth; // בוחר את החודש האחרון שנשמר בענן
+                        sel.value = lastMonth;
                     }
                 }
 
-                // מונע הקפצת חלון שגיאה ריק אם זה משתמש חדש בלי שם
+                // טעינת גליון אוטומטית מיד לאחר ההתחברות (רק אם יש שם עובד)
                 if (document.getElementById('employeeName').value.trim() !== "") {
-                    generateTable();
+                    updateTitles();
+                    generateTable(); 
                 } else {
                     updateTitles();
                 }
@@ -738,9 +739,9 @@ window.generateTable = function() {
         
         var holObj = (window.HOLIDAYS_DB && window.HOLIDAYS_DB[curDateStr]) ? window.HOLIDAYS_DB[curDateStr] : null;
         
-        // תיקון: הסרת הסוגריים מהחגים
+        // תיקון: הסרת כל הטקסט שנמצא בסוגריים (כולל הסוגריים עצמם) מתיאור החג
         var rawHolText = holObj ? holObj.hebrew : '';
-        var holText = rawHolText.replace(/\s*\(.*?\)\s*/g, '').trim(); 
+        var holText = rawHolText.split('(')[0].trim();
         
         var descColor = holObj ? '#e67e22' : '#1565c0';
 
