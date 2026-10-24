@@ -18,45 +18,79 @@
     </div>
 </div>
 
-<!-- מסך התחברות / הרשמה -->
-<div id="authOverlay" style="position: fixed; top:0; left:0; width:100%; height:100%; background: linear-gradient(135deg, #1976d2 0%, #eef5f9 100%); z-index: 10000; display:flex; align-items:flex-start; justify-content:center; padding: 40px 20px;">
-    <div style="background:#fff; padding:35px 25px; border-radius:16px; box-shadow:0 10px 40px rgba(0,0,0,0.2); width:100%; max-width:400px; text-align:center; position:relative;">
-        <div style="position:absolute; top:0; left:0; width:100%; height:6px; background:#1e88e5;"></div>
+<!-- מסך התחברות / הרשמה (עיצוב חדש) -->
+<div id="authOverlay" style="position: fixed; top:0; left:0; width:100%; height:100%; background: linear-gradient(135deg, #1976d2 0%, #eef5f9 100%); z-index: 10000; display:flex; align-items:center; justify-content:center; padding: 40px 20px; overflow-y:auto;">
+    
+    <div style="display: flex; flex-wrap: wrap; gap: 30px; max-width: 950px; width: 100%; justify-content: center; align-items: stretch;">
         
-        <div style="display: flex; align-items: center; justify-content: center; cursor: pointer; margin-bottom: 10px; user-select:none;" onclick="secretBypass(event)" title="לחץ 3 פעמים רצוף לכניסה מהירה">
-            <div class="icon-logo" dir="ltr" style="position: relative; width: 75px; height: 50px; font-family: 'Arial Black', sans-serif; font-size: 48px; line-height: 50px; font-weight: 900; pointer-events: none;">
-                <span style="position: absolute; left: 0px; top: 0; color: #FF9800; z-index: 3;">C</span>
-                <span style="position: absolute; left: 19px; top: 0; color: #00BFA5; z-index: 1;">O</span>
-                <span style="position: absolute; left: 40px; top: 0; color: #FF5252; z-index: 2;">T</span>
-            </div>
-        </div>
-        
-        <h2 style="color:#0d47a1; margin-top:0; margin-bottom:5px; font-size:22px; cursor:default;">בקרת דו"ח פיצול</h2>
-        <h4 style="color:#546e7a; margin-top:0; margin-bottom:15px; font-weight:normal; font-size:14px;">בקר. נהל ותכנן את השכר</h4>
-        
-        <div style="background: #e3f2fd; padding: 12px 15px; border-radius: 8px; text-align: right; font-size: 12.5px; color: #0d47a1; margin-bottom: 20px; line-height: 1.5; border-right: 3px solid #1976d2;">
-            <div style="margin-bottom: 8px;"><strong>משתמש חדש:</strong> הזן אימייל ובחר סיסמה (לפחות 6 תווים), ולחץ על "הרשמה חדשה" לפתיחת חשבון וכניסה למערכת.</div>
-            <div><strong>משתמש קיים:</strong> הזן אימייל ואת הסיסמה שלך, ולחץ על "כניסה למערכת" כדי להמשיך מהיכן שעצרת.</div>
-        </div>
-        
-        <div style="text-align:right;">
-            <label style="font-size:13px; font-weight:bold; color:#1565c0; margin-bottom:6px; display:block;">כתובת אימייל</label>
-            <input type="email" id="authEmail" placeholder="name@example.com" style="width:100%; box-sizing:border-box; margin-bottom:15px; padding:12px; text-align:left; font-size:15px; border: 2px solid #e3f2fd; border-radius: 8px; background:#f8fbff; outline:none;" dir="ltr" onkeypress="if(event.key === 'Enter') loginUser()">
+        <!-- קוביית שיווק והסבר מערכת -->
+        <div style="background:#fff; padding:40px 30px; border-radius:16px; box-shadow:0 10px 40px rgba(0,0,0,0.2); flex: 1 1 400px; max-width: 480px; position:relative; display: flex; flex-direction: column; justify-content: center;">
+            <div style="position:absolute; top:0; left:0; width:100%; height:6px; background:#ff9800; border-top-left-radius: 16px; border-top-right-radius: 16px;"></div>
             
-            <label style="font-size:13px; font-weight:bold; color:#1565c0; margin-bottom:6px; display:block;">סיסמה</label>
-            <div style="position: relative;">
-                <input type="password" id="authPassword" placeholder="לפחות 6 תווים" style="width:100%; box-sizing:border-box; padding:12px; padding-left:40px; text-align:left; font-size:15px; border: 2px solid #e3f2fd; border-radius: 8px; background:#f8fbff; outline:none;" dir="ltr" onkeypress="if(event.key === 'Enter') loginUser()">
-                <span id="toggleEye" onclick="togglePassword()" style="position: absolute; left: 12px; top: 12px; cursor: pointer; font-size: 18px; opacity: 0.7; user-select: none;" title="הצג/הסתר סיסמה">👁️</span>
+            <h2 style="color:#d35400; margin-top:0; font-size:22px; line-height:1.3;">💡 סוף לניחושים – קח שליטה על השכר שלך!</h2>
+            
+            <p style="font-size: 14.5px; color: #34495e; line-height: 1.6; margin-bottom: 15px;">
+                עבודת המשמרות במעברי הגבול היא מורכבת ודורשנית, וחישוב התגמול עליה ממש לא חייב להיות תעלומה.<br><br>
+                מערכת <strong>COT (Calculate Over Time)</strong> לא נועדה רק לחישוב שעות יבש, אלא פותחה מתוך היכרות עמוקה עם השטח במטרה להפוך את דו"ח הפיצול מכאב ראש – לכלי שמשרת <strong>אותך</strong>. המערכת מעניקה לך שקט נפשי וודאות, כדי שתדע בדיוק לקראת מה אתה הולך בסוף החודש.
+            </p>
+            
+            <div style="background: #fff3e0; padding: 15px; border-radius: 8px; margin-bottom: 20px; border-right: 4px solid #e67e22;">
+                <ul style="margin: 0; padding-right: 20px; font-size: 14px; color: #2c3e50; line-height: 1.6;">
+                    <li style="margin-bottom: 6px;">✅ <strong>תכנון מדויק:</strong> תדע מראש מהו אומדן השעות הנוספות ושווי האש"ל המגיע לך.</li>
+                    <li style="margin-bottom: 6px;">✅ <strong>שקיפות וסדר:</strong> מעקב חכם ואוטומטי אחר ימי חופש, מחלה ומילואים – הכל מגובה בענן.</li>
+                    <li>✅ <strong>הגנה מטעויות:</strong> התראות בזמן אמת על חריגות וטיפים שימנעו ממך להפסיד תוספות שכר יקרות.</li>
+                </ul>
             </div>
-            <div style="margin-top: 6px; margin-bottom: 15px; text-align: left;">
-                <a href="#" onclick="resetPassword(); return false;" style="font-size: 13px; color: #1976d2; text-decoration: none; font-weight: bold;">שכחתי את הסיסמה, לחץ כאן</a>
+            
+            <p style="font-size: 15px; font-weight: bold; color: #1565c0; margin-bottom: 15px; text-align: center;">הגיע הזמן לעבוד חכם יותר, ללא הפתעות בתלוש.</p>
+            
+            <div style="text-align: center;">
+                <a href="cot_user_manual.pdf" download="מדריך_למשתמש_COT.pdf" class="btn-3d" style="display: inline-block; color: #fff; background-color: #1976d2; padding: 12px 20px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 15px; box-shadow: 0 4px #1565c0;">
+                    📥 למידע נוסף ומעבר למדריך המלא לחץ כאן
+                </a>
             </div>
         </div>
-        <div id="authError" style="color:#e74c3c; font-size:13px; margin-bottom:20px; font-weight:bold; min-height:18px;"></div>
-        <div style="display:flex; gap:12px; flex-direction: column;">
-            <button class="btn-3d" onclick="loginUser()" style="width:100%; padding:14px; background:#1976d2; color:white; border-radius:8px; font-size:16px; box-shadow:0 4px #1565c0;">כניסה למערכת</button>
-            <button class="btn-3d" onclick="registerUser()" style="width:100%; padding:12px; background:#fff; color:#1976d2; border:2px solid #1976d2; border-radius:8px; font-size:15px; box-shadow:0 4px #bbdefb; top:-2px;">הרשמה חדשה</button>
+
+        <!-- קוביית התחברות -->
+        <div style="background:#fff; padding:35px 25px; border-radius:16px; box-shadow:0 10px 40px rgba(0,0,0,0.2); flex: 1 1 300px; max-width: 380px; text-align:center; position:relative;">
+            <div style="position:absolute; top:0; left:0; width:100%; height:6px; background:#1e88e5; border-top-left-radius: 16px; border-top-right-radius: 16px;"></div>
+            
+            <div style="display: flex; align-items: center; justify-content: center; cursor: pointer; margin-bottom: 10px; user-select:none;" onclick="secretBypass(event)" title="לחץ 3 פעמים רצוף לכניסה מהירה">
+                <div class="icon-logo" dir="ltr" style="position: relative; width: 75px; height: 50px; font-family: 'Arial Black', sans-serif; font-size: 48px; line-height: 50px; font-weight: 900; pointer-events: none;">
+                    <span style="position: absolute; left: 0px; top: 0; color: #FF9800; z-index: 3;">C</span>
+                    <span style="position: absolute; left: 19px; top: 0; color: #00BFA5; z-index: 1;">O</span>
+                    <span style="position: absolute; left: 40px; top: 0; color: #FF5252; z-index: 2;">T</span>
+                </div>
+            </div>
+            
+            <h2 style="color:#0d47a1; margin-top:0; margin-bottom:5px; font-size:22px; cursor:default;">בקרת דו"ח פיצול</h2>
+            <h4 style="color:#546e7a; margin-top:0; margin-bottom:15px; font-weight:normal; font-size:14px;">בקר. נהל ותכנן את השכר</h4>
+            
+            <div style="background: #e3f2fd; padding: 12px 15px; border-radius: 8px; text-align: right; font-size: 12.5px; color: #0d47a1; margin-bottom: 20px; line-height: 1.5; border-right: 3px solid #1976d2;">
+                <div style="margin-bottom: 8px;"><strong>משתמש חדש:</strong> הזן אימייל ובחר סיסמה (לפחות 6 תווים), ולחץ "הרשמה".</div>
+                <div><strong>משתמש קיים:</strong> הזן אימייל ואת הסיסמה שלך, ולחץ "כניסה".</div>
+            </div>
+            
+            <div style="text-align:right;">
+                <label style="font-size:13px; font-weight:bold; color:#1565c0; margin-bottom:6px; display:block;">כתובת אימייל</label>
+                <input type="email" id="authEmail" placeholder="name@example.com" style="width:100%; box-sizing:border-box; margin-bottom:15px; padding:12px; text-align:left; font-size:15px; border: 2px solid #e3f2fd; border-radius: 8px; background:#f8fbff; outline:none;" dir="ltr" onkeypress="if(event.key === 'Enter') loginUser()">
+                
+                <label style="font-size:13px; font-weight:bold; color:#1565c0; margin-bottom:6px; display:block;">סיסמה</label>
+                <div style="position: relative;">
+                    <input type="password" id="authPassword" placeholder="לפחות 6 תווים" style="width:100%; box-sizing:border-box; padding:12px; padding-left:40px; text-align:left; font-size:15px; border: 2px solid #e3f2fd; border-radius: 8px; background:#f8fbff; outline:none;" dir="ltr" onkeypress="if(event.key === 'Enter') loginUser()">
+                    <span id="toggleEye" onclick="togglePassword()" style="position: absolute; left: 12px; top: 12px; cursor: pointer; font-size: 18px; opacity: 0.7; user-select: none;" title="הצג/הסתר סיסמה">👁️</span>
+                </div>
+                <div style="margin-top: 6px; margin-bottom: 15px; text-align: left;">
+                    <a href="#" onclick="resetPassword(); return false;" style="font-size: 13px; color: #1976d2; text-decoration: none; font-weight: bold;">שכחתי את הסיסמה, לחץ כאן</a>
+                </div>
+            </div>
+            <div id="authError" style="color:#e74c3c; font-size:13px; margin-bottom:20px; font-weight:bold; min-height:18px;"></div>
+            <div style="display:flex; gap:12px; flex-direction: column;">
+                <button class="btn-3d" onclick="loginUser()" style="width:100%; padding:14px; background:#1976d2; color:white; border-radius:8px; font-size:16px; box-shadow:0 4px #1565c0;">כניסה למערכת</button>
+                <button class="btn-3d" onclick="registerUser()" style="width:100%; padding:12px; background:#fff; color:#1976d2; border:2px solid #1976d2; border-radius:8px; font-size:15px; box-shadow:0 4px #bbdefb; top:-2px;">הרשמה חדשה</button>
+            </div>
         </div>
+        
     </div>
 </div>
 
@@ -142,6 +176,7 @@
                 <h4 style="margin-bottom: 5px; color: #2c3e50;">שלב ב': הזנת משמרות מהירה</h4>
                 <ul style="padding-right: 20px; margin-top: 5px;">
                     <li><strong>קודי משמרת להקלדה מהירה:</strong> אין צורך להקליד שעות! פשוט הקלד קוד משמרת בתיבת ה"תאור" (כמו <code>ב06</code>, <code>227</code>, <code>102</code> או קודי היעדרות כמו <code>ח</code>, <code>מיל</code>), והשעות יתמלאו אוטומטית. <strong>לא זוכר את הקוד? לחץ על המילה "משמרת" (עם סמל ה-i) בכותרת הטבלה, ורשימת הקודים המלאה והמעודכנת תקפוץ מיד מולך.</strong></li>
+                    <li><strong>הזנת היעדרויות חכמה:</strong> הקלדת קוד היעדרות תמלא אוטומטית 8 שעות בעמודות התקן וסה"כ השעות, שיסומנו ב<strong>צבע סגול מודגש</strong> להבדלה מהירה. המערכת גם <strong>תחסום</strong> הזנת היעדרויות (כולל <code>חש</code>) בימי מנוחה (שישי ושבת) למניעת טעויות, למעט מילואים (<code>מיל</code>).</li>
                     <li><strong>הקלדה רצופה:</strong> מעדיף להקליד שעות ידנית? פשוט הקלד רצף מספרים (למשל <code>1530</code>) והמערכת תהפוך זאת ל-<code>15:30</code>.</li>
                     <li><strong>ניווט חכם וזריז:</strong> הקש <code>Enter</code> כדי לעבור משעת הכניסה לשעת היציאה. הקשה נוספת תעביר אותך אוטומטית לשעת הכניסה של היום הבא.</li>
                 </ul>
@@ -478,7 +513,7 @@
     </div>
 </div>
 
-<div class="version-stamp" onclick="secretBypass(event)" title="V">V202610240910</div>
+<div class="version-stamp" onclick="secretBypass(event)" title="V">V202610240911</div>
 
 <!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-app-compat.js"></script>
