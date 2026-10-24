@@ -18,10 +18,10 @@
     </div>
 </div>
 
-<!-- מסך התחברות / הרשמה (עיצוב חדש) -->
-<div id="authOverlay" style="position: fixed; top:0; left:0; width:100%; height:100%; background: linear-gradient(135deg, #1976d2 0%, #eef5f9 100%); z-index: 10000; display:flex; align-items:center; justify-content:center; padding: 40px 20px; overflow-y:auto;">
+<!-- מסך התחברות / הרשמה (עיצוב חדש ורספונסיבי) -->
+<div id="authOverlay" style="position: fixed; top:0; left:0; width:100%; height:100%; background: linear-gradient(135deg, #1976d2 0%, #eef5f9 100%); z-index: 10000; overflow-y:auto;">
     
-    <div style="display: flex; flex-wrap: wrap; gap: 30px; max-width: 950px; width: 100%; justify-content: center; align-items: stretch;">
+    <div style="display: flex; flex-wrap: wrap; gap: 30px; max-width: 950px; width: 100%; margin: 40px auto; justify-content: center; align-items: stretch; padding: 0 20px; box-sizing: border-box;">
         
         <!-- קוביית שיווק והסבר מערכת -->
         <div style="background:#fff; padding:40px 30px; border-radius:16px; box-shadow:0 10px 40px rgba(0,0,0,0.2); flex: 1 1 400px; max-width: 480px; position:relative; display: flex; flex-direction: column; justify-content: center;">
@@ -178,7 +178,7 @@
                     <li><strong>קודי משמרת להקלדה מהירה:</strong> אין צורך להקליד שעות! פשוט הקלד קוד משמרת בתיבת ה"תאור" (כמו <code>ב06</code>, <code>227</code>, <code>102</code> או קודי היעדרות כמו <code>ח</code>, <code>מיל</code>), והשעות יתמלאו אוטומטית. <strong>לא זוכר את הקוד? לחץ על המילה "משמרת" (עם סמל ה-i) בכותרת הטבלה, ורשימת הקודים המלאה והמעודכנת תקפוץ מיד מולך.</strong></li>
                     <li><strong>הזנת היעדרויות חכמה:</strong> הקלדת קוד היעדרות תמלא אוטומטית 8 שעות בעמודות התקן וסה"כ השעות, שיסומנו ב<strong>צבע סגול מודגש</strong> להבדלה מהירה. המערכת גם <strong>תחסום</strong> הזנת היעדרויות (כולל <code>חש</code>) בימי מנוחה (שישי ושבת) למניעת טעויות, למעט מילואים (<code>מיל</code>).</li>
                     <li><strong>הקלדה רצופה:</strong> מעדיף להקליד שעות ידנית? פשוט הקלד רצף מספרים (למשל <code>1530</code>) והמערכת תהפוך זאת ל-<code>15:30</code>.</li>
-                    <li><strong>ניווט חכם וזריז:</strong> הקש <code>Enter</code> כדי לעבור משעת הכניסה לשעת היציאה. הקשה נוספת תעביר אותך אוטומטית לשעת הכניסה של היום הבא.</li>
+                    <li><strong>ניווט חכם וזריז:</strong> הקש <code>Enter</code> כדי לעבור משעת הכניסה לשעת היציאה. הקשה נוספת תעביר אותך אוטומטית לשעת הכניסה של היום הבא. לחיצה על <code>Esc</code> תבטל הקלדה שגויה.</li>
                 </ul>
 
                 <h4 style="margin-bottom: 5px; color: #2c3e50;">שלב ג': בקרת הדו"ח, סגירת חודש וייצוא נתונים</h4>
@@ -513,7 +513,7 @@
     </div>
 </div>
 
-<div class="version-stamp" onclick="secretBypass(event)" title="V">V202610240911</div>
+<div class="version-stamp" onclick="secretBypass(event)" title="V">V202610240912</div>
 
 <!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-app-compat.js"></script>
