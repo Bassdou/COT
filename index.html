@@ -18,10 +18,10 @@
     </div>
 </div>
 
-<!-- מסך התחברות / הרשמה (עיצוב חדש ורספונסיבי - תוקן באג הגלילה) -->
+<!-- מסך התחברות / הרשמה (עיצוב חדש ורספונסיבי) -->
 <div id="authOverlay" style="position: fixed; top:0; left:0; width:100%; height:100%; background: linear-gradient(135deg, #1976d2 0%, #eef5f9 100%); z-index: 10000; overflow-y:auto; display:block;">
     
-    <div style="display: flex; flex-wrap: wrap; gap: 30px; max-width: 950px; width: 100%; margin: 6vh auto 40px auto; justify-content: center; align-items: stretch; padding: 0 20px; box-sizing: border-box;">
+    <div style="display: flex; flex-wrap: wrap; gap: 30px; max-width: 950px; width: 100%; margin: 6vh auto 60px auto; justify-content: center; align-items: stretch; padding: 0 20px; box-sizing: border-box;">
         
         <!-- קוביית שיווק והסבר מערכת -->
         <div style="background:#fff; padding:40px 30px; border-radius:16px; box-shadow:0 10px 40px rgba(0,0,0,0.2); flex: 1 1 400px; max-width: 480px; position:relative; display: flex; flex-direction: column; justify-content: center;">
@@ -308,7 +308,7 @@
     </h1>
 </div>
 
-<div class="table-container" id="tableContainer" style="display:none;">
+<div class="table-container" id="tableContainer" style="display:none; padding-bottom: 60px;">
     <h2 id="sheetTitle" style="text-align: center; color: #2c3e50;">דוח שעות משמרות</h2>
     <table id="timesheet">
         <thead>
@@ -486,7 +486,7 @@
     </table>
 </div>
 
-<div style="width: 100%; margin-top: 25px; margin-bottom: 30px; display:flex; justify-content:center; gap:20px; flex-wrap: wrap;">
+<div style="width: 100%; margin-top: 25px; margin-bottom: 60px; display:flex; justify-content:center; gap:20px; flex-wrap: wrap;">
     <button class="btn-close-month btn-3d" id="closeMonthBtn" onclick="closeMonth()" style="display:none;">סגור חודש</button>
     <button class="btn-print btn-3d" id="printBtn" onclick="window.print()" style="display:none;">🖨️ הדפס גליון / PDF</button>
     <button class="btn-3d hide-print" id="exportExcelBtn" onclick="document.getElementById('excelExportModal').style.display='block'" style="display:none; background-color: #27ae60; color: white; padding: 12px 25px; border-radius: 8px; font-size: 15px; border: none; box-shadow: 0 4px #1e8449; cursor: pointer;">📗 ייצא לאקסל</button>
@@ -513,7 +513,15 @@
     </div>
 </div>
 
-<div class="version-stamp" onclick="secretBypass(event)" title="V">V202610240913</div>
+<div class="version-stamp hide-print" onclick="secretBypass(event)" title="V">V202610250010</div>
+
+<!-- פוטר משפטי (Footer) -->
+<div class="legal-footer hide-print" style="position: fixed; bottom: 0; left: 0; width: 100%; text-align: center; padding: 10px 0; font-size: 12px; color: #546e7a; background-color: rgba(238, 245, 249, 0.95); z-index: 9999; border-top: 1px solid #bbdefb; box-shadow: 0 -2px 5px rgba(0,0,0,0.05);">
+    <span style="font-weight: bold;">&copy; 2026 COT by B Systems. כל הזכויות שמורות.</span> | 
+    <a href="terms.pdf" target="_blank" style="color: #1976d2; text-decoration: none; margin: 0 5px;">תקנון ותנאי שימוש</a> | 
+    <a href="privacy.pdf" target="_blank" style="color: #1976d2; text-decoration: none; margin: 0 5px;">מדיניות פרטיות</a> | 
+    <a href="accessibility.pdf" target="_blank" style="color: #1976d2; text-decoration: none; margin: 0 5px;">הצהרת נגישות</a>
+</div>
 
 <!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-app-compat.js"></script>
