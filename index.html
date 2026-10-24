@@ -44,7 +44,13 @@
             <input type="email" id="authEmail" placeholder="name@example.com" style="width:100%; box-sizing:border-box; margin-bottom:15px; padding:12px; text-align:left; font-size:15px; border: 2px solid #e3f2fd; border-radius: 8px; background:#f8fbff; outline:none;" dir="ltr" onkeypress="if(event.key === 'Enter') loginUser()">
             
             <label style="font-size:13px; font-weight:bold; color:#1565c0; margin-bottom:6px; display:block;">סיסמה</label>
-            <input type="password" id="authPassword" placeholder="לפחות 6 תווים" style="width:100%; box-sizing:border-box; margin-bottom:5px; padding:12px; text-align:left; font-size:15px; border: 2px solid #e3f2fd; border-radius: 8px; background:#f8fbff; outline:none;" dir="ltr" onkeypress="if(event.key === 'Enter') loginUser()">
+            <div style="position: relative;">
+                <input type="password" id="authPassword" placeholder="לפחות 6 תווים" style="width:100%; box-sizing:border-box; padding:12px; padding-left:40px; text-align:left; font-size:15px; border: 2px solid #e3f2fd; border-radius: 8px; background:#f8fbff; outline:none;" dir="ltr" onkeypress="if(event.key === 'Enter') loginUser()">
+                <span id="toggleEye" onclick="togglePassword()" style="position: absolute; left: 12px; top: 12px; cursor: pointer; font-size: 18px; opacity: 0.7; user-select: none;" title="הצג/הסתר סיסמה">👁️</span>
+            </div>
+            <div style="margin-top: 6px; margin-bottom: 15px; text-align: left;">
+                <a href="#" onclick="resetPassword(); return false;" style="font-size: 13px; color: #1976d2; text-decoration: none; font-weight: bold;">שכחתי את הסיסמה, לחץ כאן</a>
+            </div>
         </div>
         <div id="authError" style="color:#e74c3c; font-size:13px; margin-bottom:20px; font-weight:bold; min-height:18px;"></div>
         <div style="display:flex; gap:12px; flex-direction: column;">
@@ -190,6 +196,7 @@
         <h3 style="color: #d35400; margin-top: 0; font-size: 20px;">הזנת משמרות מסוף חודש שעבר</h3>
         <p style="font-size: 14px; color: #34495e; line-height: 1.6; margin-bottom: 20px;">
             למעקב 5 משמרות בשבוע, אנא הקלד כמות המשמרות שנקלטו השבוע בדו"ח של החודש הקודם
+            <br><span id="carryMaxInfo" style="font-weight:bold; color:#e74c3c;"></span>
         </p>
         <input type="number" id="manualCarryInput" value="0" min="0" max="6" style="width: 80px; padding: 10px; font-size: 20px; font-weight: bold; text-align: center; border: 2px solid #e3f2fd; border-radius: 8px; margin-bottom: 20px; outline: none;">
         <br>
@@ -411,7 +418,6 @@
 <div style="width: 100%; margin-top: 25px; margin-bottom: 30px; display:flex; justify-content:center; gap:20px; flex-wrap: wrap;">
     <button class="btn-close-month btn-3d" id="closeMonthBtn" onclick="closeMonth()" style="display:none;">סגור חודש</button>
     <button class="btn-print btn-3d" id="printBtn" onclick="window.print()" style="display:none;">🖨️ הדפס גליון / PDF</button>
-    <!-- הכפתור החדש - ייצוא לאקסל -->
     <button class="btn-3d hide-print" id="exportExcelBtn" onclick="document.getElementById('excelFileLoader').click()" style="display:none; background-color: #27ae60; color: white; padding: 12px 25px; border-radius: 8px; font-size: 15px; border: none; box-shadow: 0 4px #1e8449; cursor: pointer;">📗 ייצא גיליון לאקסל</button>
 </div>
 
