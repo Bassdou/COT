@@ -122,10 +122,12 @@ th { background-color: #1565c0; color: white; font-size: 12px; padding: 4px 2px;
 
 /* רספונסיביות לנייד כולל תיקון הגלילה */
 @media (max-width: 950px) {
-    /* התיקון שמשחרר את המרכוז לנייד כדי שתוכל לגלול למטה: */
-    .full-screen-overlay { justify-content: flex-start; padding-top: 30px; }
+    /* שחרור נעילת הפלקס והפיכה למסך נגלל טבעי */
+    .full-screen-overlay { display: block !important; overflow-y: auto !important; padding: 20px !important; }
     
-    .wide-box-3d { flex-direction: column; max-width: 500px; margin-bottom: 40px; }
+    /* ביטול ה-margin:auto שנועל את הקצוות */
+    .wide-box-3d { flex-direction: column; max-width: 500px; margin: 20px auto 40px auto !important; }
+    
     .auth-section { order: 1; border-left: none !important; border-bottom: 1px solid #e2e8f0; }
     .updates-section { order: 2; border-left: none !important; border-bottom: 1px solid #e2e8f0; }
     .marketing-brief { order: 3; border-left: none !important; border-bottom: none; }
