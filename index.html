@@ -10,186 +10,89 @@
 
 <div id="loadingOverlay">טוען נתונים...</div>
 
-<!-- מסך התחברות החדש - 3 עמודות -->
-<div id="authScreen" class="full-screen-overlay" style="display: none;">
-    <div class="system-header">
-        <img src="COT_LOGO.jpg" alt="לוגו COT" class="main-logo-img">
-        <p>מערכת תכנון ובקרה לדוח פיצול</p>
-    </div>
-
-    <div class="wide-box-3d" style="margin-top: 15px;">
+<!-- מסך התחברות / הרשמה (עיצוב חדש ורספונסיבי) -->
+<!-- התיקון כאן: הוסר justify-content: center והוסף padding-top כדי לאפשר גלילה בנייד -->
+<div id="authOverlay" style="position: fixed; top:0; left:0; width:100%; height:100%; background: linear-gradient(135deg, #1976d2 0%, #eef5f9 100%); z-index: 10000; overflow-y:auto; display:flex; flex-direction: column; align-items: center; justify-content: flex-start; padding-top: 5vh;">
+    
+    <div style="display: flex; flex-wrap: wrap; gap: 30px; max-width: 950px; width: 100%; margin: 0 auto 60px auto; justify-content: center; align-items: stretch; padding: 0 20px; box-sizing: border-box;">
         
-        <!-- עמודה 1: הודעות מערכת -->
-        <div class="updates-section">
-            <h3 class="section-title">📢 הודעות מערכת</h3>
-            <div class="updates-container">
-                <div class="update-card alert-highlight">
-                    <span class="alert-badge">חשוב!</span>
-                    <span class="update-date">תאריך יעד: 15/11/2026</span>
-                    <div class="update-title">החלת תקני אבטחה חדשים</div>
-                    <p class="update-text">החל מ-15.11.2026 המערכת תאכוף החלפת סיסמאות חזקות ואימות מייל <strong>למשתמשים קיימים</strong>. אנא היערכו בהתאם ועדכנו את פרטיכם כדי למנוע חסימת גישה.</p>
-                </div>
-                <div class="update-card today-highlight">
-                    <span class="today-badge">חדש!</span>
-                    <span class="update-date">27 באוקטובר, 2026</span>
-                    <div class="update-title">עדכון חישוב שעות: מעבר שעון</div>
-                    <p class="update-text">עקב המעבר לשעון קיץ/חורף, משמרת הלילה של שבת הוחלפה ותזכה בחישוב של שעה נוספת למשמרת באופן אוטומטי.</p>
-                </div>
-                <div class="update-card">
-                    <span class="update-date">26 באוקטובר, 2026</span>
-                    <div class="update-title">שדרוג ממשק המשתמש</div>
-                    <p class="update-text">המסך הראשי עבר מתיחת פנים לעיצוב מודרני מפוצל, לשיפור חווית השימוש מהנייד ומהמחשב.</p>
-                </div>
-                <div class="update-card">
-                    <span class="update-date">25 באוקטובר, 2026</span>
-                    <div class="update-title">השקת מנגנון שחזור סיסמה</div>
-                    <p class="update-text">הוספנו אפשרות לאיפוס סיסמה עצמאי ומאובטח במסך ההתחברות (מנגנון מוגן סריקות).</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- עמודה 2: הבריף השיווקי -->
-        <div class="marketing-brief">
-            <h2 class="brief-title">💡 סוף לניחושים –<br> קח שליטה על השכר שלך!</h2>
-            <p>עבודת המשמרות במעברי הגבול היא מורכבת ודורשנית, וחישוב התגמול עליה ממש לא חייב להיות תעלומה.</p>
-            <p>מערכת <strong>COT (Calculate Over Time)</strong> פותחה מתוך היכרות עמוקה עם השטח במטרה להפוך את דו"ח הפיצול מכאב ראש – <strong>לכלי שמשרת אותך</strong>. המערכת מעניקה לך שקט נפשי וודאות.</p>
+        <!-- קוביית שיווק והסבר מערכת -->
+        <div style="background:#fff; padding:40px 30px; border-radius:16px; box-shadow:0 10px 40px rgba(0,0,0,0.2); flex: 1 1 400px; max-width: 480px; position:relative; display: flex; flex-direction: column; justify-content: center;">
+            <div style="position:absolute; top:0; left:0; width:100%; height:6px; background:#ff9800; border-top-left-radius: 16px; border-top-right-radius: 16px;"></div>
             
-            <div class="benefits-box">
-                <ul class="benefits-list">
-                    <li><strong>תכנון מדויק:</strong> תדע מראש מהו אומדן השעות הנוספות ושווי האש"ל המגיע לך.</li>
-                    <li><strong>שקיפות וסדר:</strong> מעקב חכם ואוטומטי אחר ימי חופש, מחלה ומילואים – הכל מגובה בענן.</li>
-                    <li><strong>הגנה מטעויות:</strong> התראות בזמן אמת על חריגות שימנעו ממך להפסיד תוספות שכר.</li>
+            <h2 style="color:#d35400; margin-top:0; font-size:22px; line-height:1.3;">💡 סוף לניחושים – קח שליטה על השכר שלך!</h2>
+            
+            <p style="font-size: 14.5px; color: #34495e; line-height: 1.6; margin-bottom: 15px;">
+                עבודת המשמרות במעברי הגבול היא מורכבת ודורשנית, וחישוב התגמול עליה ממש לא חייב להיות תעלומה.<br><br>
+                מערכת <strong>COT (Calculate Over Time)</strong> לא נועדה רק לחישוב שעות יבש, אלא פותחה מתוך היכרות עמוקה עם השטח במטרה להפוך את דו"ח הפיצול מכאב ראש – לכלי שמשרת <strong>אותך</strong>. המערכת מעניקה לך שקט נפשי וודאות, כדי שתדע בדיוק לקראת מה אתה הולך בסוף החודש.
+            </p>
+            
+            <!-- הודעת אבטחה בולטת למשתמשים קיימים -->
+            <div style="background: #fef2f2; border: 1px solid #fecaca; border-right: 4px solid #ef4444; padding: 12px; border-radius: 8px; margin-bottom: 15px;">
+                 <h4 style="color:#991b1b; margin: 0 0 5px 0; font-size: 14px;">⚠️ עדכון אבטחה חובה למשתמשים קיימים</h4>
+                 <p style="font-size: 13px; color: #7f1d1d; margin: 0; line-height: 1.4;">
+                     החל מ-15.11.2026, המערכת תאכוף החלפת סיסמאות חזקות ואימות מייל <strong>למשתמשים קיימים</strong>. אנא היערכו בהתאם.
+                 </p>
+            </div>
+
+            <div style="background: #fff3e0; padding: 15px; border-radius: 8px; margin-bottom: 20px; border-right: 4px solid #e67e22;">
+                <ul style="margin: 0; padding-right: 20px; font-size: 14px; color: #2c3e50; line-height: 1.6;">
+                    <li style="margin-bottom: 6px;">✅ <strong>תכנון מדויק:</strong> תדע מראש מהו אומדן השעות הנוספות ושווי האש"ל המגיע לך.</li>
+                    <li style="margin-bottom: 6px;">✅ <strong>שקיפות וסדר:</strong> מעקב חכם ואוטומטי אחר ימי חופש, מחלה ומילואים – הכל מגובה בענן.</li>
+                    <li>✅ <strong>הגנה מטעויות:</strong> התראות בזמן אמת על חריגות וטיפים שימנעו ממך להפסיד תוספות שכר יקרות.</li>
                 </ul>
             </div>
             
-            <h4 class="brief-footer-text">הגיע הזמן לעבוד חכם יותר, ללא הפתעות בתלוש.</h4>
-            <a href="cot_user_manual.pdf" download="מדריך_למשתמש_COT.pdf" style="text-decoration:none;"><button class="btn-guide">למידע נוסף ומעבר למדריך המלא <span>📄</span></button></a>
-        </div>
-
-        <!-- עמודה 3: אזור ההתחברות -->
-        <div class="auth-section">
-            <div onclick="secretBypass(event)" title="V" style="position:absolute; top:10px; left:10px; width:20px; height:20px; z-index:100; cursor:default;"></div>
+            <p style="font-size: 15px; font-weight: bold; color: #1565c0; margin-bottom: 15px; text-align: center;">הגיע הזמן לעבוד חכם יותר, ללא הפתעות בתלוש.</p>
             
-            <div class="tabs">
-                <div class="tab active" onclick="switchTab('login')">התחברות למערכת</div>
-                <div class="tab" onclick="switchTab('register')">יצירת משתמש</div>
+            <div style="text-align: center;">
+                <a href="cot_user_manual.pdf" download="מדריך_למשתמש_COT.pdf" class="btn-3d" style="display: inline-block; color: #fff; background-color: #1976d2; padding: 12px 20px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 15px; box-shadow: 0 4px #1565c0;">
+                    📥 למידע נוסף ומעבר למדריך המלא לחץ כאן
+                </a>
             </div>
-
-            <div class="tab-content-wrapper">
-                <div id="tab-login" class="tab-content active">
-                    <div class="auth-input-group">
-                        <label>כתובת אימייל</label>
-                        <input type="email" id="loginEmail" dir="ltr" placeholder="your.email@example.com" onkeypress="if(event.key === 'Enter') loginUser()">
-                    </div>
-                    <div class="auth-input-group">
-                        <label>סיסמה</label>
-                        <div class="pwd-input-wrap">
-                            <input type="password" id="loginPassword" dir="ltr" placeholder="••••••••" onkeypress="if(event.key === 'Enter') loginUser()">
-                            <span class="pwd-toggle-icon" onclick="togglePassword('loginPassword', this)" title="הצג/הסתר סיסמה">👁️</span>
-                        </div>
-                        <div style="text-align: left;">
-                            <span onclick="resetPassword()" class="forgot-pwd-link">שכחת סיסמה?</span>
-                        </div>
-                    </div>
-                    
-                    <div class="login-trust-msg">
-                        🔒 מערכת COT פועלת תחת תקני אבטחה מחמירים. הנתונים שלך מוצפנים ונשמרים בדיסקרטיות מלאה.
-                    </div>
-
-                    <button class="btn-submit" onclick="loginUser()">היכנס לחשבון</button>
-                    <div id="loginError" class="msg-box error-msg"></div>
-                    <div id="loginSuccess" class="msg-box success-msg"></div>
-                </div>
-
-                <div id="tab-register" class="tab-content">
-                    <div class="security-notice">
-                        <h4><svg class="shield-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></svg> הגנה מקסימלית על הנתונים שלך</h4>
-                        כדי להבטיח שהמידע יישאר חסוי ומוגן לחלוטין, עליך:
-                        <ol style="margin: 4px 0 0 0; padding-right: 20px; font-weight: bold; color: #166534;">
-                            <li>להגדיר סיסמה חזקה.</li>
-                            <li>לאמת את האימייל לאחר ההרשמה.</li>
-                        </ol>
-                    </div>
-                    
-                    <div class="auth-input-group">
-                        <label>כתובת אימייל</label>
-                        <input type="email" id="regEmail" dir="ltr" placeholder="your.email@example.com">
-                    </div>
-                    <div class="auth-input-group">
-                        <label>בחר סיסמה מאובטחת</label>
-                        <div class="pwd-input-wrap">
-                            <input type="password" id="regPassword" dir="ltr" placeholder="הקלד כאן..." onkeyup="checkPwd(this.value, 'reg')">
-                            <span class="pwd-toggle-icon" onclick="togglePassword('regPassword', this)" title="הצג/הסתר סיסמה">👁️</span>
-                        </div>
-                    </div>
-                    <div class="auth-input-group">
-                        <label>אימות סיסמה</label>
-                        <div class="pwd-input-wrap">
-                            <input type="password" id="regPasswordConfirm" dir="ltr" placeholder="חזור על הסיסמה...">
-                            <span class="pwd-toggle-icon" onclick="togglePassword('regPasswordConfirm', this)" title="הצג/הסתר סיסמה">👁️</span>
-                        </div>
-                    </div>
-
-                    <ul class="req-list" id="reg-req-list">
-                        <li id="reg-req-len" class="invalid">לפחות 8 תווים</li>
-                        <li id="reg-req-eng" class="invalid">אותיות באנגלית בלבד</li>
-                        <li id="reg-req-up" class="invalid">לפחות אות אחת גדולה</li>
-                        <li id="reg-req-num" class="invalid">לפחות מספר אחד</li>
-                        <li id="reg-req-spc" class="invalid">לפחות תו מיוחד אחד</li>
-                    </ul>
-                    
-                    <button class="btn-submit" onclick="registerUser()">צור חשבון מאובטח</button>
-                    <div id="regError" class="msg-box error-msg"></div>
-                </div>
-            </div> 
-        </div>
-    </div>
-</div>
-
-<!-- מסך עדכון סיסמה חובה -->
-<div id="forcePasswordScreen" class="full-screen-overlay" style="display:none; flex-direction: column;">
-    <div class="system-header">
-        <img src="COT_LOGO.jpg" alt="לוגו COT" class="main-logo-img" style="width: 120px; height: 120px;">
-        <p>מערכת תכנון ובקרה לדוח פיצול</p>
-    </div>
-    <div class="wide-box-3d" style="max-width: 800px; display: flex;">
-        <div class="marketing-brief" style="border: none;">
-            <h2 class="brief-title">💡 סוף לניחושים – קח שליטה על השכר שלך!</h2>
-            <p>מערכת <strong>COT</strong> פותחה במטרה להפוך את דו"ח הפיצול מכאב ראש – לכלי שמשרת <strong>אותך</strong>.</p>
         </div>
 
-        <div class="auth-section">
-            <div class="security-notice" style="background: #fef2f2; border-color: #fecaca; color: #991b1b;">
-                <h4 style="color:#7f1d1d; margin-bottom: 8px;">⚠️ עדכון אבטחה חובה</h4>
-                בשביל לעמוד בסטנדרט האבטחה החדש עליך לשנות את הסיסמה שהזנת במערכת לפי הכללים המפורטים מטה!
+        <!-- קוביית התחברות -->
+        <div style="background:#fff; padding:35px 25px; border-radius:16px; box-shadow:0 10px 40px rgba(0,0,0,0.2); flex: 1 1 300px; max-width: 380px; text-align:center; position:relative;">
+            <div style="position:absolute; top:0; left:0; width:100%; height:6px; background:#1e88e5; border-top-left-radius: 16px; border-top-right-radius: 16px;"></div>
+            
+            <div style="display: flex; align-items: center; justify-content: center; cursor: pointer; margin-bottom: 10px; user-select:none;" onclick="secretBypass(event)" title="לחץ 3 פעמים רצוף לכניסה מהירה">
+                <div class="icon-logo" dir="ltr" style="position: relative; width: 75px; height: 50px; font-family: 'Arial Black', sans-serif; font-size: 48px; line-height: 50px; font-weight: 900; pointer-events: none;">
+                    <span style="position: absolute; left: 0px; top: 0; color: #FF9800; z-index: 3;">C</span>
+                    <span style="position: absolute; left: 19px; top: 0; color: #00BFA5; z-index: 1;">O</span>
+                    <span style="position: absolute; left: 40px; top: 0; color: #FF5252; z-index: 2;">T</span>
+                </div>
             </div>
             
-            <div class="auth-input-group">
-                <label>בחר סיסמה חדשה וחזקה:</label>
+            <h2 style="color:#0d47a1; margin-top:0; margin-bottom:5px; font-size:22px; cursor:default;">בקרת דו"ח פיצול</h2>
+            <h4 style="color:#546e7a; margin-top:0; margin-bottom:15px; font-weight:normal; font-size:14px;">בקר. נהל ותכנן את השכר</h4>
+            
+            <div style="background: #e3f2fd; padding: 12px 15px; border-radius: 8px; text-align: right; font-size: 12.5px; color: #0d47a1; margin-bottom: 20px; line-height: 1.5; border-right: 3px solid #1976d2;">
+                <div style="margin-bottom: 8px;"><strong>משתמש חדש:</strong> הזן אימייל ובחר סיסמה (לפחות 6 תווים), ולחץ "הרשמה".</div>
+                <div><strong>משתמש קיים:</strong> הזן אימייל ואת הסיסמה שלך, ולחץ "כניסה".</div>
+            </div>
+            
+            <div style="text-align:right;">
+                <label style="font-size:13px; font-weight:bold; color:#1565c0; margin-bottom:6px; display:block;">כתובת אימייל</label>
+                <input type="email" id="authEmail" placeholder="name@example.com" style="width:100%; box-sizing:border-box; margin-bottom:15px; padding:12px; text-align:left; font-size:15px; border: 2px solid #e3f2fd; border-radius: 8px; background:#f8fbff; outline:none;" dir="ltr" onkeypress="if(event.key === 'Enter') loginUser()">
+                
+                <label style="font-size:13px; font-weight:bold; color:#1565c0; margin-bottom:6px; display:block;">סיסמה</label>
                 <div class="pwd-input-wrap">
-                    <input type="password" id="forcePassword" dir="ltr" placeholder="סיסמה חדשה..." onkeyup="checkPwd(this.value, 'force')">
-                    <span class="pwd-toggle-icon" onclick="togglePassword('forcePassword', this)" title="הצג/הסתר סיסמה">👁️</span>
+                    <input type="password" id="authPassword" placeholder="לפחות 6 תווים" style="width:100%; box-sizing:border-box; padding:12px; text-align:left; font-size:15px; border: 2px solid #e3f2fd; border-radius: 8px; background:#f8fbff; outline:none;" dir="ltr" onkeypress="if(event.key === 'Enter') loginUser()">
+                    <span id="toggleEye" class="pwd-toggle-icon" onclick="togglePassword('authPassword', this)" title="הצג/הסתר סיסמה">👁️</span>
+                </div>
+                
+                <div style="margin-top: 6px; margin-bottom: 15px; text-align: left;">
+                    <a href="#" onclick="resetPassword(); return false;" style="font-size: 13px; color: #1976d2; text-decoration: none; font-weight: bold;">שכחתי את הסיסמה, לחץ כאן</a>
                 </div>
             </div>
-            <div class="auth-input-group">
-                <label>אימות סיסמה חדשה:</label>
-                <div class="pwd-input-wrap">
-                    <input type="password" id="forcePasswordConfirm" dir="ltr" placeholder="הקלד שוב...">
-                    <span class="pwd-toggle-icon" onclick="togglePassword('forcePasswordConfirm', this)" title="הצג/הסתר סיסמה">👁️</span>
-                </div>
+            <div id="authError" style="color:#e74c3c; font-size:13px; margin-bottom:20px; font-weight:bold; min-height:18px;"></div>
+            <div style="display:flex; gap:12px; flex-direction: column;">
+                <button class="btn-3d" onclick="loginUser()" style="width:100%; padding:14px; background:#1976d2; color:white; border-radius:8px; font-size:16px; box-shadow:0 4px #1565c0;">כניסה למערכת</button>
+                <button class="btn-3d" onclick="registerUser()" style="width:100%; padding:12px; background:#fff; color:#1976d2; border:2px solid #1976d2; border-radius:8px; font-size:15px; box-shadow:0 4px #bbdefb; top:-2px;">הרשמה חדשה</button>
             </div>
-
-            <ul class="req-list" id="force-req-list">
-                <li id="force-req-len" class="invalid">לפחות 8 תווים</li>
-                <li id="force-req-eng" class="invalid">אותיות באנגלית בלבד</li>
-                <li id="force-req-up" class="invalid">לפחות אות אחת גדולה</li>
-                <li id="force-req-num" class="invalid">לפחות מספר אחד</li>
-                <li id="force-req-spc" class="invalid">לפחות תו מיוחד אחד</li>
-            </ul>
-            
-            <button class="btn-submit" onclick="updateOldPassword()">שמור סיסמה והיכנס</button>
-            <div id="forceError" class="msg-box error-msg"></div>
         </div>
+        
     </div>
 </div>
 
@@ -199,7 +102,11 @@
 
 <div id="debugBox">
     <div style="display: flex; align-items: center; gap: 12px;">
-        <img src="COT_LOGO.jpg" alt="לוגו COT" style="width: 45px; height: 45px; border-radius: 10px; object-fit: cover; box-shadow: 0 2px 8px rgba(0,0,0,0.2); margin-left: 5px;">
+        <div dir="ltr" style="position: relative; width: 55px; height: 36px; font-family: 'Arial Black', sans-serif; font-size: 34px; line-height: 36px; font-weight: 900; margin-left: 5px;">
+            <span style="position: absolute; left: 0px; top: 0; color: #FF9800; z-index: 3;">C</span>
+            <span style="position: absolute; left: 14px; top: 0; color: #00E676; z-index: 1;">O</span>
+            <span style="position: absolute; left: 30px; top: 0; color: #FF5252; z-index: 2;">T</span>
+        </div>
         <div style="display: flex; flex-direction: column; line-height: 1.1; border-right: 2px solid rgba(255,255,255,0.3); padding-right: 12px;">
             <span style="font-size: 18px; font-weight: bold; color: #ffffff;">בקרת דו"ח פיצול</span>
             <span style="font-size: 11px; color: #bbdefb; letter-spacing: 0.5px; font-family: Tahoma, sans-serif;">Calculate Over Time</span>
@@ -450,14 +357,14 @@
 </div>
 
 <input type="file" id="excelFileLoader" accept=".xlsx" style="display: none;" onchange="processExcelExport(event)">
-<div class="version-stamp hide-print" onclick="secretBypass(event)" title="V">V202610271500</div>
+<div class="version-stamp hide-print" onclick="secretBypass(event)" title="V">V202610271600</div>
 
 <!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-firestore-compat.js"></script>
 
-<!-- ספריות חדשות לייצוא לאקסל -->
+<!-- ספריות לייצוא לאקסל -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
 
