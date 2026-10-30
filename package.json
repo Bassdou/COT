@@ -1,0 +1,12 @@
+{
+  "name": "cot-calculate-over-time",
+  "version": "1.0.0",
+  "private": true,
+  "description": "COT - Calculate Over Time. בדיקות אוטומטיות לאפליקציה (ללא תלויות חיצוניות, לא דורש npm install).",
+  "scripts": {
+    "test": "node --test",
+    "golden": "node tests/generate-golden.js",
+    "bump": "node scripts/bump-version.js"
+  },
+  "engines": { "node": ">=20" }
+}

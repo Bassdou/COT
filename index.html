@@ -1,0 +1,365 @@
+<!-- COT System Version: V202610302143 -->
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>COT - Calculate Over Time</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%2316233B'/%3E%3Ctext x='50' y='68' font-size='55' text-anchor='middle' fill='white' font-family='Arial, sans-serif' font-weight='bold'%3EC%3C/text%3E%3C/svg%3E">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;800&amp;display=swap">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="loadingOverlay">טוען נתונים...</div>
+<div class="version-stamp"></div>
+
+<!-- מסך התחברות -->
+<div id="authScreen" class="full-screen-overlay" style="display: none;">
+    <div class="auth-container-wrapper">
+        <div class="wide-box-3d">
+            <div class="brand-panel">
+                <div class="brand-logo-row">
+                    <img src="COT_LOGO.jpg" alt="לוגו COT" class="brand-logo-img" onclick="secretBypass(event)" style="cursor: pointer;" title="לחיצה כאן למצב בדיקות">
+                    <div>
+                        <div class="brand-logo-title">COT</div>
+                        <div class="brand-logo-subtitle">Calculate Over Time</div>
+                        <div class="login-version-badge" id="loginVersionBadge">טוען גרסה...</div>
+                    </div>
+                </div>
+                <div class="marketing-brief">
+                    <h2 class="brief-title">שליטה מלאה בדו"ח הפיצול שלך</h2>
+                    <p>תכננו מראש משמרות, שעות נוספות ואש"ל - וקבלו אומדן מדויק לתלוש, בלי הפתעות בסוף החודש.</p>
+                    <div class="benefits-box">
+                        <ul class="benefits-list">
+                            <li>תכנון מדויק</li>
+                            <li>סנכרון ענן</li>
+                            <li>הגנה מטעויות</li>
+                        </ul>
+                    </div>
+                    <a href="cot_user_manual.pdf" download="מדריך_למשתמש_COT.pdf" style="text-decoration:none;"><button class="btn-guide">למדריך המלא</button></a>
+                </div>
+
+                <div class="updates-section">
+                    <h3 class="section-title">הודעות מערכת</h3>
+                    <div class="updates-container">
+                        <div class="update-card alert-highlight">
+                            <span class="alert-badge">חשוב</span>
+                            <span class="update-date">תאריך יעד: 15/11/2026</span>
+                            <div class="update-title">החלת תקני אבטחה חדשים</div>
+                            <p class="update-text">החל מ-15.11.2026 המערכת תאכוף החלפת סיסמאות חזקות ואימות מייל <strong>למשתמשים קיימים</strong>.</p>
+                        </div>
+                        <div class="update-card today-highlight">
+                            <span class="today-badge">חדש</span>
+                            <span class="update-date">27 באוקטובר, 2026</span>
+                            <div class="update-title">עדכון חישוב שעות: מעבר שעון</div>
+                            <p class="update-text">עקב המעבר לשעון קיץ/חורף, משמרת הלילה של שבת הוחלפה ותזכה בחישוב של שעה נוספת אוטומטית.</p>
+                        </div>
+                        <div class="update-card">
+                            <span class="update-date">26 באוקטובר, 2026</span>
+                            <div class="update-title">שדרוג ממשק המשתמש</div>
+                            <p class="update-text">המסך הראשי עבר מתיחת פנים לעיצוב מודרני מפוצל, לשיפור חווית השימוש מהנייד ומהמחשב.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="auth-section">
+                <div class="tabs">
+                    <div class="tab active" onclick="switchTab('login')">התחברות</div>
+                    <div class="tab" onclick="switchTab('register')">הרשמה</div>
+                </div>
+                <div class="tab-content-wrapper">
+                    <div id="tab-login" class="tab-content active">
+                        <div class="auth-input-group"><label for="loginEmail">אימייל</label><input type="email" id="loginEmail" dir="ltr" placeholder="your.email@example.com" onkeypress="if(event.key === 'Enter') loginUser()"></div>
+                        <div class="auth-input-group">
+                            <label for="loginPassword">סיסמה</label>
+                            <div class="pwd-input-wrap">
+                                <input type="password" id="loginPassword" dir="ltr" placeholder="••••••••" onkeypress="if(event.key === 'Enter') loginUser()">
+                                <span class="pwd-toggle-icon" onclick="togglePassword('loginPassword', this)">👁️</span>
+                            </div>
+                            <div style="text-align: left;"><span onclick="resetPassword()" class="forgot-pwd-link">שכחת סיסמה?</span></div>
+                        </div>
+                        <div class="login-trust-msg">מערכת COT פועלת תחת תקני אבטחה מחמירים והצפנה מלאה.</div>
+                        <button class="btn-submit" onclick="loginUser()">היכנס לחשבון</button>
+                        <div id="loginError" class="msg-box error-msg"></div>
+                        <div id="loginSuccess" class="msg-box success-msg"></div>
+                    </div>
+
+                    <div id="tab-register" class="tab-content">
+                        <div class="security-notice">
+                            <h4><svg class="shield-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></svg> הגנה מקסימלית</h4>
+                            יש להגדיר סיסמה חזקה ולאמת את המייל.
+                        </div>
+                        <div class="auth-input-group"><label for="regEmail">אימייל</label><input type="email" id="regEmail" dir="ltr" placeholder="your.email@example.com"></div>
+                        <div class="auth-input-group">
+                            <label for="regPassword">סיסמה מאובטחת</label>
+                            <div class="pwd-input-wrap">
+                                <input type="password" id="regPassword" dir="ltr" onkeyup="checkPwd(this.value, 'reg')">
+                                <span class="pwd-toggle-icon" onclick="togglePassword('regPassword', this)">👁️</span>
+                            </div>
+                        </div>
+                        <div class="auth-input-group">
+                            <label for="regPasswordConfirm">אימות סיסמה</label>
+                            <div class="pwd-input-wrap">
+                                <input type="password" id="regPasswordConfirm" dir="ltr">
+                                <span class="pwd-toggle-icon" onclick="togglePassword('regPasswordConfirm', this)">👁️</span>
+                            </div>
+                        </div>
+                        <ul class="req-list" id="reg-req-list">
+                            <li id="reg-req-len" class="invalid">8 תווים</li>
+                            <li id="reg-req-eng" class="invalid">אנגלית בלבד</li>
+                            <li id="reg-req-up" class="invalid">אות גדולה</li>
+                            <li id="reg-req-num" class="invalid">מספר</li>
+                            <li id="reg-req-spc" class="invalid">תו מיוחד</li>
+                        </ul>
+                        <button class="btn-submit" onclick="registerUser()">צור חשבון</button>
+                        <div id="regError" class="msg-box error-msg"></div>
+                    </div>
+                </div> 
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- מסך עדכון סיסמה חובה -->
+<div id="forcePasswordScreen" class="full-screen-overlay" style="display:none; flex-direction: column;">
+    <div class="auth-container-wrapper">
+        <div class="system-header">
+            <img src="COT_LOGO.jpg" alt="לוגו COT" class="main-logo-img" style="width: 120px; height: 120px; cursor: pointer;" onclick="secretBypass(event)">
+        </div>
+        <div class="wide-box-3d" style="max-width: 800px;">
+            <div class="auth-section">
+                <div class="security-notice" style="background: #fef2f2; border-color: #fecaca; color: #991b1b;">
+                    <h4 style="color:#7f1d1d; margin-bottom: 8px;">⚠️ עדכון אבטחה חובה</h4>
+                    עליך לשנות את הסיסמה לפי הכללים מטה!
+                </div>
+                <div class="auth-input-group">
+                    <label for="forcePassword">סיסמה חדשה וחזקה:</label>
+                    <div class="pwd-input-wrap">
+                        <input type="password" id="forcePassword" dir="ltr" onkeyup="checkPwd(this.value, 'force')">
+                        <span class="pwd-toggle-icon" onclick="togglePassword('forcePassword', this)">👁️</span>
+                    </div>
+                </div>
+                <div class="auth-input-group">
+                    <label for="forcePasswordConfirm">אימות סיסמה:</label>
+                    <div class="pwd-input-wrap">
+                        <input type="password" id="forcePasswordConfirm" dir="ltr">
+                        <span class="pwd-toggle-icon" onclick="togglePassword('forcePasswordConfirm', this)">👁️</span>
+                    </div>
+                </div>
+                <ul class="req-list" id="force-req-list">
+                    <li id="force-req-len" class="invalid">8 תווים</li><li id="force-req-eng" class="invalid">אנגלית</li>
+                    <li id="force-req-up" class="invalid">אות גדולה</li><li id="force-req-num" class="invalid">מספר</li>
+                    <li id="force-req-spc" class="invalid">תו מיוחד</li>
+                </ul>
+                <button class="btn-submit" onclick="updateOldPassword()">שמור והיכנס</button>
+                <div id="forceError" class="msg-box error-msg"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- המערכת הראשי -->
+<div id="debugBox">
+    <div style="display: flex; align-items: center; gap: 12px; position: relative;">
+        <img src="COT_LOGO.jpg" alt="לוגו COT" style="width: 45px; height: 45px; border-radius: 10px; object-fit: cover; box-shadow: 0 2px 8px rgba(0,0,0,0.2); margin-left: 5px;">
+        <span class="app-version-badge" id="appVersionBadge">טוען גרסה...</span>
+    </div>
+    <div style="display: flex; gap: 12px; align-items: center;">
+        <button class="btn-logout btn-3d" id="logoutBtn" onclick="logoutUser()" style="display:none;">התנתק</button>
+        <button class="btn-info btn-3d" onclick="openShiftInfo()" title="מידע חשוב על המערכת">
+            <span class="icon" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 16v-5M12 8h.01"/></svg></span><span>מידע חשוב</span>
+        </button>
+    </div>
+</div>
+
+<div id="securityBanner" style="display:none; max-width: 1200px; margin: 0 auto;"></div>
+
+<div id="cloudBalancesPanel" style="display: none; background: #EAF0FA; color: #1D4E89; padding: 10px 18px; align-items: center; justify-content: center; gap: 16px; font-size: 12.5px; box-shadow: none; border: 1px solid #D6E2F2; border-radius: 12px; margin-bottom: 20px; flex-wrap: wrap;">
+    <span style="font-weight: 800; color: #1D4E89;" id="cloudLastMonthTitle">החודש האחרון:</span>
+    <div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;">
+        <span title="חופש רגיל">חופש: <strong id="cloudReg">0.00</strong></span>
+        <span title="חופש שבת">ח. שבת: <strong id="cloudShab">0.00</strong></span>
+        <span title="ימי מחלה">מחלה: <strong id="cloudSick">0.00</strong></span>
+        <span title="הצהרה">הצהרה: <strong id="cloudDec">0.00</strong></span>
+        <span title="ימי בחירה">בחירה: <strong id="cloudCho">0.00</strong></span>
+    </div>
+</div>
+
+<div class="header-panel">
+    <div class="inputs-section">
+        <div class="input-group"><label for="employeeName">שם עובד</label><input type="text" id="employeeName" value="" style="width: 120px;" placeholder="הזן שם..." oninput="updateTitles()"></div>
+        <div class="input-group"><label for="monthYearSelect">חודש ושנה</label><select id="monthYearSelect" style="width: 130px;" onchange="updateTitles(); generateTable();"></select></div>
+        <div class="input-group"><label for="hourlyRate">שעתי בסיס (₪)</label><input type="number" id="hourlyRate" min="0" value="0.00" step="0.01" style="width: 75px;" oninput="updateGrandTotal()"></div>
+        <div class="input-group"><label for="eshelRate">תעריף אש"ל (₪)</label><input type="number" id="eshelRate" min="0" value="52.66" step="0.01" style="width: 75px;" oninput="updateGrandTotal()"></div>
+    </div>
+    <div class="actions-section">
+        <div class="action-grid">
+            <button class="btn-load btn-3d" onclick="loadData()">טען גליון</button>
+            <button class="btn-save btn-3d" id="btnSaveCloud" onclick="saveData()">שמור גליון</button>
+            <button class="btn-primary btn-3d" onclick="generateTable()">הכן גליון</button>
+            <button class="btn-reset btn-3d" onclick="clearData()">אפס גליון</button>
+        </div>
+        <input type="file" id="fileLoader" accept=".json" style="display: none;" onchange="handleFileLoad(event)">
+    </div>
+</div>
+
+    <div class="kpi-row" id="kpiRow" style="display:none;">
+    <div class="dash-card dash-card-muted"><div class="dash-icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></div><h4>סה"כ משמרות</h4><div id="dashShifts" class="val">0</div><div id="dashCarryOver" class="dash-sub" title="משמרות שנגררו מהחודש הקודם (מגובה בענן)"></div></div>
+    <div class="dash-card dash-card-muted"><div class="dash-icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></div><h4>שעות תקן</h4><div id="dashStandard" class="val">0.00</div></div>
+    <div class="dash-card dash-card-muted"><div class="dash-icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 3L4 14h7l-1 7 9-11h-7l1-7z"/></svg></div><h4>שעות בפועל</h4><div id="dashGross" class="val">0.00</div></div>
+    <div class="dash-card dash-card-highlight" style="border-top-color:#B06F1F;"><div class="dash-icon dash-icon-amber" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M16 12h2M3 10h18"/></svg></div><h4>אש"ל (₪)</h4><div id="dashEshel" class="val" style="color:#B06F1F;">0.00 ₪</div></div>
+    <div class="dash-card tlush-card dash-card-highlight"><div class="dash-icon dash-icon-primary" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19V5M4 19h16M8 15l3-4 3 2 4-6"/></svg></div><h4>ערך ש"נ</h4><div id="tlushCost" class="val">0.00 ₪</div></div>
+    </div>
+
+<div id="weeklyWarning"></div>
+
+<div id="printHeader" class="print-only">
+    <h1><span>דוח בקרה פיצול שעות <span id="printMonthYearText"></span></span><span id="printEmployeeNameDisplay" style="display: none;"></span></h1>
+</div>
+
+<div class="table-container" id="tableContainer" style="display:none; padding-bottom: 60px;">
+    <h2 id="sheetTitle" style="text-align: center; color: #2c3e50;">דוח שעות משמרות</h2>
+    <div id="colorLegend" class="color-legend hide-print" aria-hidden="true">
+        <span class="legend-item"><span class="legend-swatch legend-absence"></span>היעדרות (תקן אוטומטי)</span>
+        <span class="legend-item"><span class="legend-swatch legend-negative"></span>ניכוי / חריגה</span>
+        <span class="legend-item"><span class="legend-swatch legend-holiday"></span>חג / ערב חג</span>
+        <span class="legend-item"><span class="legend-swatch legend-weekend"></span>שישי ושבת</span>
+    </div>
+    <table id="timesheet">
+        <thead>
+            <tr>
+                <th colspan="2" rowspan="2" class="col-sep" style="width: 60px; min-width: 60px;">תאריך</th>
+                <th rowspan="2" class="col-sep hide-print" style="width: 55px; cursor: pointer; color: white;" onclick="openMiniShiftInfo()" title="רשימת קודים">משמרת <span>i</span></th>
+                <th rowspan="2" class="print-thick-right" style="width: 75px; min-width: 75px;">כניסה</th>
+                <th rowspan="2" class="col-sep" style="width: 75px; min-width: 75px;">יציאה</th>
+                <th rowspan="2" class="col-sep" style="width: 100px; min-width: 100px;">תאור</th>
+                <th rowspan="2" class="calc-th">סה"כ<br>שעות</th>
+                <th rowspan="2" class="col-sep calc-th">חופש<br>שבת</th>
+                <th rowspan="2" class="col-sep calc-th">תקן</th>
+                <th rowspan="2" class="col-sep calc-th thick-border-left">רגילות</th>
+                <th colspan="3" class="col-sep thick-border-left">ש"נ</th>
+                <th colspan="2" class="col-sep thick-border-left">שבת</th>
+                <th colspan="4" class="col-sep thick-border-left">ש"נ</th>
+                <th colspan="5" class="col-sep thick-border-left">ת.מ.</th>
+                <th rowspan="2" class="col-sep">ערך</th>
+            </tr>
+            <tr>
+                <th class="calc-th">100%</th><th class="calc-th">125%</th><th class="col-sep calc-th thick-border-left">150%</th>
+                <th class="calc-th">175%</th><th class="col-sep calc-th thick-border-left">200%</th>
+                <th class="calc-th">180%</th><th class="calc-th">187.5%</th><th class="calc-th">225%</th><th class="col-sep calc-th thick-border-left">250%</th>
+                <th class="calc-th">20%</th><th class="calc-th">50%</th><th class="calc-th">75%</th><th class="calc-th">87.5%</th><th class="col-sep calc-th thick-border-left">100%</th>
+            </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+        <tfoot>
+            <tr class="tfoot-summary hours-row">
+                <td colspan="6" class="col-sep hide-print tfoot-title">שורת סיכום:</td><td colspan="5" class="col-sep print-only-cell tfoot-title">שורת סיכום:</td>
+                <td id="sum-hours-totalShift"></td><td id="sum-hours-shabbat" class="col-sep"></td><td id="sum-hours-I" class="col-sep"></td><td id="sum-hours-I2" class="col-sep thick-border-left"></td>
+                <td id="sum-hours-J"></td><td id="sum-hours-K"></td><td id="sum-hours-L" class="col-sep thick-border-left"></td>
+                <td id="sum-hours-M"></td><td id="sum-hours-N" class="col-sep thick-border-left"></td><td id="sum-hours-O"></td><td id="sum-hours-P"></td>
+                <td id="sum-hours-Q"></td><td id="sum-hours-R" class="col-sep thick-border-left"></td>
+                <td id="sum-hours-S"></td><td id="sum-hours-T"></td><td id="sum-hours-U"></td><td id="sum-hours-V"></td><td id="sum-hours-W" class="col-sep thick-border-left"></td>
+                <td id="sum-hours-total" class="col-sep"></td>
+            </tr>
+            <tr class="tfoot-summary cost-row">
+                <td colspan="6" class="col-sep hide-print tfoot-title">ערך עמודה:</td><td colspan="5" class="col-sep print-only-cell tfoot-title">ערך עמודה:</td>
+                <td id="sum-cost-totalShift"></td><td id="sum-cost-shabbat" class="col-sep"></td><td id="sum-cost-I" class="col-sep"></td><td id="sum-cost-I2" class="col-sep thick-border-left"></td>
+                <td id="sum-cost-J"></td><td id="sum-cost-K"></td><td id="sum-cost-L" class="col-sep thick-border-left"></td>
+                <td id="sum-cost-M"></td><td id="sum-cost-N" class="col-sep thick-border-left"></td><td id="sum-cost-O"></td><td id="sum-cost-P"></td>
+                <td id="sum-cost-Q"></td><td id="sum-cost-R" class="col-sep thick-border-left"></td>
+                <td id="sum-cost-S"></td><td id="sum-cost-T"></td><td id="sum-cost-U"></td><td id="sum-cost-V"></td><td id="sum-cost-W" class="col-sep thick-border-left"></td>
+                <td id="sum-cost-total" class="col-sep">0.00</td>
+            </tr>
+        </tfoot>
+    </table>
+    <div id="printDashboard" class="print-only">
+        <div><strong>משמרות:</strong> <span id="printDashShifts">0</span></div>
+        <div><strong>תקן:</strong> <span id="printDashStandard">0.00</span></div>
+        <div><strong>בפועל:</strong> <span id="printDashGross">0.00</span></div>
+        <div><strong>אש"ל:</strong> <span id="printDashEshel">0.00</span></div>
+        <div><strong>ערך ש"נ:</strong> <span id="tlushCostPrint">0.00 ₪</span></div>
+    </div>
+</div>
+
+<div class="dashboard" id="summaryPanel" style="display:none; justify-content:center;">
+    <div class="dash-card balance-card">
+        <h4>חופש רגיל</h4>
+        <div class="balance-row"><span>פתיחה:</span><div class="balance-input-wrap"><input type="number" id="bal_open_reg" class="bal-input locked-input" value="0.00" step="0.01" readonly oninput="updateGrandTotal()"><button class="lock-btn" onclick="toggleLock('bal_open_reg', this)">🔒</button></div></div>
+        <div class="balance-row"><span>נוצל (-):</span><strong id="bal_used_reg" style="color:#c0392b;">0.00</strong></div>
+        <div class="balance-row" style="font-weight:bold; color:#2c3e50;"><span>יתרה סופית:</span><span id="bal_close_reg">0.00</span></div>
+    </div>
+    <div class="dash-card balance-card">
+        <h4>חופש שבת</h4>
+        <div class="balance-row"><span>פתיחה:</span><div class="balance-input-wrap"><input type="number" id="bal_open_shab" class="bal-input locked-input" value="0.00" step="0.01" readonly oninput="updateGrandTotal()"><button class="lock-btn" onclick="toggleLock('bal_open_shab', this)">🔒</button></div></div>
+        <div class="balance-row"><span>תנועה החודש:</span><strong id="bal_used_shab" dir="ltr" style="color:#27ae60;">0.00</strong></div>
+        <div class="balance-row" style="font-weight:bold; color:#2c3e50;"><span>יתרה סופית:</span><span id="bal_close_shab">0.00</span></div>
+    </div>
+    <div class="dash-card balance-card">
+        <h4>מחלה</h4>
+        <div class="balance-row"><span>פתיחה:</span><div class="balance-input-wrap"><input type="number" id="bal_open_sick" class="bal-input locked-input" value="0.00" step="0.01" readonly oninput="updateGrandTotal()"><button class="lock-btn" onclick="toggleLock('bal_open_sick', this)">🔒</button></div></div>
+        <div class="balance-row"><span>נוצל (-):</span><strong id="bal_used_sick" style="color:#c0392b;">0.00</strong></div>
+        <div class="balance-row" style="font-weight:bold; color:#2c3e50;"><span>יתרה סופית:</span><span id="bal_close_sick">0.00</span></div>
+    </div>
+    <div class="dash-card balance-card">
+        <h4>הצהרה / בחירה</h4>
+        <div class="balance-row"><span>פתיחה הצהרה:</span><div class="balance-input-wrap"><input type="number" id="bal_open_dec" class="bal-input locked-input" value="0.00" step="0.01" readonly oninput="updateGrandTotal()"><button class="lock-btn" onclick="toggleLock('bal_open_dec', this)">🔒</button></div></div>
+        <div class="balance-row"><span>פתיחה בחירה:</span><div class="balance-input-wrap"><input type="number" id="bal_open_cho" class="bal-input locked-input" value="0.00" step="0.01" readonly oninput="updateGrandTotal()"><button class="lock-btn" onclick="toggleLock('bal_open_cho', this)">🔒</button></div></div>
+        <div class="balance-row" style="margin-top:10px;"><span>נוצל הצהרה:</span><strong id="bal_used_dec" style="color:#c0392b;">0</strong></div>
+        <div class="balance-row"><span>נוצל בחירה:</span><strong id="bal_used_cho" style="color:#c0392b;">0</strong></div>
+    </div>
+    <div class="dash-card balance-card" style="width:160px;">
+        <h4>מחלת בן משפחה</h4>
+        <div style="font-size:12px; color:#7f8c8d; margin-bottom:10px; text-align:center;">מעקב ניצול בחודש</div>
+        <div class="balance-row" style="font-size: 15px;"><span>דווח החודש:</span><strong id="bal_used_fam" style="color:#c0392b;">0.00</strong></div>
+    </div>
+    <div class="dash-card balance-card" style="width:160px; border-top-color:#0d47a1;">
+        <h4 style="color:#0d47a1;">מילואים</h4>
+        <div style="font-size:12px; color:#7f8c8d; margin-bottom:10px; text-align:center;">מעקב ימים בחודש</div>
+        <div class="balance-row" style="font-size: 15px;"><span>דווח החודש:</span><strong id="bal_used_mil" style="color:#0d47a1;">0</strong></div>
+    </div>
+</div>
+
+<div class="balances-table-wrapper print-only" id="balancesTableWrapper">
+    <h3 style="text-align: center; color: #2c3e50; font-size: 18px; margin: 0 0 15px 0;">ריכוז יתרות ומעקב היעדרויות</h3>
+    <table class="balances-table">
+        <thead><tr><th>סוג היעדרות</th><th>יתרת פתיחה</th><th>ניצול החודש</th><th>יתרה חדשה</th></tr></thead>
+        <tbody>
+            <tr><td>חופש רגיל</td><td id="tbl_bal_open_reg">0.00</td><td id="tbl_bal_used_reg" style="color:#c0392b; font-weight:bold;">0.00</td><td id="tbl_bal_close_reg" style="font-weight:bold; color:#0d47a1;">0.00</td></tr>
+            <tr><td>חופש שבת</td><td id="tbl_bal_open_shab">0.00</td><td id="tbl_bal_used_shab" style="color:#27ae60; font-weight:bold;">0.00</td><td id="tbl_bal_close_shab" style="font-weight:bold; color:#0d47a1;">0.00</td></tr>
+            <tr><td>מחלה</td><td id="tbl_bal_open_sick">0.00</td><td id="tbl_bal_used_sick" style="color:#c0392b; font-weight:bold;">0.00</td><td id="tbl_bal_close_sick" style="font-weight:bold; color:#0d47a1;">0.00</td></tr>
+            <tr><td>הצהרה</td><td id="tbl_bal_open_dec">0.00</td><td id="tbl_bal_used_dec" style="color:#c0392b; font-weight:bold;">0</td><td id="tbl_bal_close_dec" style="font-weight:bold; color:#0d47a1;">0.00</td></tr>
+            <tr><td>בחירה</td><td id="tbl_bal_open_cho">0.00</td><td id="tbl_bal_used_cho" style="color:#c0392b; font-weight:bold;">0</td><td id="tbl_bal_close_cho" style="font-weight:bold; color:#0d47a1;">0.00</td></tr>
+            <tr><td>מחלת בן משפחה</td><td>-</td><td id="tbl_bal_used_fam" style="color:#c0392b; font-weight:bold;">0.00</td><td>-</td></tr>
+            <tr><td>מילואים</td><td>-</td><td id="tbl_bal_used_mil" style="color:#0d47a1; font-weight:bold;">0</td><td>-</td></tr>
+        </tbody>
+    </table>
+</div>
+
+<div style="width: 100%; margin-top: 25px; margin-bottom: 60px; display:flex; justify-content:center; gap:20px; flex-wrap: wrap;">
+    <button class="btn-close-month btn-3d" id="closeMonthBtn" onclick="closeMonth()" style="display:none;">סגור חודש</button>
+    <button class="btn-print btn-3d" id="printBtn" onclick="window.print()" style="display:none;">הדפס גליון / PDF</button>
+    <button class="btn-3d hide-print" id="exportExcelBtn" onclick="document.getElementById('excelExportModal').style.display='block'" style="display:none; background-color: #15803D; color: white; padding: 13px 26px; border-radius: 10px; font-size: 14px; font-weight: 700; border: none; cursor: pointer;">ייצא לאקסל</button>
+</div>
+<input type="file" id="excelFileLoader" accept=".xlsx" style="display: none;" onchange="processExcelExport(event)">
+
+<script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-firestore-compat.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+<!-- קבצי COT: הסדר חשוב. calculator.js (מנוע החישוב) הוא הקובץ היחיד שיש לערפל לפני העלאה. שאר הקבצים נשארים גלויים. -->
+<script src="components.js"></script>
+<script src="content-loader.js"></script>
+<script src="holidays_db.js"></script>
+<script src="00-core.js"></script>
+<script src="01-shift-codes.js"></script>
+<script src="calculator.js"></script>
+<script src="02-ui-dialogs.js"></script>
+<script src="03-auth.js"></script>
+<script src="05-session-data.js"></script>
+<script src="06-excel-export.js"></script>
+<script src="07-version-manager.js"></script>
+</body>
+</html>

@@ -1,0 +1,203 @@
+<!-- COT System Version: V202610301124 -->
+<!--
+  קובץ: cot-manual.html
+  שלד חוברת ההדרכה. הטקסט כאן כבר מתוקן לפי ההתנהגות האמיתית של הקוד (לא לפי הספרון הישן).
+  מקומות התמונה מסומנים ב-<img> עם קובץ יעד מדויק, לפי screenshots-checklist.md שלצידו.
+  כל עוד הקובץ חסר, יוצג מקום ריק עם התווית "תמונה תתווסף" - כך שאפשר לפתוח ולבדוק את השלד כבר עכשיו.
+  לאחר שישלחו צילומי המסך האמיתיים, הקובץ הזה (עם התמונות) יעבור לעיבוד לחוברת המעוצבת הסופית,
+  שתיוצא בזיפ נפרד בשם MANUAL, בגרסה התואמת לגרסת האפליקציה.
+
+  חותמת הגרסה: יש שתי חותמות נפרדות בכוונה -
+  1) "COT System Version" בהערה הזו - גרסת קובץ החוברת עצמו (מתי נערך).
+  2) הרמז הגלוי בכותרת החוברת ("חוברת זו תקפה החל מגרסת אפליקציה מס' ...") - גרסת האפליקציה
+     שהתוכן תואם לה. יש לעדכן את שתיהן בכל חוברת שתופק, גם אם שתי הגרסאות זהות באותו רגע.
+-->
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>COT - ספרון הדרכה למשתמש</title>
+<style>
+  :root { --blue:#0d47a1; --blue2:#1976d2; --bg:#eef5f9; --text:#34495e; }
+  body { font-family:'Segoe UI',Tahoma,Arial,sans-serif; background:var(--bg); color:var(--text); margin:0; padding:0 0 60px; }
+  header { background:var(--blue); color:#fff; padding:28px 20px; text-align:center; }
+  header h1 { margin:0 0 6px; font-size:28px; }
+  header .ver { font-family:monospace; opacity:.8; font-size:13px; }
+  main { max-width:860px; margin:0 auto; padding:0 20px; }
+  section { background:#fff; border-radius:14px; box-shadow:0 4px 15px rgba(13,71,161,.08); padding:26px 30px; margin:26px 0; }
+  h2 { color:var(--blue); font-size:21px; border-bottom:2px solid #bbdefb; padding-bottom:8px; }
+  h3 { color:#1565c0; font-size:17px; margin-bottom:6px; }
+  ul { padding-right:20px; }
+  li { margin-bottom:8px; line-height:1.6; }
+  .fig { margin:18px 0; text-align:center; }
+  .fig img { max-width:100%; border:1px solid #d6e4f0; border-radius:10px; box-shadow:0 2px 10px rgba(0,0,0,.08); }
+  .fig .cap { font-size:13px; color:#78909c; margin-top:6px; }
+  .fig .missing { display:flex; align-items:center; justify-content:center; height:160px; background:#f3f7fb;
+                  border:2px dashed #b9d2ea; border-radius:10px; color:#90a4ae; font-size:14px; }
+  .note { background:#fff3e0; border-right:4px solid #e67e22; border-radius:8px; padding:12px 16px; margin:14px 0; font-size:14.5px; }
+  .warn { background:#fdebd0; border:1px solid #f5b041; border-radius:8px; padding:12px 16px; margin:14px 0; }
+  code { background:#eef3f8; padding:1px 6px; border-radius:4px; font-size:13px; }
+  table.codes { width:100%; border-collapse:collapse; font-size:13.5px; }
+  table.codes th, table.codes td { border:1px solid #dbe8f3; padding:6px 10px; text-align:center; }
+  table.codes th { background:var(--blue2); color:#fff; }
+  footer { text-align:center; color:#90a4ae; font-size:12px; margin-top:30px; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>COT <span style="opacity:.8;">(Calculate Over Time)</span> - ספרון הדרכה למשתמש</h1>
+  <div class="ver">חוברת זו תקפה החל מגרסת אפליקציה מס' V202610301124</div>
+</header>
+
+<main>
+
+<section>
+  <p>מערכת COT (Calculate Over Time) פותחה מתוך היכרות עמוקה עם השטח ועבודת המשמרות במעברי הגבול.
+     מטרתה לעשות סדר בדו"חות הפיצול המורכבים, לאפשר תכנון מדויק של המשמרות, לאמוד את שווי השעות
+     הנוספות והאש"ל בזמן אמת, ולנהל את יתרות החופש והמחלה בשקיפות מלאה.</p>
+  <div class="fig">
+    <img src="images/01-login-screen.png" alt="מסך הכניסה" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'missing',textContent:'תמונה תתווסף: 01-login-screen.png'}))">
+    <div class="cap">מסך הכניסה</div>
+  </div>
+</section>
+
+<section>
+  <h2>1. צעדים ראשונים: כניסה והגדרות בסיס</h2>
+  <ul>
+    <li><strong>הרשמה וכניסה:</strong> במסך הפתיחה, הזן כתובת אימייל וסיסמה. סיסמה חייבת להכיל
+        <strong>8 תווים לפחות, אותיות אנגלית בלבד, לפחות אות גדולה אחת, ספרה אחת, ותו מיוחד אחד</strong>
+        (כפי שמוצג ברשימת הדרישות בעת ההרשמה). משתמש חדש ילחץ "<strong>צור חשבון</strong>", ומשתמש קיים
+        ילחץ "<strong>היכנס לחשבון</strong>". המערכת נועלת את המסך אוטומטית לאחר 15 דקות ללא פעילות
+        (הנתונים על המסך נשמרים ברקע, ולא נמחקים).</li>
+    <li><strong>הזנת נתוני שכר:</strong> בשורת הפאנל העליון, ודא ששמך, תעריף שעת הבסיס ותעריף האש"ל
+        המעודכנים מוזנים כראוי לצורך חישוב מדויק.</li>
+    <li><strong>הגדרת יתרות פתיחה:</strong> בתחתית המסך תמצא את כרטיסיות היתרות. לחץ על סמל המנעול (🔒)
+        כדי לפתוח אותן לעריכה, הזן את יתרת הפתיחה מתלוש השכר האחרון שלך, ולחץ על "שמור גליון" לגיבוי
+        מיידי לענן.</li>
+  </ul>
+  <div class="fig">
+    <img src="images/02-register-tab.png" alt="לשונית הרשמה" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'missing',textContent:'תמונה תתווסף: 02-register-tab.png'}))">
+    <div class="cap">לשונית הרשמה ודרישות הסיסמה</div>
+  </div>
+  <div class="fig">
+    <img src="images/04-balances-panel.png" alt="פאנל יתרות" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'missing',textContent:'תמונה תתווסף: 04-balances-panel.png'}))">
+    <div class="cap">פאנל היתרות העליון, מיד לאחר התחברות</div>
+  </div>
+</section>
+
+<section>
+  <h2>2. מנוע ההיעדרויות החכם</h2>
+  <p>המערכת מבחינה אוטומטית בין נוכחות בפועל לבין היעדרויות, ומבצעת עבורך את החישובים והצביעות
+     הרלוונטיות כדי למנוע בלבול:</p>
+  <ul>
+    <li><strong>מילוי שעות וצבע סגול מודגש:</strong> כשמקלידים קוד היעדרות בעמודת "משמרת" (כמו
+        <code>ח</code>, <code>מח</code>, <code>הצ</code>), המערכת ממלאת אוטומטית את עמודות "תקן" ו"סה"כ
+        שעות" בצבע סגול מודגש. ברוב המקרים הערך הוא 8.00 שעות; ב<strong>ערב חג ובחול המועד</strong> הערך
+        הוא שעות התקן המיוחדות של אותו יום (למשל 4.5, 5.5 או 7, לפי הקבוע ב-<code>holidays_db.js</code>).</li>
+    <li><strong>חסימת הזנה בימי מנוחה (שישי ושבת):</strong> המערכת חוסמת הזנת <code>ח</code> (חופש), <code>חש</code>
+        (חופש שבת), <code>הצ</code> (הצהרה), <code>בח</code> (בחירה), <code>מבמ</code> (מחלת בן משפחה) ו-<code>הס</code>
+        (עפ"י הסכם) בימי מנוחה. <strong>לעומת זאת, <code>מח</code> (מחלה) ו-<code>מיל</code> (מילואים) מותרים
+        גם בשישי ושבת</strong> - למשל כשעובד מתוכננת לו משמרת והוא חולה באותו יום.</li>
+    <li><strong>חופש שבת (<code>חש</code>):</strong> מוזן ביום חול (לא בסופ"ש - ראה סעיף קודם), מזכה
+        ב-8 שעות תקן כמו שאר ההיעדרויות, <strong>ובנוסף מוריד יום אחד מיתרת "חופש שבת"</strong> - מופיע
+        בעמודה הייעודית כ- <code>-1.00</code> באדום בולט.</li>
+    <li><strong>מילואים (<code>מיל</code>):</strong> ביום חול המערכת מעניקה 8 שעות תקן (בסגול). בשישי
+        ובשבת הרישום נספר לצורך תיעוד ימי המילואים, אך ללא שעות תקן כספיות לאותו יום.</li>
+  </ul>
+  <div class="fig">
+    <img src="images/07-timesheet-filled.png" alt="טבלה עם היעדרויות" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'missing',textContent:'תמונה תתווסף: 07-timesheet-filled.png'}))">
+    <div class="cap">הטבלה החודשית, עם משמרות והיעדרות מסומנת בסגול</div>
+  </div>
+</section>
+
+<section>
+  <h2>3. הזנת משמרות ועבודה שוטפת</h2>
+  <p>המערכת תוכננה לחסוך זמן והקלדות, ומותאמת לעבודה זריזה עם המקלדת (<code>Enter</code> ומקשי החיצים).</p>
+  <ul>
+    <li><strong>קודי משמרת מהירים:</strong> אין צורך להקליד שעות. בעמודת "<strong>משמרת</strong>" (לא בעמודת
+        "תאור" - זו מתמלאת אוטומטית), הקלד קוד כגון <code>ב06</code> או <code>102</code>, והשעות יתמלאו לבד.
+        שכחת קוד? לחיצה על כותרת העמודה "משמרת" (סמל <code>i</code>) תציג את כלל הקודים.</li>
+    <li><strong>הקלדה רצופה ללא נקודתיים:</strong> בהזנה ידנית של שעה, הקלד <code>1530</code> והמערכת תתרגם
+        אוטומטית ל-<code>15:30</code>.</li>
+  </ul>
+  <table class="codes">
+    <thead><tr><th>קוד מהיר</th><th>שעות משמרת</th><th>תאור</th></tr></thead>
+    <tbody>
+      <tr><td>616 / 617</td><td>06:00-16:00/17:00</td><td>משמרות בוקר מוקדמות / מאוחרות</td></tr>
+      <tr><td>102 / 111</td><td>10:00/11:00-20:00</td><td>משמרות צהריים</td></tr>
+      <tr><td>217 / 227</td><td>21:00/22:00-07:00</td><td>משמרות לילה רגילות / מאוחרות</td></tr>
+      <tr><td>ח / מח</td><td>- (אוטומטי)</td><td>חופש / מחלה (נצבע בסגול; ח נחסם בסופ"ש, מח מותר)</td></tr>
+      <tr><td>מיל</td><td>- (אוטומטי)</td><td>מילואים (נצבע בסגול, מותר לדיווח רציף גם בסופ"ש)</td></tr>
+    </tbody>
+  </table>
+  <div class="fig">
+    <img src="images/08-shift-code-popup.png" alt="חלון קודי משמרות" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'missing',textContent:'תמונה תתווסף: 08-shift-code-popup.png'}))">
+    <div class="cap">חלון "קודי משמרות להקלדה מהירה"</div>
+  </div>
+</section>
+
+<section>
+  <h2>4. טיפים חכמים לתכנון שכר נבון</h2>
+  <div class="warn">
+    <strong>⚠️ אזהרה חמורה: החתמת יציאה מוקדמת</strong><br>
+    לתוספת "משמרת צהריים" (20%) יש לצבור לפחות 3 שעות רצופות בטווח 14:00-22:00. לדוגמה: משמרת בוקר
+    מאוחרת (06:00-17:00) שהיציאה ממנה הוחתמה ב-16:59 תצבור רק 2 שעות ו-59 דקות בטווח - ותפסיד את
+    כל תוספת המשמרת, ואף עשויה להקטין את תגמול האש"ל היומי.
+  </div>
+  <ul>
+    <li><strong>חפיפת שעות לילה:</strong> משמרת נחשבת "משמרת לילה" המזכה בתוספות, רק אם עבדת לפחות
+        שעתיים מלאות בטווח 22:00-06:00.</li>
+    <li><strong>בקרה על משמרות נגררות:</strong> המערכת מתריעה על חריגה ממכסת 5 משמרות בשבוע קלנדרי.
+        בתחילת החודש הראשון היא תבקש ממך להזין כמה משמרות ביצעת בשבוע האחרון של החודש הקודם.</li>
+  </ul>
+  <div class="fig">
+    <img src="images/09-weekly-warning.png" alt="התראת 5 משמרות" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'missing',textContent:'תמונה תתווסף: 09-weekly-warning.png'}))">
+    <div class="cap">התראת חריגה ממכסת המשמרות השבועית</div>
+  </div>
+</section>
+
+<section>
+  <h2>5. סיכום החודש וייצוא הנתונים</h2>
+  <p>לוח הסיכומים בתחתית המסך מרכז את ימי המילואים, אומדן שווי השעות הנוספות, קצובת האש"ל והיתרות.</p>
+  <ul>
+    <li><strong>סגירת חודש:</strong> לאחר וידוא הנתונים, לחיצה על "סגור חודש" מעבירה את יתרות הסיום
+        להיות יתרות הפתיחה של החודש הבא, ומגבה אותן בענן. בכניסה הבאה לחודש החדש, היתרות יופיעו מוכנות
+        מראש.</li>
+    <li><strong>ייצוא לאקסל:</strong> הכפתור הירוק "ייצא לאקסל" מאפשר ליצור קובץ חדש ומעוצב, או להוסיף
+        לשונית לחודש הנוכחי בתוך קובץ אקסל קיים ששמור אצלך - תוך שמירה על נתוני החודשים הקודמים בו.</li>
+  </ul>
+  <div class="fig">
+    <img src="images/12-close-month-confirm.png" alt="אישור סגירת חודש" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'missing',textContent:'תמונה תתווסף: 12-close-month-confirm.png'}))">
+    <div class="cap">חלון האישור של "סגור חודש"</div>
+  </div>
+  <div class="fig">
+    <img src="images/13-excel-export-modal.png" alt="חלון ייצוא אקסל" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'missing',textContent:'תמונה תתווסף: 13-excel-export-modal.png'}))">
+    <div class="cap">חלון בחירת סוג ייצוא לאקסל</div>
+  </div>
+</section>
+
+<section>
+  <h2>נספח: כל קודי ההיעדרות</h2>
+  <table class="codes">
+    <thead><tr><th>קוד</th><th>משמעות</th><th>מותר בסופ"ש?</th></tr></thead>
+    <tbody>
+      <tr><td>ח</td><td>חופש רגיל</td><td>לא</td></tr>
+      <tr><td>חש</td><td>חופש שבת (מוריד יום מהיתרה הייעודית)</td><td>לא</td></tr>
+      <tr><td>מח</td><td>מחלה</td><td><strong>כן</strong></td></tr>
+      <tr><td>מיל</td><td>מילואים</td><td><strong>כן</strong> (ללא שעות תקן כספיות בסופ"ש)</td></tr>
+      <tr><td>הצ</td><td>הצהרה</td><td>לא</td></tr>
+      <tr><td>בח</td><td>בחירה</td><td>לא</td></tr>
+      <tr><td>מבמ</td><td>מחלת בן משפחה</td><td>לא</td></tr>
+      <tr><td>הס</td><td>עפ"י הסכם</td><td>לא</td></tr>
+    </tbody>
+  </table>
+  <div class="note">עדכון טקסט ה"מידע חשוב" בתוך האפליקציה עצמה נעשה בקובץ <code>content/shift-info.he.html</code>,
+    בלי צורך בגרסה חדשה. חוברת זו היא מסמך נפרד להדרכה מודפסת/מפורטת.</div>
+</section>
+
+</main>
+<footer>COT - Calculate Over Time &copy; 2026 B Systems</footer>
+</body>
+</html>
