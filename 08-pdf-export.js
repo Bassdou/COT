@@ -1,4 +1,4 @@
-/* COT System Version: V202610312137 */
+/* COT System Version: V202610312313 */
 // קובץ: 08-pdf-export.js
 // ייצוא ישיר לקובץ PDF (jsPDF + autoTable) - לא תלוי בדפדפן/מדפסת של המשתמש, בניגוד להדפסה (Ctrl+P).
 // קורא את אותם תאים (data-val) שכבר בנה calculator.js, בדיוק כמו 06-excel-export.js - לא נוגע

@@ -1,8 +1,8 @@
-<!-- COT System Version: V202610312137 -->
+<!-- COT System Version: V202610312313 -->
 
 # COT - Calculate Over Time: full source + tests + deployment guide
 
-Current version: **V202610312137** (see `version.json`)
+Current version: **V202610312313** (see `version.json`)
 
 ## File layout
 
@@ -116,6 +116,19 @@ flagging this from December 15 of each year.
 **Next steps:** take the screenshots per the list and send them to me (skipping any that are hard
 to get is fine). I'll build the final polished manual from them and export it as a separate zip
 named `MANUAL`, versioned to match the app version at that moment.
+
+## Bug fix: maintenance screen was always visible, regardless of the Firestore flag
+
+The maintenance-overlay redesign a few versions back added `.maintenance-overlay { display: flex
+!important; ... }` to center it - but `!important` in a stylesheet rule always beats a plain inline
+style, and the JS that shows/hides this screen (`maintenanceMode === true` from `system/settings` in
+Firestore) sets `element.style.display = 'none'`/`'flex'` as a plain inline style. So the CSS
+silently overrode the JS and kept the screen visible no matter what the flag said. Fixed by dropping
+`display` from that rule entirely (keeping only the centering properties) - display stays purely
+JS-controlled, same as before the redesign. This class of bug (CSS fighting JS-controlled inline
+styles) can't be caught by the Node test suite at all, since it has no real CSS cascade - added a
+static-source regression test instead that specifically checks `.maintenance-overlay` never declares
+`display` in style.css.
 
 ## All 13 backlog items now complete
 

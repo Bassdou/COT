@@ -144,3 +144,10 @@ test('מתג התצוגה תמיד מציג הכל בהדפסה, בלי קשר �
   const printBlock = css.slice(css.indexOf('@media print'));
   assert.match(printBlock, /\.table-container\.simple-view \.pct-col[\s\S]*?display:\s*table-cell\s*!important/);
 });
+
+test('מסך התחזוקה (.maintenance-overlay) לא כופה display דרך CSS - ה-JS חייב לשלוט בהצגה/הסתרה שלו', () => {
+  const css = fs.readFileSync(path.join(root, 'style.css'), 'utf8');
+  const m = css.match(/\.maintenance-overlay\s*\{[^}]*\}/);
+  assert.ok(m, '.maintenance-overlay לא נמצא');
+  assert.ok(!/display\s*:/.test(m[0]), 'קביעת display כאן (בפרט עם !important) תדרוס את style.display שה-JS קובע לפי מצב maintenanceMode, ותשאיר את המסך גלוי תמיד');
+});

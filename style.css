@@ -1,4 +1,4 @@
-/* COT System Version: V202610312137 */
+/* COT System Version: V202610312313 */
 /* === קובץ עיצוב: style.css === */
 /* עיצוב חדש (ניווי + ענבר), מבוסס על ההצעה שאושרה ב-Design canvas. כל שמות המחלקות/המזהים
    שה-JS תלוי בהם (ראו 01-shift-codes.js / calculator.js / components.js וכו') נשארו בדיוק כפי
@@ -192,7 +192,10 @@ th.thick-border-left { border-left: 3px solid rgba(255,255,255,0.55) !important;
 
 /* מסך תחזוקה: ממורכז אמיתית על המסך (full-screen-overlay הכללי לא עושה את זה - משותף עם מסך הכניסה,
    שמתמרכז בעצמו דרך auth-container-wrapper). */
-.maintenance-overlay { display: flex !important; align-items: center; justify-content: center; }
+/* רק יישור - לא display. ה-display (flex/none) נשאר בשליטת ה-JS בלבד (style.display inline),
+   בדיוק כמו שהיה לפני; קודם הייתה כאן !important על display:flex שדרס את ה-'none' של ה-JS
+   וגרם למסך התחזוקה להיות גלוי תמיד, גם כש-maintenanceMode היה false. */
+.maintenance-overlay { align-items: center; justify-content: center; }
 .maintenance-icon { width: 64px; height: 64px; border-radius: 50%; background: var(--amber-tint); color: var(--amber); display: flex; align-items: center; justify-content: center; margin: 0 auto 18px; }
 .maintenance-icon svg { animation: maintenance-spin 3.5s linear infinite; }
 @keyframes maintenance-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
