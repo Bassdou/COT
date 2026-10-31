@@ -129,3 +129,18 @@ test('כפתורי הפעולה (טען/שמור/הכן/אפס גליון) בש�
   const css = fs.readFileSync(path.join(root, 'style.css'), 'utf8');
   assert.match(css, /\.action-grid\s*\{\s*display:\s*flex;/);
 });
+
+test('מתג תצוגה פשוטה/מלאה: 14 עמודות האחוזים מסומנות להסתרה (pct-col או val-<letter>-), בלי שום שינוי בחישוב עצמו', () => {
+  const css = fs.readFileSync(path.join(root, 'style.css'), 'utf8');
+  assert.match(css, /\.table-container\.simple-view \.pct-col/);
+  for (const letter of ['J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W']) {
+    assert.ok(css.includes('[id^="val-' + letter + '-"]'), 'עמודה ' + letter + ' לא מסומנת להסתרה במתג התצוגה הפשוטה');
+  }
+  assert.ok(!css.includes('[id^="val-I-"]') && !css.includes('[id^="val-I2-"]'), 'תקן/רגילות לא אמורים להיות מוסתרים - הם לא עמודות אחוזים');
+});
+
+test('מתג התצוגה תמיד מציג הכל בהדפסה, בלי קשר למצב המתג על המסך', () => {
+  const css = fs.readFileSync(path.join(root, 'style.css'), 'utf8');
+  const printBlock = css.slice(css.indexOf('@media print'));
+  assert.match(printBlock, /\.table-container\.simple-view \.pct-col[\s\S]*?display:\s*table-cell\s*!important/);
+});

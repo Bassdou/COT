@@ -1,4 +1,4 @@
-/* COT System Version: V202610310345 */
+/* COT System Version: V202610312137 */
 /* === קובץ עיצוב: style.css === */
 /* עיצוב חדש (ניווי + ענבר), מבוסס על ההצעה שאושרה ב-Design canvas. כל שמות המחלקות/המזהים
    שה-JS תלוי בהם (ראו 01-shift-codes.js / calculator.js / components.js וכו') נשארו בדיוק כפי
@@ -94,6 +94,23 @@ th.thick-border-left { border-left: 3px solid rgba(255,255,255,0.55) !important;
 .row-sat td { border-bottom: 2px solid var(--c-primary) !important; }
 
 .color-legend { display: flex; flex-wrap: wrap; justify-content: center; gap: 18px; margin: 12px 0 16px; font-size: 13px; font-weight: 600; color: var(--muted); }
+
+.view-toggle-row { display: flex; justify-content: center; margin-bottom: 10px; }
+.view-toggle-btn { display: inline-flex; align-items: center; gap: 7px; background: #fff; color: var(--c-primary); border: 1.5px solid var(--c-primary); border-radius: 20px; padding: 7px 16px; font-size: 13px; font-weight: 700; cursor: pointer; transition: 0.15s; }
+.view-toggle-btn[aria-pressed="true"] { background: var(--c-primary); color: #fff; }
+.view-toggle-btn:hover { box-shadow: 0 2px 8px rgba(var(--c-primary-rgb), 0.25); }
+
+/* תצוגה פשוטה: מסתירה את 14 עמודות האחוזים (כותרת+גוף+סיכום), אבל רק על המסך - בהדפסה תמיד מוצג הכל */
+.table-container.simple-view .pct-col,
+.table-container.simple-view [id^="val-J-"], .table-container.simple-view [id^="val-K-"],
+.table-container.simple-view [id^="val-L-"], .table-container.simple-view [id^="val-M-"],
+.table-container.simple-view [id^="val-N-"], .table-container.simple-view [id^="val-O-"],
+.table-container.simple-view [id^="val-P-"], .table-container.simple-view [id^="val-Q-"],
+.table-container.simple-view [id^="val-R-"], .table-container.simple-view [id^="val-S-"],
+.table-container.simple-view [id^="val-T-"], .table-container.simple-view [id^="val-U-"],
+.table-container.simple-view [id^="val-V-"], .table-container.simple-view [id^="val-W-"] {
+    display: none !important;
+}
 .legend-item { display: flex; align-items: center; gap: 7px; }
 .legend-swatch { width: 15px; height: 15px; border-radius: 4px; display: inline-block; border: 1px solid rgba(0,0,0,0.1); }
 .legend-absence { background-color: #7C3AED; }
@@ -116,13 +133,14 @@ th.thick-border-left { border-left: 3px solid rgba(255,255,255,0.55) !important;
 .kpi-item strong { font-size: 16.5px; font-weight: 800; }
 .kpi-item-highlight strong { font-size: 18px; }
 .dash-sub { font-size: 11px; color: var(--muted); margin-right: 2px; }
+.dash-sub-link { cursor: pointer; text-decoration: underline; text-decoration-style: dotted; }
+.dash-sub-link:hover, .dash-sub-link:focus-visible { color: var(--c-primary); }
 
 .balance-input-wrap { display: inline-flex; align-items: center; gap: 4px; }
 .bal-input { width: 68px; text-align: center; font-weight: 700; font-size: 14.5px; padding: 4px; border-radius: 6px; border: 1.5px solid var(--line); outline: none; transition: 0.2s; color: var(--navy-900);}
 .locked-input { background-color: #F7F9FC; color: var(--muted); border-color: var(--line); }
 .lock-btn { cursor: pointer; font-size: 14px; background: #FAFBFD; border: 1px solid var(--line); border-radius: 7px; width: 28px; height: 28px; padding: 0; transition: 0.2s; }
 .lock-btn:hover { background: #F0F4F9; }
-.tlush-card { background: var(--amber-tint); width: 180px; } .tlush-card .val { color: var(--amber); font-size: 22px; margin-top: 10px;}
 
 /* טבלת יתרות מסך (לא ההדפסה - זו נשארת כמו שהיא ב-.balances-table) */
 .balances-table-card { width: 100%; max-width: 820px; background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; }
@@ -147,6 +165,7 @@ th.thick-border-left { border-left: 3px solid rgba(255,255,255,0.55) !important;
 @keyframes modalopen { from {opacity: 0; transform: translateY(-20px);} to {opacity: 1; transform: translateY(0);} }
 .close-btn { color: #94A3B8; float: left; font-size: 26px; font-weight: bold; cursor: pointer; margin-top: -8px; margin-left: -4px; }
 .close-btn:hover { color: var(--danger); }
+.dialog-icon { width: 54px; height: 54px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 14px; }
 .modal-header { border-bottom: 2px solid var(--line); padding-bottom: 10px; margin-bottom: 15px; }
 .modal-header h2 { margin: 0; color: var(--navy-900); font-size: 21px; }
 .info-table { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
@@ -170,6 +189,14 @@ th.thick-border-left { border-left: 3px solid rgba(255,255,255,0.55) !important;
     padding: 40px 20px;
     box-sizing: border-box;
 }
+
+/* מסך תחזוקה: ממורכז אמיתית על המסך (full-screen-overlay הכללי לא עושה את זה - משותף עם מסך הכניסה,
+   שמתמרכז בעצמו דרך auth-container-wrapper). */
+.maintenance-overlay { display: flex !important; align-items: center; justify-content: center; }
+.maintenance-icon { width: 64px; height: 64px; border-radius: 50%; background: var(--amber-tint); color: var(--amber); display: flex; align-items: center; justify-content: center; margin: 0 auto 18px; }
+.maintenance-icon svg { animation: maintenance-spin 3.5s linear infinite; }
+@keyframes maintenance-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .maintenance-icon svg { animation: none; } }
 
 .auth-container-wrapper {
     margin: auto;
@@ -213,7 +240,6 @@ th.thick-border-left { border-left: 3px solid rgba(255,255,255,0.55) !important;
 .benefits-list { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 8px; }
 .benefits-list li { font-size: 11.5px; font-weight: 600; color: #fff; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2); border-radius: 20px; padding: 5px 12px; }
 .benefits-list li strong { font-weight: 600; }
-.brief-footer-text { display: none; }
 .btn-guide { color: #fff; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.25); font-size: 13px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 7px; padding: 9px 16px; border-radius: 10px; margin-top: 10px; transition: 0.2s; }
 .btn-guide:hover { background: rgba(255,255,255,0.2); }
 
@@ -302,7 +328,6 @@ th.thick-border-left { border-left: 3px solid rgba(255,255,255,0.55) !important;
     .dashboard { justify-content: stretch; gap: 10px; }
     .kpi-row { gap: 12px 16px; justify-content: flex-start; padding: 12px 16px; }
     .kpi-item { font-size: 13.5px; }
-    .balance-card { flex: 1 1 100%; width: auto; }
     .table-container { max-height: 55vh; }
 }
 
@@ -318,11 +343,26 @@ th.thick-border-left { border-left: 3px solid rgba(255,255,255,0.55) !important;
     .print-only-cell { display: table-cell !important; }
     .hide-print { display: none !important; }
 
+    /* תצוגה פשוטה היא רק למסך - בהדפסה תמיד מוצגות כל 25 העמודות, בלי קשר למצב המתג */
+    .table-container.simple-view .pct-col,
+    .table-container.simple-view [id^="val-J-"], .table-container.simple-view [id^="val-K-"],
+    .table-container.simple-view [id^="val-L-"], .table-container.simple-view [id^="val-M-"],
+    .table-container.simple-view [id^="val-N-"], .table-container.simple-view [id^="val-O-"],
+    .table-container.simple-view [id^="val-P-"], .table-container.simple-view [id^="val-Q-"],
+    .table-container.simple-view [id^="val-R-"], .table-container.simple-view [id^="val-S-"],
+    .table-container.simple-view [id^="val-T-"], .table-container.simple-view [id^="val-U-"],
+    .table-container.simple-view [id^="val-V-"], .table-container.simple-view [id^="val-W-"] {
+        display: table-cell !important;
+    }
+
     .table-container { box-shadow: none !important; max-height: none !important; overflow: visible !important; border: none !important; margin: 0 auto !important; padding: 0 !important; width: max-content !important; }
     #printHeader { text-align: center; margin-bottom: 2px; }
     #printHeader h1 { font-size: 12pt; margin: 0; padding-bottom: 2px; display: flex; justify-content: center; align-items: center; gap: 15px; }
     #printEmployeeNameDisplay { font-size: 10pt; font-weight: normal; color: #333; }
-    table { width: 100% !important; margin: 0 !important; border-collapse: collapse !important; table-layout: auto !important; border: 2px solid #000 !important; }
+    table { width: 100% !important; margin: 0 !important; border-collapse: collapse !important; table-layout: fixed !important; border: 2px solid #000 !important; }
+    /* table-layout:fixed מחייב כל עמודה להישאר בתוך רוחב העמוד - בלי זה, עמודת ה"תאור" (הארוכה ביותר)
+       יכולה לדחוף את כל הטבלה אל מעבר לדף. היא היחידה שמותר לה לגלוש לשורה שנייה בתוך התא עצמו. */
+    td[id^="val-desc-"] { white-space: normal !important; overflow-wrap: break-word !important; }
 
     thead { position: static !important; display: table-header-group !important; }
     tbody { display: table-row-group !important; }
@@ -349,7 +389,12 @@ th.thick-border-left { border-left: 3px solid rgba(255,255,255,0.55) !important;
     .empty-print { color: transparent !important; }
     #printDashboard { display: flex !important; justify-content: space-between; align-items: center; border: 2px solid #000; border-top: none; padding: 2px 4px; font-size: 8pt; background-color: transparent !important; width: 100% !important; box-sizing: border-box;}
 
-    .balances-table-wrapper { display: block !important; box-shadow: none !important; margin: 15px auto !important; padding: 0 !important; width: 70% !important; page-break-inside: avoid; border: none !important;}
-    .balances-table th { background-color: #eee !important; color: #000 !important; border: 1px solid #000 !important; font-size: 10pt !important;}
-    .balances-table td { border: 1px solid #000 !important; color: #000 !important; font-size: 10pt !important;}
+    /* עיצוב הדפסה חדש לטבלת "ריכוז יתרות" - עקבי עם הטבלה הראשית (אותה מסגרת שחורה 2px, אותו קו
+       עליון/תחתון), קומפקטי יותר כדי להבטיח שהכל יישאר בעמוד אחד, וכותרת בגוון כחול עדין במקום אפור. */
+    .balances-table-wrapper { display: block !important; box-shadow: none !important; margin: 6px auto 0 !important; padding: 0 !important; width: 72% !important; page-break-inside: avoid !important; page-break-before: avoid !important; border: none !important;}
+    .balances-table-wrapper h3 { font-size: 9pt !important; margin: 0 0 3px !important; text-align: center !important; }
+    .balances-table { border: 2px solid #000 !important; }
+    .balances-table th { background-color: #DCE7F7 !important; color: #000 !important; border: 1px solid #000 !important; font-size: 8.5pt !important; padding: 2px 4px !important; }
+    .balances-table td { border: 1px solid #000 !important; color: #000 !important; font-size: 8.5pt !important; padding: 2px 4px !important; }
+    .balances-table tr:nth-child(even) { background-color: transparent !important; }
 }

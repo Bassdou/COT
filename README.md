@@ -1,8 +1,8 @@
-<!-- COT System Version: V202610310345 -->
+<!-- COT System Version: V202610312137 -->
 
 # COT - Calculate Over Time: full source + tests + deployment guide
 
-Current version: **V202610310345** (see `version.json`)
+Current version: **V202610312137** (see `version.json`)
 
 ## File layout
 
@@ -116,6 +116,77 @@ flagging this from December 15 of each year.
 **Next steps:** take the screenshots per the list and send them to me (skipping any that are hard
 to get is fine). I'll build the final polished manual from them and export it as a separate zip
 named `MANUAL`, versioned to match the app version at that moment.
+
+## All 13 backlog items now complete
+
+Items 2, 3, 4, 5, and 7 - the remaining five from the list below - are now also done:
+
+- **Item 2** - `applyUpdate()` now saves a draft of the open sheet (name, rates, month, every typed
+  shift) to `sessionStorage` right before the forced refresh, only when something unsaved exists
+  (`window.__cotDirty`). After the reload, it's restored silently and automatically, then cleared
+  (one-time use) - the person sees their work still there, with a note to click "שמור גליון".
+- **Item 3** - before the main cloud write in `saveData()`, the app now re-reads the Firestore doc
+  and compares `monthlyBalances`/`carryOver` to what was loaded when the page opened. If someone
+  else (another tab/device) saved something different since then, it asks before overwriting.
+  Silent/background saves (e.g. on logout) skip this check so they're never blocked unexpectedly.
+- **Item 4** - a persistent toggle above the table switches between full (25 columns) and simple
+  (the 11 non-percentage columns only) view. CSS-only (`display:none` on the 14 percentage
+  columns, both header and body, via attribute selectors on their existing ids) - calculator.js
+  still computes every column exactly as before. Printing always shows all 25 columns regardless
+  of the toggle. Defaults to simple on phones (<700px), full on desktop, each time the sheet opens.
+- **Item 5** - a new "הורד PDF" button next to the Excel one, using jsPDF + jsPDF-AutoTable (loaded
+  from cdnjs, pinned versions) to build a real vector PDF table directly from the same `data-val`
+  cells the Excel export already reads - not a screenshot, and not dependent on the browser's print
+  dialog/printer settings. Same filename convention as the Excel export.
+- **Item 7** - new rule: of the 5 presence+absence entries already allowed per calendar week, at
+  most 4 may be presence (any entry with a start+end time, whether from a shift code or typed
+  directly) - at least one must be an absence code. Enforced the same way as the existing
+  weekend-absence block: the offending entry is cleared immediately with an alert. מילואים on a
+  weekday counts as the absence, not as presence; on Fri/Sat it's excluded entirely, matching its
+  existing behavior. Carried-over shifts count toward the cap too. This change updated one of the
+  four golden month-summary fixtures (`oct-2026-mixed`), which had a week with 5 presence days and
+  no absence - exactly the case the new rule is meant to catch; the golden baseline was
+  deliberately regenerated to reflect it, the same way the erev-chag fix was handled.
+
+## This round: 6 of the 11 backlog items (full accounting below)
+
+Done and shipped in this version:
+- **Item 1** - Enter now submits the "carried-over shifts" modal; the "כולל X נגררות" caption is
+  now a clickable link that reopens the same modal, pre-filled, for a correction later.
+- **Item 6** - customDialog (every alert/confirm popup) redesigned to the current palette, with a
+  type-based icon (green check / red X / amber question-mark / blue info) and a personalized title
+  ("לתשומת לבך, [שם עובד]", falling back to "לתשומת לבך" with no name).
+- **Item 9** - "הודעות מערכת" renamed to "עדכוני מערכת" and moved out of index.html into
+  `content/system-updates.he.html` - editable without a new version, like the other content files.
+  Each entry carries a posting date and an expiry date and is filtered/sorted client-side
+  (pinned first, then newest-first); the old 3 messages were reviewed and one (the understated
+  original "UI redesign" note) was rewritten to actually reflect the real scope of the redesign,
+  and a new entry for the erev-chag payroll fix was added. Claude will keep maintaining this file
+  going forward as a standing part of every version.
+- **Item 10** - maintenance overlay (done last round, included again here).
+- **Item 11** - the "update available" toast redesigned to the current palette/icon.
+- **Item 12** - the "מידע חשוב" and "קודי משמרות" modal headers redesigned (icon + current palette;
+  wording unchanged).
+
+**Not included in this version** (still only specified, not coded): item 2 (save a draft before a
+forced version refresh), item 3 (warn before an overwriting save), item 4 (simple/full table
+toggle), item 5 (direct PDF export), item 7 (4-presence-shifts-per-week cap - the remaining
+calculation-engine change). These are substantial pieces of work each; flagged honestly rather than
+rushed.
+
+## Payroll-accuracy fix: erev-chag overtime threshold (validated against real payroll figures)
+
+On a non-Friday, non-night erev-chag/cholhamoed day shift, the app used to set the 100%→125%
+overtime threshold equal to that day's *shortened* standard hours (e.g. 4.5h on ערב יום כיפור) -
+so the first hour past the shortened standard jumped straight to 125%, with no 100% bracket at
+all. Validated against two real payroll-department figures (20/9/2026 ערב יום כיפור and 11/9/2026
+ערב ראש השנה, the latter on a Friday and already correct via a separate formula) that the
+100%→125%/125%→150% thresholds should stay at the normal full-day 8h/10h mark - the shortened
+standard hours only decide how much of the early hours count as תקן (column I) vs 100% (column J),
+not where the overtime brackets begin. Both examples match exactly post-fix. Friday erev-chag,
+night-shift erev-chag, and every non-erev-chag day are untouched (no validated data existed for
+those, so the fix was scoped narrowly on purpose). 3 new regression tests lock this in, and the
+golden snapshot was deliberately regenerated to reflect the corrected values as the new baseline.
 
 ## Top-panel polish (second round)
 

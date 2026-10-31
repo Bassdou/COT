@@ -1,4 +1,4 @@
-<!-- COT System Version: V202610310345 -->
+<!-- COT System Version: V202610312137 -->
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
@@ -41,26 +41,8 @@
                 </div>
 
                 <div class="updates-section">
-                    <h3 class="section-title">הודעות מערכת</h3>
-                    <div class="updates-container">
-                        <div class="update-card alert-highlight">
-                            <span class="alert-badge">חשוב</span>
-                            <span class="update-date">תאריך יעד: 15/11/2026</span>
-                            <div class="update-title">החלת תקני אבטחה חדשים</div>
-                            <p class="update-text">החל מ-15.11.2026 המערכת תאכוף החלפת סיסמאות חזקות ואימות מייל <strong>למשתמשים קיימים</strong>.</p>
-                        </div>
-                        <div class="update-card today-highlight">
-                            <span class="today-badge">חדש</span>
-                            <span class="update-date">27 באוקטובר, 2026</span>
-                            <div class="update-title">עדכון חישוב שעות: מעבר שעון</div>
-                            <p class="update-text">עקב המעבר לשעון קיץ/חורף, משמרת הלילה של שבת הוחלפה ותזכה בחישוב של שעה נוספת אוטומטית.</p>
-                        </div>
-                        <div class="update-card">
-                            <span class="update-date">26 באוקטובר, 2026</span>
-                            <div class="update-title">שדרוג ממשק המשתמש</div>
-                            <p class="update-text">המסך הראשי עבר מתיחת פנים לעיצוב מודרני מפוצל, לשיפור חווית השימוש מהנייד ומהמחשב.</p>
-                        </div>
-                    </div>
+                    <h3 class="section-title">עדכוני מערכת</h3>
+                    <div class="updates-container" id="updatesContainer">טוען...</div>
                 </div>
             </div>
 
@@ -209,7 +191,7 @@
 </div>
 
     <div class="kpi-row" id="kpiRow" style="display:none;">
-        <span class="kpi-item"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>סה"כ משמרות: <strong id="dashShifts">0</strong><span id="dashCarryOver" class="dash-sub" title="משמרות שנגררו מהחודש הקודם (מגובה בענן)"></span></span>
+        <span class="kpi-item"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>סה"כ משמרות: <strong id="dashShifts">0</strong><span id="dashCarryOver" class="dash-sub dash-sub-link" role="button" tabindex="0" title="לחץ לתיקון מספר המשמרות הנגררות" onclick="openCarryModal(window.carryOverData[getSelectedMonthYear().y+'-'+pad2(getSelectedMonthYear().m)]||0)" onkeydown="if(event.key==='Enter'||event.key===' '){this.click();}"></span></span>
         <span class="kpi-item"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>שעות תקן: <strong id="dashStandard">0.00</strong></span>
         <span class="kpi-item"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M13 3L4 14h7l-1 7 9-11h-7l1-7z"/></svg>שעות בפועל: <strong id="dashGross">0.00</strong></span>
         <span class="kpi-item kpi-item-highlight" style="color:#B06F1F;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M16 12h2M3 10h18"/></svg>אש"ל: <strong id="dashEshel">0.00 ₪</strong></span>
@@ -230,6 +212,12 @@
         <span class="legend-item"><span class="legend-swatch legend-holiday"></span>חג / ערב חג</span>
         <span class="legend-item"><span class="legend-swatch legend-weekend"></span>שישי ושבת</span>
     </div>
+    <div class="view-toggle-row hide-print">
+        <button type="button" id="viewToggleBtn" class="view-toggle-btn" onclick="toggleTableView()" aria-pressed="false">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M9 10v10"/></svg>
+            <span id="viewToggleLabel">תצוגה מלאה</span>
+        </button>
+    </div>
     <table id="timesheet">
         <thead>
             <tr>
@@ -242,17 +230,17 @@
                 <th rowspan="2" class="col-sep calc-th">חופש<br>שבת</th>
                 <th rowspan="2" class="col-sep calc-th">תקן</th>
                 <th rowspan="2" class="col-sep calc-th thick-border-left">רגילות</th>
-                <th colspan="3" class="col-sep thick-border-left">ש"נ</th>
-                <th colspan="2" class="col-sep thick-border-left">שבת</th>
-                <th colspan="4" class="col-sep thick-border-left">ש"נ</th>
-                <th colspan="5" class="col-sep thick-border-left">ת.מ.</th>
+                <th colspan="3" class="col-sep thick-border-left pct-col">ש"נ</th>
+                <th colspan="2" class="col-sep thick-border-left pct-col">שבת</th>
+                <th colspan="4" class="col-sep thick-border-left pct-col">ש"נ</th>
+                <th colspan="5" class="col-sep thick-border-left pct-col">ת.מ.</th>
                 <th rowspan="2" class="col-sep">ערך</th>
             </tr>
             <tr>
-                <th class="calc-th">100%</th><th class="calc-th">125%</th><th class="col-sep calc-th thick-border-left">150%</th>
-                <th class="calc-th">175%</th><th class="col-sep calc-th thick-border-left">200%</th>
-                <th class="calc-th">180%</th><th class="calc-th">187.5%</th><th class="calc-th">225%</th><th class="col-sep calc-th thick-border-left">250%</th>
-                <th class="calc-th">20%</th><th class="calc-th">50%</th><th class="calc-th">75%</th><th class="calc-th">87.5%</th><th class="col-sep calc-th thick-border-left">100%</th>
+                <th class="calc-th pct-col">100%</th><th class="calc-th pct-col">125%</th><th class="col-sep calc-th thick-border-left pct-col">150%</th>
+                <th class="calc-th pct-col">175%</th><th class="col-sep calc-th thick-border-left pct-col">200%</th>
+                <th class="calc-th pct-col">180%</th><th class="calc-th pct-col">187.5%</th><th class="calc-th pct-col">225%</th><th class="col-sep calc-th thick-border-left pct-col">250%</th>
+                <th class="calc-th pct-col">20%</th><th class="calc-th pct-col">50%</th><th class="calc-th pct-col">75%</th><th class="calc-th pct-col">87.5%</th><th class="col-sep calc-th thick-border-left pct-col">100%</th>
             </tr>
         </thead>
         <tbody id="tbody"></tbody>
@@ -260,19 +248,19 @@
             <tr class="tfoot-summary hours-row">
                 <td colspan="6" class="col-sep hide-print tfoot-title">שורת סיכום:</td><td colspan="5" class="col-sep print-only-cell tfoot-title">שורת סיכום:</td>
                 <td id="sum-hours-totalShift"></td><td id="sum-hours-shabbat" class="col-sep"></td><td id="sum-hours-I" class="col-sep"></td><td id="sum-hours-I2" class="col-sep thick-border-left"></td>
-                <td id="sum-hours-J"></td><td id="sum-hours-K"></td><td id="sum-hours-L" class="col-sep thick-border-left"></td>
-                <td id="sum-hours-M"></td><td id="sum-hours-N" class="col-sep thick-border-left"></td><td id="sum-hours-O"></td><td id="sum-hours-P"></td>
-                <td id="sum-hours-Q"></td><td id="sum-hours-R" class="col-sep thick-border-left"></td>
-                <td id="sum-hours-S"></td><td id="sum-hours-T"></td><td id="sum-hours-U"></td><td id="sum-hours-V"></td><td id="sum-hours-W" class="col-sep thick-border-left"></td>
+                <td id="sum-hours-J" class="pct-col"></td><td id="sum-hours-K" class="pct-col"></td><td id="sum-hours-L" class="col-sep thick-border-left pct-col"></td>
+                <td id="sum-hours-M" class="pct-col"></td><td id="sum-hours-N" class="col-sep thick-border-left pct-col"></td><td id="sum-hours-O" class="pct-col"></td><td id="sum-hours-P" class="pct-col"></td>
+                <td id="sum-hours-Q" class="pct-col"></td><td id="sum-hours-R" class="col-sep thick-border-left pct-col"></td>
+                <td id="sum-hours-S" class="pct-col"></td><td id="sum-hours-T" class="pct-col"></td><td id="sum-hours-U" class="pct-col"></td><td id="sum-hours-V" class="pct-col"></td><td id="sum-hours-W" class="col-sep thick-border-left pct-col"></td>
                 <td id="sum-hours-total" class="col-sep"></td>
             </tr>
             <tr class="tfoot-summary cost-row">
                 <td colspan="6" class="col-sep hide-print tfoot-title">ערך עמודה:</td><td colspan="5" class="col-sep print-only-cell tfoot-title">ערך עמודה:</td>
                 <td id="sum-cost-totalShift"></td><td id="sum-cost-shabbat" class="col-sep"></td><td id="sum-cost-I" class="col-sep"></td><td id="sum-cost-I2" class="col-sep thick-border-left"></td>
-                <td id="sum-cost-J"></td><td id="sum-cost-K"></td><td id="sum-cost-L" class="col-sep thick-border-left"></td>
-                <td id="sum-cost-M"></td><td id="sum-cost-N" class="col-sep thick-border-left"></td><td id="sum-cost-O"></td><td id="sum-cost-P"></td>
-                <td id="sum-cost-Q"></td><td id="sum-cost-R" class="col-sep thick-border-left"></td>
-                <td id="sum-cost-S"></td><td id="sum-cost-T"></td><td id="sum-cost-U"></td><td id="sum-cost-V"></td><td id="sum-cost-W" class="col-sep thick-border-left"></td>
+                <td id="sum-cost-J" class="pct-col"></td><td id="sum-cost-K" class="pct-col"></td><td id="sum-cost-L" class="col-sep thick-border-left pct-col"></td>
+                <td id="sum-cost-M" class="pct-col"></td><td id="sum-cost-N" class="col-sep thick-border-left pct-col"></td><td id="sum-cost-O" class="pct-col"></td><td id="sum-cost-P" class="pct-col"></td>
+                <td id="sum-cost-Q" class="pct-col"></td><td id="sum-cost-R" class="col-sep thick-border-left pct-col"></td>
+                <td id="sum-cost-S" class="pct-col"></td><td id="sum-cost-T" class="pct-col"></td><td id="sum-cost-U" class="pct-col"></td><td id="sum-cost-V" class="pct-col"></td><td id="sum-cost-W" class="col-sep thick-border-left pct-col"></td>
                 <td id="sum-cost-total" class="col-sep">0.00</td>
             </tr>
         </tfoot>
@@ -360,6 +348,7 @@
     <button class="btn-close-month btn-3d" id="closeMonthBtn" onclick="closeMonth()" style="display:none;">סגור חודש</button>
     <button class="btn-print btn-3d" id="printBtn" onclick="window.print()" style="display:none;">הדפס גליון / PDF</button>
     <button class="btn-3d hide-print" id="exportExcelBtn" onclick="document.getElementById('excelExportModal').style.display='block'" style="display:none; background-color: #15803D; color: white; padding: 15px 30px; border-radius: 10px; font-size: 16px; font-weight: 800; border: none; cursor: pointer; box-shadow: 0 3px 10px rgba(21,128,61,0.35);">ייצא לאקסל</button>
+    <button class="btn-3d hide-print" id="exportPdfBtn" onclick="exportToPDF()" style="display:none; background-color: #B3261E; color: white; padding: 15px 30px; border-radius: 10px; font-size: 16px; font-weight: 800; border: none; cursor: pointer; box-shadow: 0 3px 10px rgba(179,38,30,0.35);">הורד PDF</button>
 </div>
 <input type="file" id="excelFileLoader" accept=".xlsx" style="display: none;" onchange="processExcelExport(event)">
 
@@ -368,6 +357,9 @@
 <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-firestore-compat.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+<script>if (window.jspdf && window.jspdf.jsPDF && !window.jsPDF) { window.jsPDF = window.jspdf.jsPDF; }</script>
 <!-- קבצי COT: הסדר חשוב. calculator.js (מנוע החישוב) הוא הקובץ היחיד שיש לערפל לפני העלאה. שאר הקבצים נשארים גלויים. -->
 <script src="components.js"></script>
 <script src="content-loader.js"></script>
@@ -380,5 +372,6 @@
 <script src="05-session-data.js"></script>
 <script src="06-excel-export.js"></script>
 <script src="07-version-manager.js"></script>
+<script src="08-pdf-export.js"></script>
 </body>
 </html>

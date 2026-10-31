@@ -119,6 +119,22 @@ test('openPasswordUpdatePrompt פותח מרצון את מסך עדכון הסי
   assert.equal(app.doc.getElementById('forcePasswordScreen').style.display, 'none');
 });
 
+test('openCarryModal: ניתן לפתוח מחדש את חלון המשמרות הנגררות לתיקון, עם ערך קודם', () => {
+  const app = loadApp();
+  app.ctx.carryOverData['2026-10'] = 2;
+  setupMonth(app, { year: 2026, month: 10, rate: 50 });
+  app.ctx.openCarryModal(3);
+  assert.equal(app.doc.getElementById('manualCarryInput').value, '3');
+  assert.equal(app.doc.getElementById('firstMonthCarryModal').style.display, 'block');
+});
+
+test('שדה manualCarryInput מוגדר לשמור בלחיצת Enter (לא רק בלחיצת כפתור)', () => {
+  const html = fs.readFileSync(path.join(__dirname, '..', 'components.js'), 'utf8');
+  const m = html.match(/<input type="number" id="manualCarryInput"[^>]*>/);
+  assert.ok(m, 'שדה manualCarryInput לא נמצא');
+  assert.match(m[0], /onkeydown="if\(event\.key==='Enter'\)\{event\.preventDefault\(\);saveFirstMonthCarry\(\);\}"/);
+});
+
 test('מצב עקיפה (secretBypass): נכנס עם שם עובד "בדיקות דוח" לאחר קוד נכון', async () => {
   const app = loadApp();
   const now = new Date();
@@ -129,4 +145,47 @@ test('מצב עקיפה (secretBypass): נכנס עם שם עובד "בדיקו�
   assert.equal(app.ctx.isBypassed, true);
   assert.equal(app.ctx.isTesterMode, true);
   assert.equal(app.doc.getElementById('employeeName').value, 'בדיקות דוח');
+});
+
+test('customDialog: כותרת אישית עם שם העובד, ללא שם נופל ל"לתשומת לבך"', () => {
+  const app = loadApp();
+  app.doc.getElementById('employeeName').value = 'בסאם';
+  app.ctx.customDialog('alert', 'הגליון נשמר בהצלחה');
+  assert.equal(app.doc.getElementById('customDialogTitle').innerText, 'לתשומת לבך, בסאם');
+  app.doc.getElementById('employeeName').value = '';
+  app.ctx.customDialog('alert', 'משהו');
+  assert.equal(app.doc.getElementById('customDialogTitle').innerText, 'לתשומת לבך');
+});
+
+test('customDialog: אייקון ירוק להצלחה, אדום לשגיאה, ענבר לאישור/שאלה', () => {
+  const app = loadApp();
+  app.ctx.customDialog('alert', 'הגליון נשמר בהצלחה');
+  assert.equal(app.doc.getElementById('customDialogIcon').style.background, '#F0FDF4');
+  app.ctx.customDialog('alert', 'אירעה שגיאה בטעינה');
+  assert.equal(app.doc.getElementById('customDialogIcon').style.background, '#FDF2F2');
+  app.ctx.customDialog('confirm', 'לאפס את הגליון?');
+  assert.equal(app.doc.getElementById('customDialogIcon').style.background, '#F3E8DA');
+});
+
+test('toggleTableView מחליף בין תצוגה מלאה לפשוטה ועדכון התווית/aria-pressed', () => {
+  const app = loadApp();
+  const tc = app.doc.getElementById('tableContainer');
+  tc.classList.remove('simple-view');
+  app.ctx.toggleTableView();
+  assert.equal(tc.classList.contains('simple-view'), true);
+  assert.equal(app.doc.getElementById('viewToggleBtn').getAttribute('aria-pressed'), 'true');
+  assert.equal(app.doc.getElementById('viewToggleLabel').innerText, 'תצוגה מלאה');
+  app.ctx.toggleTableView();
+  assert.equal(tc.classList.contains('simple-view'), false);
+  assert.equal(app.doc.getElementById('viewToggleLabel').innerText, 'תצוגה פשוטה');
+});
+
+test('applyDefaultTableView: רוחב מסך צר (<700) נכנס לתצוגה פשוטה כברירת מחדל', () => {
+  const app = loadApp();
+  app.ctx.innerWidth = 480;
+  app.ctx.applyDefaultTableView();
+  assert.equal(app.doc.getElementById('tableContainer').classList.contains('simple-view'), true);
+  app.ctx.innerWidth = 1440;
+  app.ctx.applyDefaultTableView();
+  assert.equal(app.doc.getElementById('tableContainer').classList.contains('simple-view'), false);
 });

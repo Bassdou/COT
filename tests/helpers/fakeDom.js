@@ -16,6 +16,13 @@ class FakeClassList {
   add(...c) { const s = this._set(); c.forEach((x) => s.add(x)); this._save(s); }
   remove(...c) { const s = this._set(); c.forEach((x) => s.delete(x)); this._save(s); }
   contains(c) { return this._set().has(c); }
+  toggle(c, force) {
+    const s = this._set();
+    const shouldAdd = force === undefined ? !s.has(c) : !!force;
+    if (shouldAdd) s.add(c); else s.delete(c);
+    this._save(s);
+    return shouldAdd;
+  }
 }
 
 class FakeEl {

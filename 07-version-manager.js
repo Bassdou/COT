@@ -1,4 +1,4 @@
-/* COT System Version: V202610310345 */
+/* COT System Version: V202610312137 */
 // קובץ: 07-version-manager.js
 // בדיקת גרסה מול version.json ומול הענן, הצגת התראת "גרסה חדשה", ועדכון אוטומטי של גרסת הענן כשהמנהל מחובר.
 
@@ -64,6 +64,8 @@ function showUpdateToast(newVersion) {
 }
 
 window.applyUpdate = function() {
+    // שומרים טיוטה של מה שהוקלד (אם יש) לפני הרענון הכפוי, כדי לשחזר אותה אוטומטית אחרי הטעינה מחדש
+    if (window.saveDraftBeforeRefresh) window.saveDraftBeforeRefresh();
     // רענון כפוי שעוקף את המטמון של הדפדפן כדי לשאוב את הקבצים החדשים
     window.location.href = window.location.pathname + '?v=' + (window.newCloudVersion || new Date().getTime());
 };

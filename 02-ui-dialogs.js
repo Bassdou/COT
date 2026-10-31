@@ -1,8 +1,23 @@
-/* COT System Version: V202610310345 */
+/* COT System Version: V202610312137 */
 // קובץ: 02-ui-dialogs.js
 // דיאלוגים מותאמים אישית, ניווט מקלדת בטבלה, חלונות מידע, ודגל "הזנות שלא נשמרו".
 
-window.customDialog = function(type, msg, title = "COT says") {
+// אייקוני SVG לפי סוג ההודעה (ולא לפי ניחוש מהטקסט - שומר את זה יציב גם לכל הודעה עתידית)
+var DIALOG_ICONS = {
+    success: ['#F0FDF4', '#15803D', '<path d="M20 6L9 17l-5-5"/>'],
+    error:   ['#FDF2F2', '#B3261E', '<path d="M18 6L6 18M6 6l12 12"/>'],
+    confirm: ['#F3E8DA', '#B06F1F', '<path d="M9.1 9a3 3 0 015.8 1c0 2-3 2-3 4"/><path d="M12 17h.01"/>'],
+    info:    ['#E3ECF8', '#1D4E89', '<circle cx="12" cy="12" r="9"/><path d="M12 16v-5M12 8h.01"/>']
+};
+function renderDialogIcon(kind) {
+    var el = document.getElementById('customDialogIcon');
+    if (!el) return;
+    var def = DIALOG_ICONS[kind] || DIALOG_ICONS.info;
+    el.innerHTML = '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="' + def[1] + '" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + def[2] + '</svg>';
+    el.style.background = def[0]; el.style.color = def[1];
+}
+
+window.customDialog = function(type, msg, title = null) {
     return new Promise((resolve) => {
         window.isDialogOpen = true; 
         let modal = document.getElementById('customDialogModal');
@@ -11,8 +26,24 @@ window.customDialog = function(type, msg, title = "COT says") {
         let inputEl = document.getElementById('customDialogInput');
         let okBtn = document.getElementById('customDialogOkBtn');
         let cancelBtn = document.getElementById('customDialogCancelBtn');
-        
+
+        // כותרת אישית: "לתשומת לבך, [שם העובד]" אם יש שם מוזן, אחרת "לתשומת לבך" בלבד
+        if (title === null) {
+            var empName = document.getElementById('employeeName')?.value?.trim();
+            title = empName ? ("לתשומת לבך, " + empName) : "לתשומת לבך";
+        }
         titleEl.innerText = title;
+
+        // בחירת אייקון: confirm/prompt -> סימן שאלה; alert -> ירוק אם נראית הודעת הצלחה, אדום אם נראית
+        // שגיאה, כחול ניטרלי אחרת. זו רק בחירה ויזואלית - לא משנה את תוכן ההודעה עצמה.
+        if (type === 'confirm' || type === 'prompt') renderDialogIcon('confirm');
+        else {
+            var low = String(msg).replace(/<[^>]*>/g, '');
+            if (/(בהצלחה|עודכנ|נשמר|תקין)/.test(low)) renderDialogIcon('success');
+            else if (/(שגיאה|נכשל|לא ניתן|חרג)/.test(low)) renderDialogIcon('error');
+            else renderDialogIcon('info');
+        }
+
         msgEl.innerHTML = msg;
         inputEl.value = '';
         
@@ -59,6 +90,29 @@ window.customDialog = function(type, msg, title = "COT says") {
 window.customAlert = (msg) => customDialog('alert', msg);
 window.customConfirm = (msg) => customDialog('confirm', msg);
 window.customPrompt = (msg) => customDialog('prompt', msg);
+
+// מתג תצוגה פשוטה/מלאה בטבלה: מסתיר/מציג את 14 עמודות האחוזים (מתג קבוע, לא נזכר אוטומטית בין
+// כניסות - בכל טעינה חוזרים לברירת המחדל: פשוט בטלפון, מלא בדסקטופ). לא משנה שום חישוב - רק display.
+window.toggleTableView = function() {
+    var tc = document.getElementById('tableContainer');
+    var btn = document.getElementById('viewToggleBtn');
+    var label = document.getElementById('viewToggleLabel');
+    if (!tc || !btn) return;
+    var isSimple = tc.classList.toggle('simple-view');
+    btn.setAttribute('aria-pressed', isSimple ? 'true' : 'false');
+    if (label) label.innerText = isSimple ? 'תצוגה מלאה' : 'תצוגה פשוטה';
+};
+
+window.applyDefaultTableView = function() {
+    var tc = document.getElementById('tableContainer');
+    var btn = document.getElementById('viewToggleBtn');
+    var label = document.getElementById('viewToggleLabel');
+    if (!tc || !btn) return;
+    var compact = window.innerWidth < 700;
+    tc.classList.toggle('simple-view', compact);
+    btn.setAttribute('aria-pressed', compact ? 'true' : 'false');
+    if (label) label.innerText = compact ? 'תצוגה מלאה' : 'תצוגה פשוטה';
+};
 
 window.switchTab = function(tabName) {
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));

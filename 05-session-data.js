@@ -1,4 +1,4 @@
-/* COT System Version: V202610310345 */
+/* COT System Version: V202610312137 */
 // קובץ: 05-session-data.js
 // שמירה/טעינה מהענן ומקובץ, סגירת חודש, איפוס גליון (clearData), ופאנל היתרות העליון.
 
@@ -132,6 +132,64 @@ window.handleFileLoad = function(event) {
     reader.readAsText(file);
 };
 
+// --- שמירת טיוטה לפני רענון כפוי (עדכון גרסה), ושחזורה אוטומטית אחרי הטעינה מחדש ---
+// זה חוסך רק את מה שהוקלד בגיליון עצמו (לא נשמר בענן עד "שמור גליון") - שם, תעריפים, חודש ומשמרות.
+
+window.captureDraftSnapshot = function() {
+    var tc = document.getElementById('tableContainer');
+    if (!tc || tc.style.display === 'none') return null; // אין גליון פתוח - אין מה לשמור
+    var ym = getSelectedMonthYear();
+    var shiftsArr = [];
+    for (var i = 1; i <= 31; i++) {
+        var tr = document.querySelector('#tbody tr:nth-child(' + i + ')'); if (!tr) continue;
+        var sType = tr.querySelector('.shift-type-input'), tInps = tr.querySelectorAll('.time-input');
+        if (sType && tInps.length >= 2) shiftsArr.push({ shiftType: sType.value, start: tInps[0].value, end: tInps[1].value });
+    }
+    return {
+        year: ym.y, month: ym.m,
+        employeeName: document.getElementById('employeeName')?.value || '',
+        hourlyRate: document.getElementById('hourlyRate')?.value || '',
+        eshelRate: document.getElementById('eshelRate')?.value || '',
+        shifts: shiftsArr
+    };
+};
+
+window.saveDraftBeforeRefresh = function() {
+    if (!window.__cotDirty) return; // שום דבר לא הוקלד שלא נשמר - אין צורך בטיוטה
+    var snap = window.captureDraftSnapshot();
+    if (!snap) return;
+    try { sessionStorage.setItem('cotDraftSnapshot', JSON.stringify(snap)); } catch (e) { console.error("Draft save failed:", e); }
+};
+
+window.restoreDraftSnapshot = function() {
+    var raw;
+    try { raw = sessionStorage.getItem('cotDraftSnapshot'); } catch (e) { return; }
+    if (!raw) return;
+    try { sessionStorage.removeItem('cotDraftSnapshot'); } catch (e) {}
+    var data;
+    try { data = JSON.parse(raw); } catch (e) { return; }
+    if (!data || !Array.isArray(data.shifts)) return;
+
+    if (data.employeeName) { let en = document.getElementById('employeeName'); if (en) en.value = data.employeeName; }
+    if (data.hourlyRate) { let h = document.getElementById('hourlyRate'); if (h) h.value = data.hourlyRate; }
+    if (data.eshelRate) { let e = document.getElementById('eshelRate'); if (e) e.value = data.eshelRate; }
+    if (data.year && data.month) { let sel = document.getElementById('monthYearSelect'); if (sel) sel.value = data.year + "-" + pad2(data.month); }
+
+    generateTable();
+
+    var rows = document.getElementById('tbody').querySelectorAll('tr');
+    window.runTotalsBatch(function() {
+        for (var i = 0; i < rows.length && i < data.shifts.length; i++) {
+            if (!rows[i]) continue;
+            var sInp = rows[i].querySelector('.shift-type-input'), tInps = rows[i].querySelectorAll('.time-input');
+            if (sInp) sInp.value = data.shifts[i].shiftType || '';
+            if (tInps.length >= 2) { tInps[0].value = data.shifts[i].start || ''; tInps[1].value = data.shifts[i].end || ''; calculateRow(tInps[0]); }
+        }
+    });
+    window.__cotDirty = true; // הטיוטה ששוחזרה עדיין לא נשמרה בפועל - נשאיר את אזהרת היציאה פעילה
+    customAlert("המערכת התעדכנה לגרסה חדשה. שחזרנו את ההזנות שהקלדת לפני הרענון - מומלץ ללחוץ \"שמור גליון\" כדי לשמור אותן.");
+};
+
 window.saveData = async function(silent = false) {
     var empNameEl = document.getElementById('employeeName');
     var empName = empNameEl ? empNameEl.value.trim() : "";
@@ -168,11 +226,27 @@ window.saveData = async function(silent = false) {
     var CLOUD_FAIL_MSG = "הקובץ נשמר, אך השמירה בענן נכשלה (בעיית תקשורת). בדוק חיבור לרשת ולחץ שוב על \"שמור גליון\".";
     var user = firebase.auth().currentUser;
     if (user && !window.isBypassed) {
+        // התראה על שמירה דורסת: בודקים אם מישהו אחר (טאב/מכשיר נוסף) שמר לענן מאז שהעמוד הזה נטען,
+        // לפני שדורסים את זה בשקט. לא רלוונטי לשמירה שקטה (silent) כדי לא להפריע בזמן יציאה אוטומטית.
+        if (!silent && window.__lastKnownRemoteState) {
+            try {
+                var freshDoc = await db.collection("users").doc(user.uid).get();
+                if (freshDoc.exists) {
+                    var fd = freshDoc.data();
+                    var freshState = JSON.stringify({ monthlyBalances: fd.monthlyBalances || {}, carryOver: fd.carryOver || {} });
+                    if (freshState !== window.__lastKnownRemoteState) {
+                        var proceed = await customConfirm("שינויים נוספים נשמרו לענן מאז שטענת את המסך הזה (כנראה ממכשיר או טאב אחר).<br>שמירה כעת <b>תדרוס</b> אותם. להמשיך בכל זאת?");
+                        if (!proceed) return;
+                    }
+                }
+            } catch (err) { console.error("Collision check failed (continuing with save):", err); }
+        }
         try {
             await Promise.all([
                 user.updateProfile({ displayName: empName }),
                 db.collection("users").doc(user.uid).set({employeeName: data.employeeName, hourlyRate: data.hourlyRate, eshelRate: data.eshelRate, carryOver: data.carryOver}, { merge: true })
             ]);
+            window.__lastKnownRemoteState = JSON.stringify({ monthlyBalances: window.monthlyBalances, carryOver: window.carryOverData });
         } catch (err) { console.error("Cloud save failed:", err); cloudFailed = true; }
         if (isUnlocked && !silent) {
             let ans = await customConfirm("שמנו לב ששינית את יתרות הפתיחה באופן ידני.<br>האם לעדכן יתרות אלו <b>גם בענן לשימוש קבוע</b>?<br><span style='font-size:12px;'>(לחיצה על 'ביטול' תשמור רק לקובץ המקומי)</span>");
@@ -278,7 +352,7 @@ window.clearData = async function(mode) {
                 if (el) { el.value = '0.00'; el.readOnly = true; el.classList.add('locked-input'); if (el.nextElementSibling) el.nextElementSibling.innerText = '🔒'; }
             });
             var tb = document.getElementById('tbody'); if (tb) tb.innerHTML = '';
-            ['tableContainer','summaryPanel','kpiRow','printBtn','exportExcelBtn','closeMonthBtn','weeklyWarning','cloudBalancesPanel','securityBanner'].forEach(function(id) {
+            ['tableContainer','summaryPanel','kpiRow','printBtn','exportExcelBtn','exportPdfBtn','closeMonthBtn','weeklyWarning','cloudBalancesPanel','securityBanner'].forEach(function(id) {
                 var el = document.getElementById(id); if (el) el.style.display = 'none';
             });
             updateTitles(); updateGrandTotal();
@@ -293,6 +367,21 @@ window.clearData = async function(mode) {
         generateTable();
         window.__cotDirty = false;
     } catch (e) { console.error("clearData failed:", e); }
+};
+
+// פותח את חלון "משמרות מסוף חודש שעבר", הן אוטומטית (ym, prefill=0) והן מרצון לתיקון מאוחר יותר
+// (prefill = הערך הקיים כרגע עבור החודש הנבחר).
+window.openCarryModal = function(prefill) {
+    var ym = getSelectedMonthYear();
+    var prevMonthLastDay = new Date(ym.y, ym.m - 1, 0);
+    var maxAllowed = prevMonthLastDay.getDay() + 1;
+    let mInp = document.getElementById('manualCarryInput');
+    if (mInp) { mInp.max = maxAllowed; mInp.value = String(prefill); }
+    let cmInfo = document.getElementById('carryMaxInfo');
+    if (cmInfo) cmInfo.innerText = "(מקסימום אפשרי לחודש זה: " + maxAllowed + ")";
+    let fMod = document.getElementById('firstMonthCarryModal');
+    if (fMod) fMod.style.display = 'block';
+    if (mInp) setTimeout(() => mInp.focus(), 100);
 };
 
 window.saveFirstMonthCarry = function() {

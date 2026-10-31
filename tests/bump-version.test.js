@@ -12,8 +12,8 @@ test('bump-version מעדכן version.json וכל חותמות הגרסה בכל
   fs.mkdirSync(path.join(tmp, 'content'));
   const files = ['version.json', 'index.html', 'style.css', 'holidays_db.js', 'components.js', 'content-loader.js',
     '00-core.js', '01-shift-codes.js', 'calculator.js', '02-ui-dialogs.js', '03-auth.js', '05-session-data.js',
-    '06-excel-export.js', '07-version-manager.js', 'DEPLOY.md', 'README.md',
-    path.join('content', 'shift-info.he.html'), path.join('content', 'mini-shift-info.he.html')];
+    '06-excel-export.js', '07-version-manager.js', '08-pdf-export.js', 'DEPLOY.md', 'README.md',
+    path.join('content', 'shift-info.he.html'), path.join('content', 'mini-shift-info.he.html'), path.join('content', 'system-updates.he.html')];
   for (const f of files) fs.copyFileSync(path.join(root, f), path.join(tmp, f));
 
   execFileSync('node', [path.join(root, 'scripts', 'bump-version.js'), 'V209901011200', '--root', tmp]);

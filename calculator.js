@@ -1,4 +1,4 @@
-/* COT System Version: V202610310345 */
+/* COT System Version: V202610312137 */
 // קובץ: calculator.js (מנוע החישוב)
 // המוח של המערכת: בניית הטבלה, זיהוי משמרת/היעדרות, וכל נוסחאות השעות הנוספות, השבת, הלילה ומעבר השעון. זהו הקובץ היחיד שיש לערפל (obfuscator.io) - הוא היחיד שצריך להישאר קבוע בשם calculator.js.
 
@@ -74,14 +74,7 @@ window.generateTable = function() {
     if (window.carryOverData[curKey] === undefined) {
         var prevMonthLastDay = new Date(ym.y, ym.m - 1, 0); 
         if (prevMonthLastDay.getDay() === 6) window.carryOverData[curKey] = 0;
-        else {
-            let mInp = document.getElementById('manualCarryInput');
-            if(mInp) { mInp.max = prevMonthLastDay.getDay() + 1; mInp.value = "0"; }
-            let cmInfo = document.getElementById('carryMaxInfo');
-            if(cmInfo) cmInfo.innerText = "(מקסימום אפשרי לחודש זה: " + (prevMonthLastDay.getDay() + 1) + ")";
-            let fMod = document.getElementById('firstMonthCarryModal');
-            if(fMod) fMod.style.display = 'block';
-        }
+        else if (window.openCarryModal) window.openCarryModal(0);
     }
 
     updateTitles();
@@ -146,12 +139,13 @@ window.generateTable = function() {
         }
     }
 
-    ['tableContainer','summaryPanel','kpiRow','printBtn','exportExcelBtn','closeMonthBtn'].forEach(id => {
+    ['tableContainer','summaryPanel','kpiRow','printBtn','exportExcelBtn','exportPdfBtn','closeMonthBtn'].forEach(id => {
         let el = document.getElementById(id);
         if(!el) return;
         el.style.display = (id==='summaryPanel' || id==='kpiRow') ? 'flex' : 'inline-block';
     });
     if(document.getElementById('tableContainer')) document.getElementById('tableContainer').style.display = 'block'; 
+    if (window.applyDefaultTableView) window.applyDefaultTableView();
     updateGrandTotal();
 };
 
@@ -265,6 +259,36 @@ window.calculateRow = function(inputElem) {
             updateGrandTotal(); return;
         }
 
+        // כלל: לכל היותר 4 משמרות נוכחות מתוך 5 המשמרות (נוכחות+היעדרות) המותרות בשבוע קלנדרי -
+        // חסימה מיידית, מקבילה לחסימת היעדרות בסופ"ש למעלה. מילואים ביום חול נספר כהיעדרות
+        // (לא תופס מקום מתוך ה-4); בסופ"ש הוא כבר לא נספר בכלל ב-weekShiftsCount הקיים.
+        {
+            var ymCap = getSelectedMonthYear();
+            var curKeyCap = ymCap.y + "-" + pad2(ymCap.m);
+            var carryOverShiftsCap = window.carryOverData[curKeyCap] ? parseInt(window.carryOverData[curKeyCap], 10) : 0;
+            var weekOfCap = {}, wIdxCap = 0;
+            for (var rrCap = 1; rrCap <= 31; rrCap++) {
+                var dOfWCap = new Date(ymCap.y, ymCap.m - 1, rrCap).getDay();
+                if (dOfWCap === 0 && rrCap > 1) wIdxCap++;
+                weekOfCap[rrCap] = wIdxCap;
+            }
+            var thisWeekCap = weekOfCap[parseInt(rowId, 10)];
+            var presenceCountCap = (thisWeekCap === 0) ? carryOverShiftsCap : 0;
+            for (var rr2Cap = 1; rr2Cap <= 31; rr2Cap++) {
+                if (weekOfCap[rr2Cap] !== thisWeekCap || String(rr2Cap) === String(rowId)) continue;
+                var cEl2Cap = document.getElementById('val-cost-' + rr2Cap);
+                if (cEl2Cap && cEl2Cap.getAttribute('data-is-shift') === '1') presenceCountCap++;
+            }
+            if (presenceCountCap + 1 > 4) {
+                customAlert("אין להזין יותר מ-4 משמרות בסידור");
+                timeInputs[0].value = ''; timeInputs[1].value = '';
+                timeInputs[0].classList.add('empty-print'); timeInputs[1].classList.add('empty-print');
+                var shiftTypeInpCap = tr.querySelector('.shift-type-input'); if (shiftTypeInpCap) shiftTypeInpCap.value = '';
+                calculateRow(timeInputs[0]);
+                return;
+            }
+        }
+
         var rate = parseFloat(document.getElementById('hourlyRate')?.value || 0);
         var startH = parseInt(startInput.split(':')[0], 10), startM = parseInt(startInput.split(':')[1], 10), endH = parseInt(endInput.split(':')[0], 10), endM = parseInt(endInput.split(':')[1], 10);
         var dStart = startH + startM / 60, dEnd = endH + endM / 60; if (dEnd <= dStart) dEnd += 24;
@@ -338,9 +362,12 @@ window.calculateRow = function(inputElem) {
             m.L = m.O = Math.max(0, physicalMinutes - (stdMins + 180));                                       
         } else {
             var ot1_Mins = 8 * 60, ot2_Mins = 10 * 60;
-            if (baseHolObj?.standardHours !== undefined && !isNightShift) { ot1_Mins = baseHolObj.standardHours * 60; ot2_Mins = ot1_Mins + 120; } 
-            else if (baseDay === 6) { ot1_Mins = 6.5 * 60; ot2_Mins = 8.5 * 60; } 
+            if (baseDay === 6) { ot1_Mins = 6.5 * 60; ot2_Mins = 8.5 * 60; } 
             else if (isNightShift) { ot1_Mins = 7 * 60; ot2_Mins = 9 * 60; }
+            // ערב חג/חוה"מ שאינו יום שישי ואינו משמרת לילה: שעות התקן המקוצרות לא מזיזות את סף השעות
+            // הנוספות (הוא נשאר 8/10 שעות כרגיל) - הן רק קובעות כמה מהשעות הראשונות נספרות כ"תקן" (I)
+            // במקום כ"100%" (J). מאומת מול שתי דוגמאות אמיתיות ממחלקת השכר (ערב יוה"כ וערב ר"ה 2026).
+            var stdMins = (baseHolObj?.standardHours !== undefined && !isNightShift) ? baseHolObj.standardHours * 60 : null;
 
             for (var j = 1; j <= physicalMinutes; j++) {
                 var virtualJ = j;
@@ -363,7 +390,11 @@ window.calculateRow = function(inputElem) {
                 var otMult = j > ot2_Mins ? 1.5 : (j > ot1_Mins ? 1.25 : 1.0);
                 var fMult = Math.round((isShab ? payMult + (otMult - 1) : payMult * otMult) * 1000) / 1000;
                 
-                if (otMult === 1.0) { if (isShab) { m.I++; if(payMult===1.75)m.U++; else if(payMult===2.0)m.W++; } else { m.I++; if(payMult===1.2)m.S++; else if(payMult===1.5)m.T++; } } 
+                if (otMult === 1.0) {
+                    var isStd = (stdMins === null) || (j <= stdMins);
+                    if (isShab) { if (isStd) m.I++; else m.J++; if(payMult===1.75)m.U++; else if(payMult===2.0)m.W++; }
+                    else { if (isStd) m.I++; else m.J++; if(payMult===1.2)m.S++; else if(payMult===1.5)m.T++; }
+                } 
                 else {
                     if (fMult===1.25) m.K++; else if (fMult===1.5) m.L++; else if (fMult===1.75) m.M++; else if (fMult===1.8) m.O++; else if (fMult===1.875) m.P++; 
                     else if (fMult===2.0) m.N++; else if (fMult===2.25) m.Q++; else if (fMult===2.5) m.R++; else { if(!isShab && otMult===1.25)m.K++; else m.J++; }

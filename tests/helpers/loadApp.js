@@ -11,7 +11,7 @@ const ROOT = path.resolve(__dirname, '..', '..');
 
 // סדר הטעינה האמיתי של האפליקציה המפוצלת (כפי שמופיע ב-index.html), לא כולל holidays_db.js (נטען תמיד בנפרד).
 const SPLIT_FILES = [
-  '00-core.js', '01-shift-codes.js', 'calculator.js', '02-ui-dialogs.js', '03-auth.js', '05-session-data.js', '06-excel-export.js', '07-version-manager.js',
+  '00-core.js', '01-shift-codes.js', 'calculator.js', '02-ui-dialogs.js', '03-auth.js', '05-session-data.js', '06-excel-export.js', '07-version-manager.js', '08-pdf-export.js',
 ];
 // קובץ המקור המקורי (חד-קבצי, לפני הפיצול) - משמש רק להשוואה/רגרסיה.
 const ORIGINAL_FILE = ['reference/calculator.original.js'];
@@ -35,7 +35,7 @@ function loadApp(opts = {}) {
 
   const docRef = (col, id) => ({
     onSnapshot(cb) { state.snapshots.push({ col, id, cb }); return () => {}; },
-    get() { return Promise.resolve({ exists: false, data: () => ({}) }); },
+    get() { return state.getImpl ? state.getImpl(col, id) : Promise.resolve({ exists: false, data: () => ({}) }); },
     set(data, o) {
       state.sets.push({ col, id, data: JSON.parse(JSON.stringify(data)), opts: o });
       return state.setImpl ? state.setImpl(col, id, data) : Promise.resolve();
@@ -62,6 +62,14 @@ function loadApp(opts = {}) {
     fetch: opts.fetch || (async () => ({ json: async () => ({ version: 'V0' }) })),
     saveAs() {},
     location: { pathname: '/', href: '' },
+    sessionStorage: (() => {
+      const store = {};
+      return {
+        getItem: (k) => (Object.prototype.hasOwnProperty.call(store, k) ? store[k] : null),
+        setItem: (k, v) => { store[k] = String(v); },
+        removeItem: (k) => { delete store[k]; },
+      };
+    })(),
   };
   ctx.window = ctx;
   const winListeners = {};

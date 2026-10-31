@@ -1,7 +1,7 @@
 'use strict';
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const { loadApp, setupMonth, setShiftCode, readDay } = require('./helpers/loadApp');
+const { loadApp, setupMonth, setShiftCode, readDay, row } = require('./helpers/loadApp');
 
 const OPEN = { reg: 10, shab: 1, sick: 5, dec: 3, cho: 2 };
 const json = (x) => JSON.parse(JSON.stringify(x));
@@ -115,4 +115,93 @@ test('אזהרת יציאה: מופעלת אחרי הזנה, ומתאפסת אח
   assert.equal(prevented, true);
   await app.ctx.clearData(true);
   assert.equal(app.ctx.__cotDirty, false);
+});
+
+test('התראה על שמירה דורסת: אם הענן השתנה מאז הטעינה, שואלים לפני שמירה - ביטול לא שומר', async () => {
+  const app = ready();
+  app.ctx.__lastKnownRemoteState = JSON.stringify({ monthlyBalances: { '2026-10': { reg: 10 } }, carryOver: {} });
+  app.state.getImpl = async () => ({ exists: true, data: () => ({ monthlyBalances: { '2026-10': { reg: 999 } }, carryOver: {} }) });
+  app.confirms.answer = false;
+  await app.ctx.saveData();
+  assert.equal(app.confirms.asked.length, 1);
+  assert.match(app.confirms.asked[0], /שינויים נוספים נשמרו לענן/);
+  const write = app.state.sets.find((s) => s.data.employeeName);
+  assert.equal(write, undefined, 'לא אמור להישמר כלום אחרי ביטול');
+});
+
+test('התראה על שמירה דורסת: אישור ממשיך בשמירה כרגיל', async () => {
+  const app = ready();
+  app.ctx.__lastKnownRemoteState = JSON.stringify({ monthlyBalances: { '2026-10': { reg: 10 } }, carryOver: {} });
+  app.state.getImpl = async () => ({ exists: true, data: () => ({ monthlyBalances: { '2026-10': { reg: 999 } }, carryOver: {} }) });
+  app.confirms.answer = true;
+  await app.ctx.saveData();
+  assert.equal(app.confirms.asked.length, 1);
+  const write = app.state.sets.find((s) => s.data.employeeName);
+  assert.ok(write, 'השמירה אמורה להמשיך אחרי אישור');
+});
+
+test('אין שום התראה כשהמצב בענן לא השתנה מאז הטעינה', async () => {
+  const app = ready();
+  const state = { monthlyBalances: { '2026-10': { reg: 10 } }, carryOver: {} };
+  app.ctx.__lastKnownRemoteState = JSON.stringify(state);
+  app.state.getImpl = async () => ({ exists: true, data: () => state });
+  await app.ctx.saveData();
+  assert.equal(app.confirms.asked.length, 0);
+});
+
+test('שמירה שקטה (silent, לדוגמה בהתנתקות) לא בודקת התנגשות ולא מציגה חלון', async () => {
+  const app = ready();
+  app.ctx.__lastKnownRemoteState = JSON.stringify({ monthlyBalances: { '2026-10': { reg: 10 } }, carryOver: {} });
+  app.state.getImpl = async () => ({ exists: true, data: () => ({ monthlyBalances: { '2026-10': { reg: 999 } }, carryOver: {} }) });
+  await app.ctx.saveData(true);
+  assert.equal(app.confirms.asked.length, 0);
+});
+
+test('captureDraftSnapshot: null כשאין גליון פתוח; אחרת כולל שם/תעריפים/משמרות', () => {
+  const empty = loadApp();
+  assert.equal(empty.ctx.captureDraftSnapshot(), null);
+
+  const app = ready();
+  setShiftCode(app, 3, 'ב');
+  const snap = app.ctx.captureDraftSnapshot();
+  assert.equal(snap.year, 2026);
+  assert.equal(snap.month, 10);
+  assert.equal(snap.employeeName, 'בודק');
+  assert.equal(snap.shifts[2].shiftType, 'ב');
+});
+
+test('saveDraftBeforeRefresh לא שומר כלום אם אין הזנות שלא נשמרו (__cotDirty=false)', () => {
+  const app = ready();
+  app.ctx.__cotDirty = false;
+  app.ctx.saveDraftBeforeRefresh();
+  assert.equal(app.ctx.sessionStorage.getItem('cotDraftSnapshot'), null);
+});
+
+test('applyUpdate שומר טיוטה לפני הרענון הכפוי, כשיש הזנות שלא נשמרו', () => {
+  const app = ready();
+  setShiftCode(app, 5, 'ל');
+  app.doc.dispatch('change', { target: row(app, 5).querySelector('.time-input') }); // מסמן __cotDirty
+  app.ctx.applyUpdate();
+  const saved = JSON.parse(app.ctx.sessionStorage.getItem('cotDraftSnapshot'));
+  assert.equal(saved.shifts[4].shiftType, 'ל');
+});
+
+test('restoreDraftSnapshot: משחזר שם/תעריפים/חודש/משמרות, ומוחק את הטיוטה אחרי השימוש (חד-פעמי)', () => {
+  const app = loadApp();
+  setupMonth(app, { year: 2026, month: 10, rate: 50 }); // מדמה שהדף כבר אתחל את רשימת החודשים (initMonthYearSelect), כמו באפליקציה האמיתית
+  app.ctx.sessionStorage.setItem('cotDraftSnapshot', JSON.stringify({
+    year: 2026, month: 10, employeeName: 'משוחזר', hourlyRate: '60', eshelRate: '55',
+    shifts: [{}, {}, { shiftType: 'ב', start: '07:00', end: '19:00' }],
+  }));
+  app.ctx.restoreDraftSnapshot();
+  assert.equal(app.doc.getElementById('employeeName').value, 'משוחזר');
+  assert.equal(app.doc.getElementById('hourlyRate').value, '60');
+  assert.equal(row(app, 3).querySelector('.shift-type-input').value, 'ב');
+  assert.equal(app.ctx.sessionStorage.getItem('cotDraftSnapshot'), null, 'הטיוטה נמחקת אחרי שחזור חד-פעמי');
+});
+
+test('בלי טיוטה שמורה, restoreDraftSnapshot לא עושה כלום (לא קורס, לא פותח הודעה)', () => {
+  const app = loadApp();
+  app.ctx.restoreDraftSnapshot();
+  assert.equal(app.alerts.length, 0);
 });

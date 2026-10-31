@@ -1,4 +1,4 @@
-/* COT System Version: V202610310345 */
+/* COT System Version: V202610312137 */
 // קובץ: 03-auth.js
 // הרשמה, כניסה, איפוס סיסמה, מצב הבדיקות הסמוי (secretBypass), נעילת מסך בחוסר פעילות, והתנתקות.
 
@@ -152,7 +152,11 @@ window.enterMainApp = function(user, userDoc = null) {
                 window.monthlyBalances[curKey] = { reg: parseFloat(d.bal_open_reg||0), shab: parseFloat(d.bal_open_shab||0), sick: parseFloat(d.bal_open_sick||0), dec: parseFloat(d.bal_open_dec||0), cho: parseFloat(d.bal_open_cho||0) };
             }
             updateCloudBalancesPanel();
-            
+
+            // תמונת מצב של מה שנטען מהענן כרגע - משמשת בהמשך כדי להתריע אם מישהו אחר שמר ברקע
+            // לפני שאנחנו דורסים את זה בשמירה הבאה (ראו saveData).
+            window.__lastKnownRemoteState = JSON.stringify({ monthlyBalances: window.monthlyBalances, carryOver: window.carryOverData });
+
             let activeKey = window.getActiveMonthKey();
             if (activeKey) {
                 let sel = document.getElementById('monthYearSelect');
@@ -162,6 +166,7 @@ window.enterMainApp = function(user, userDoc = null) {
             }
             if (document.getElementById('employeeName').value.trim() !== "") { updateTitles(); generateTable(); } else updateTitles();
         }
+        if (window.restoreDraftSnapshot) window.restoreDraftSnapshot();
     };
 
     if (userDoc) processDoc(userDoc);
