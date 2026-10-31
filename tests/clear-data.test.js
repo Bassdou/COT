@@ -90,6 +90,35 @@ test('מתג ENABLE_TEST_BYPASS: כשהוא false, 3 לחיצות על הלוג�
   }
 });
 
+test('משתמש ותיק עם סיסמה ישנה (חלשה) מקבל הצעה להחליף אותה, עם תאריך היעד', () => {
+  const app = loadApp();
+  app.state.currentUser = { uid: 'u1', email: 'a@b.co', emailVerified: true };
+  const weakDoc = { exists: true, data: () => ({ hasStrongPassword: false }) };
+  app.ctx.enterMainApp(app.state.currentUser, weakDoc);
+  const banner = app.doc.getElementById('securityBanner');
+  assert.equal(banner.style.display, 'block');
+  assert.equal(banner.className, 'warning-banner');
+  assert.ok(banner.innerHTML.includes('15.11.2026'), 'תאריך היעד חסר מהבאנר');
+  assert.ok(banner.innerHTML.includes('openPasswordUpdatePrompt'), 'חסר קישור להחלפת הסיסמה');
+});
+
+test('משתמש ותיק עם סיסמה חזקה לא מקבל את ההצעה', () => {
+  const app = loadApp();
+  app.state.currentUser = { uid: 'u1', email: 'a@b.co', emailVerified: true };
+  const strongDoc = { exists: true, data: () => ({ hasStrongPassword: true }) };
+  app.ctx.enterMainApp(app.state.currentUser, strongDoc);
+  assert.equal(app.doc.getElementById('securityBanner').style.display, 'none');
+});
+
+test('openPasswordUpdatePrompt פותח מרצון את מסך עדכון הסיסמה, עם אפשרות ביטול', () => {
+  const app = loadApp();
+  app.ctx.openPasswordUpdatePrompt();
+  assert.equal(app.doc.getElementById('forcePasswordScreen').style.display, 'flex');
+  assert.equal(app.doc.getElementById('forcePasswordCancelRow').style.display, 'block');
+  app.ctx.cancelPasswordUpdate();
+  assert.equal(app.doc.getElementById('forcePasswordScreen').style.display, 'none');
+});
+
 test('מצב עקיפה (secretBypass): נכנס עם שם עובד "בדיקות דוח" לאחר קוד נכון', async () => {
   const app = loadApp();
   const now = new Date();

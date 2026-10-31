@@ -21,7 +21,7 @@ if (!/^V\d{12}$/.test(version)) { console.error('פורמט גרסה לא תקי
 const STAMPED_FILES = [
   'index.html', 'style.css', 'holidays_db.js', 'components.js', 'content-loader.js',
   '00-core.js', '01-shift-codes.js', 'calculator.js', '02-ui-dialogs.js', '03-auth.js',
-  '05-session-data.js', '06-excel-export.js', '07-version-manager.js',
+  '05-session-data.js', '06-excel-export.js', '07-version-manager.js', 'DEPLOY.md', 'README.md',
   path.join('content', 'shift-info.he.html'), path.join('content', 'mini-shift-info.he.html'),
 ];
 
@@ -33,7 +33,8 @@ for (const f of STAMPED_FILES) {
   const fp = path.join(root, f);
   if (!fs.existsSync(fp)) { console.warn('דילוג (לא נמצא):', f); continue; }
   const src = fs.readFileSync(fp, 'utf8');
-  const out = src.replace(/COT System Version: V\d{12}/g, 'COT System Version: ' + version);
+  let out = src.replace(/COT System Version: V\d{12}/g, 'COT System Version: ' + version);
+  if (f === 'README.md') out = out.replace(/Current version: \*\*V\d{12}\*\*/, 'Current version: **' + version + '**');
   if (!/COT System Version: V\d{12}/.test(src)) { console.warn('אזהרה: לא נמצאה חותמת גרסה קיימת ב-' + f + ' - לא עודכן'); continue; }
   if (out !== src) { fs.writeFileSync(fp, out); changed.push(f); }
 }

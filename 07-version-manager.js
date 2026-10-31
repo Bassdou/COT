@@ -1,4 +1,4 @@
-/* COT System Version: V202610302143 */
+/* COT System Version: V202610310155 */
 // קובץ: 07-version-manager.js
 // בדיקת גרסה מול version.json ומול הענן, הצגת התראת "גרסה חדשה", ועדכון אוטומטי של גרסת הענן כשהמנהל מחובר.
 

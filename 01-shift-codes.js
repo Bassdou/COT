@@ -1,4 +1,4 @@
-/* COT System Version: V202610302143 */
+/* COT System Version: V202610310155 */
 // קובץ: 01-shift-codes.js
 // מילון קודי המשמרות (SHIFT_CODES) ורשימות קודי ההיעדרות (ABSENCE_CODES / WEEKEND_BLOCKED_ABSENCE_CODES). מקור יחיד לקבועים האלה - שאר הקבצים מפנים לכאן ולא מכפילים את הרשימה.
 

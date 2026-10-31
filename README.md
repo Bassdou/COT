@@ -1,153 +1,142 @@
-# COT – Calculate Over Time: קוד מלא + בדיקות + ערפול + חוברת הדרכה (שלד)
+<!-- COT System Version: V202610310155 -->
 
-גרסה נוכחית: **V202610301600** (ראה `version.json`)
+# COT - Calculate Over Time: full source + tests + deployment guide
 
-## מבנה הקבצים
+Current version: **V202610310155** (see `version.json`)
+
+## File layout
 
 ```
-index.html, style.css, holidays_db.js      - כמו קודם, ללא ערפול
-components.js, content-loader.js            - חלונות קופצים (שלד) + טעינת תוכן חיצוני
-content/shift-info.he.html                  - תוכן חלון "מידע חשוב ומדריך למשתמש"
-content/mini-shift-info.he.html             - תוכן חלון "קודי משמרות להקלדה מהירה"
-00-core.js                                   - הגדרות גלובליות + חיבור Firebase
-01-shift-codes.js                            - קודי המשמרת וההיעדרות (מקור יחיד, ללא כפילות)
-calculator.js                                - *** מנוע החישוב - היחיד שיש לערפל ***
-02-ui-dialogs.js                             - דיאלוגים, ניווט מקלדת, חלונות מידע
-03-auth.js                                   - הרשמה/כניסה/מצב עקיפה/נעילת מסך
-05-session-data.js                           - שמירה/טעינה מהענן ומקובץ, סגירת חודש, איפוס גליון
-06-excel-export.js                           - ייצוא לאקסל
-07-version-manager.js                        - בדיקת גרסה מול version.json והענן
-version.json                                 - מספר הגרסה הנוכחי בלבד
-scripts/bump-version.js                      - מטביע חותמת גרסה חדשה בכל הקבצים בבת אחת
-reference/calculator.original.js             - הקובץ המקורי (חד-קבצי) לפני הפיצול - לתיעוד/השוואה בלבד
-tests/                                        - בדיקות אוטומטיות (node --test, בלי npm install)
-manual-template/                             - שלד חוברת ההדרכה + רשימת צילומי מסך (ראה בהמשך)
+index.html, style.css, holidays_db.js      - static, never obfuscated
+components.js, content-loader.js            - popup shells + external content loader
+content/shift-info.he.html                  - "Important info / user guide" popup content
+content/mini-shift-info.he.html             - "Quick shift codes" popup content
+00-core.js                                   - global settings + Firebase connection
+01-shift-codes.js                            - shift and absence codes (single source, no duplication)
+calculator.js                                - *** the calc engine - the ONLY file to obfuscate ***
+02-ui-dialogs.js                             - dialogs, keyboard navigation, info popups
+03-auth.js                                   - register / login / test-bypass mode / screen lock
+05-session-data.js                           - cloud/file save-load, month close, sheet reset
+06-excel-export.js                           - Excel export
+07-version-manager.js                        - checks version.json and the cloud for updates
+version.json                                 - current version number only
+DEPLOY.md                                    - step-by-step production deployment procedure
+scripts/bump-version.js                      - stamps a new version into every file at once
+reference/calculator.original.js             - the original single-file source, pre-split (for comparison only)
+tests/                                        - automated tests (`node --test`, no npm install needed)
+manual-template/                             - user-manual skeleton + screenshot checklist (see below)
 ```
 
-**מספור הקבצים (00, 01, 02...) הוא רק כדי שיישארו מסודרים בתיקייה - אין קשר בינו לסדר הטעינה
-האמיתי שנקבע ע"י סדר תגי ה-`<script>` ב-`index.html`. אם תעתיק קבצים, שמור על אותו הסדר שכבר מופיע שם.**
+**The file numbering (00, 01, 02...) is only to keep them sorted in the folder - it has no bearing
+on the real load order, which is set by the `<script>` tag order in `index.html`. If you ever copy
+files elsewhere, preserve the order already shown there.**
 
-## איך מעלים ל-GitHub (ללא npm, ללא מסוף)
+## How to deploy (no npm, no terminal)
 
-1. פותחים את `calculator.js` (רק אותו, ולא שום קובץ אחר), מעתיקים את כל התוכן, ומדביקים ב-obfuscator.io.
-2. מעתיקים את הפלט המעורפל ושומרים אותו **תחת אותו שם** - `calculator.js`.
-3. מעלים ל-GitHub את קובץ ה-`calculator.js` המעורפל, **ולצידו** את כל שאר הקבצים כפי שהם (לא מעורפלים):
-   `index.html, style.css, holidays_db.js, components.js, content-loader.js, content/, 00-core.js,
-   01-shift-codes.js, 02-ui-dialogs.js, 03-auth.js, 05-session-data.js, 06-excel-export.js,
-   07-version-manager.js, version.json`.
-4. שומרים אצלך (לא מעלים!) את הגרסה הלא-מעורפלת של `calculator.js` שבזיפ הזה - זה המקור שממנו תמיד
-   מתחילים בפעם הבאה שתרצה עדכון. **אל תערפל קובץ שכבר מעורפל** - זה הורס את הקוד.
+See **`DEPLOY.md`** for the full click-by-click procedure (which files to upload, how to obfuscate
+`calculator.js`, the GitHub Pages upload steps, a 9-point smoke test, and rollback). Short version:
 
-כלי ערפול לפעמים מוחקים את שורת ההערה "COT System Version" בראש הקובץ. זה תקין ולא משנה כלום:
-`version.json` הוא תמיד מקור האמת לגרסה המוצגת במסך, לא ההערה.
+1. Open `calculator.js` (only that file), copy all of it, and paste it into obfuscator.io.
+2. Copy the obfuscated output and save it back under the **same name** - `calculator.js`.
+3. Upload the obfuscated `calculator.js` to GitHub, **alongside** every other file as-is (not
+   obfuscated): `index.html, style.css, holidays_db.js, components.js, content-loader.js,
+   content/, 00-core.js, 01-shift-codes.js, 02-ui-dialogs.js, 03-auth.js, 05-session-data.js,
+   06-excel-export.js, 07-version-manager.js, version.json, COT_LOGO.jpg, cot_user_manual.pdf`.
+4. Keep (never upload) the un-obfuscated `calculator.js` from this zip somewhere safe - that's
+   always the source for the next update. **Never re-obfuscate an already-obfuscated file.**
 
-**מתי צריך לערפל מחדש?** רק כשמשתנה `calculator.js` עצמו (שינוי בנוסחת חישוב). שינוי בכל קובץ אחר
-(למשל טקסט ב-`content/`, או תיקון בממשק) לא דורש ערפול כלל - הוא מועלה כמו שהוא.
+Obfuscation tools sometimes strip the "COT System Version" comment at the top of the file. That's
+fine and changes nothing: `version.json` is always the source of truth for the version shown on
+screen, not the comment.
 
-## עדכון תוכן "מידע חשוב" בלי גרסה חדשה
+**When do you need to re-obfuscate?** Only when `calculator.js` itself changes (a calculation
+formula changed). A change to any other file (e.g. text in `content/`, or an interface fix) needs
+no obfuscation at all - it's uploaded as-is.
 
-התוכן של שני החלונות ("מידע חשוב ומדריך למשתמש" ו"קודי משמרות להקלדה מהירה") נמצא בקבצי HTML
-רגילים בתיקיית `content/`. פותחים בכל עורך טקסט, עורכים, שומרים, ומעלים ל-GitHub - זהו. אין צורך
-לגעת בגרסה או בשום קובץ JS.
+## Updating "Important info" content without a new version
 
-## עדכון גרסה בכל הקבצים בבת אחת
+The content of both popups ("Important info / user guide" and "Quick shift codes") lives in plain
+HTML files under `content/`. Open either in any text editor, edit, save, and upload to GitHub -
+that's it. No need to touch the version or any JS file.
+
+## Bumping the version across every file at once
 
 ```
 node scripts/bump-version.js V202611011430
 ```
-(פורמט: `V` + שנה(4) + חודש(2) + יום(2) + שעה(2) + דקה(2); ללא פרמטר - נוצרת גרסה אוטומטית מהשעה הנוכחית).
-הפקודה מעדכנת את `version.json` ואת שורת "COT System Version" בראש כל קובץ. **הרץ אותה לפני שאתה
-מערפל** את `calculator.js` (כדי שההערה בראשו, אם תישרד את הערפול, תציג את הגרסה הנכונה).
+(Format: `V` + year(4) + month(2) + day(2) + hour(2) + minute(2); with no argument, an automatic
+version is generated from the current time.) The command updates `version.json` and the "COT
+System Version" line at the top of every file. **Run it before you obfuscate** `calculator.js`, so
+the comment at its top (if it survives obfuscation) shows the right version.
 
-אם אינך רוצה להריץ פקודות בעצמך - תשלח לי מה השתנה, ואני אכין לך בכל פעם זיפ חדש עם כל החותמות
-כבר מעודכנות, בדיוק כמו הזיפ הזה.
+If you'd rather not run commands yourself, just tell me what changed and I'll prepare a fresh zip
+with every stamp already updated, exactly like this one.
 
-## הרצת הבדיקות
+## Running the tests
 
-דרישה: Node.js 20 ומעלה. **אין צורך ב-npm install** - הבדיקות לא תלויות בשום חבילה חיצונית.
+Requirement: Node.js 20+. **No `npm install` needed** - the tests have zero external dependencies.
 
 ```
 node --test
 ```
-כ-15 שניות. תוצאה צפויה: `pass 37, fail 0, todo 2` (שני ה-todo הם תזכורות מכוונות: חגי השנה הבאה
-וקובצי PDF משפטיים שלא צורפו - לא כשלים).
+About 12-15 seconds. Expected result: `pass 47, fail 0, todo 2` (the two todos are deliberate
+reminders - next year's holidays, and legal PDFs not yet supplied - not failures).
 
-## איך הבדיקות מוכיחות שהחישובים לא השתנו
+## How the tests prove the calculations never changed
 
-- `reference/calculator.original.js` - הקובץ המקורי, לפני כל שינוי.
-- `tests/golden/*.json` - 5,520 תרחישי יום ו-4 סיכומי חודש מלאים, **מחושבים מהקובץ המקורי**.
-- `tests/calc.golden.test.js` מריץ את הקוד המפוצל הנוכחי על אותם תרחישים ומשווה תוצאה-תוצאה.
-- `tests/unchanged-calc-code.test.js` מוודא שהקבועים שהוצאו ל-`01-shift-codes.js`
-  (`SHIFT_CODES`, `ABSENCE_CODES`, `WEEKEND_BLOCKED_ABSENCE_CODES`) ו-`columnsData` זהים בדיוק למה
-  שהיה מוטבע בקובץ המקורי - כך שהפיצול לא שינה אף מקדם, קוד משמרת או ערך.
+- `reference/calculator.original.js` - the original file, before any change.
+- `tests/golden/*.json` - 5,520 day-shift scenarios and 4 full month summaries, **computed from
+  the original file**.
+- `tests/calc.golden.test.js` runs the current split code on those same scenarios and compares
+  result-by-result.
+- `tests/unchanged-calc-code.test.js` confirms the constants pulled out into `01-shift-codes.js`
+  (`SHIFT_CODES`, `ABSENCE_CODES`, `WEEKEND_BLOCKED_ABSENCE_CODES`) and `columnsData` are byte-for-byte
+  identical to what was embedded in the original file - so the split changed no coefficient, shift
+  code, or value.
 
-**שינוי נוסחה מכוון בעתיד:** קודם `node scripts/bump-version.js`, אחר כך `node tests/generate-golden.js`
-ליצירת golden חדש (ורק אז הוא מחליף את זה שבזיפ). כך שינוי נוסחה תמיד גלוי בבדיקות ומתועד בגרסה.
+**For a deliberate future formula change:** run `node scripts/bump-version.js` first, then
+`node tests/generate-golden.js` to produce a new golden set (only then does it replace the one in
+this zip). That way a formula change is always visible in the tests and tied to a version.
 
-## חגי שנה הבאה
+## Next year's holidays
 
-אין צורך בשום פעולה עד שהמועדים מתפרסמים (בד"כ בסוף השנה הקודמת). עד אז, ימים בלי ערך ב-`holidays_db.js`
-פשוט נחשבים יום חול רגיל - בהתאם להתנהגות הקיימת של הקוד. בדיקה אוטומטית (`tests/holidays.test.js`)
-מתחילה להזכיר זאת מ-15 בדצמבר של כל שנה.
+No action is needed until the dates are published (usually at the end of the preceding year).
+Until then, a day with no entry in `holidays_db.js` is simply treated as a normal weekday,
+matching the code's existing behavior. An automated check (`tests/holidays.test.js`) starts
+flagging this from December 15 of each year.
 
-## שלד חוברת ההדרכה (manual-template/)
+## User-manual skeleton (`manual-template/`)
 
-- `cot-manual.html` - החוברת, עם טקסט מתוקן (לפי ההתנהגות האמיתית של הקוד, לא לפי הספרון הישן)
-  ומקומות מסומנים לכל צילום מסך. אפשר לפתוח אותו בדפדפן כבר עכשיו - במקום כל תמונה חסרה מופיע
-  מלבן עם השם המדויק של הקובץ הנדרש.
-- `screenshots-checklist.md` - רשימה מדויקת של 16 צילומי המסך הנדרשים, עם שם קובץ לכל אחד.
-- `images/` - תיקייה ריקה; שם צילומי המסך נשמרים, תחת השמות מהרשימה.
+- `cot-manual.html` - the manual, with corrected text (matching the code's real behavior, not the
+  old booklet) and marked placeholders for every screenshot. You can already open it in a browser -
+  every missing image shows a box with the exact filename needed.
+- `screenshots-checklist.md` - an exact list of the 16 required screenshots, with a filename for each.
+- `images/` - empty folder; screenshots go here, under the names from the list.
 
-**השלבים הבאים:** אתה מצלם לפי הרשימה ושולח לי את התמונות (אפשר לדלג על מה שקשה להשיג).
-אני אבנה מהן את החוברת המעוצבת הסופית, ואייצא אותה לזיפ נפרד בשם `MANUAL`, בגרסה התואמת
-לגרסת האפליקציה הנוכחית באותו רגע.
+**Next steps:** take the screenshots per the list and send them to me (skipping any that are hard
+to get is fine). I'll build the final polished manual from them and export it as a separate zip
+named `MANUAL`, versioned to match the app version at that moment.
 
-## מה תוקן בסבב הזה (מעבר לשלושת התיקונים הקודמים: clearData, מניעת האזנה כפולה, הודעת הצלחה רק אחרי שמירה בפועל)
+## New design (first approved as a mockup in the Design canvas, now implemented in the real app)
 
-- **פיצול ל-9 קבצים** לפי תחום אחריות (ליבה, קודים, מנוע חישוב, ממשק, התחברות, ענן, אקסל, גרסאות).
-- **ביטול כפילות קוד:** קודי ההיעדרות ומילון קודי המשמרת מוגדרים פעם אחת בלבד (`01-shift-codes.js`)
-  במקום 7 מקומות שונים בקובץ המקורי.
-- **תוכן "מידע חשוב" הוצא לקבצים חיצוניים** שאינם דורשים גרסה חדשה, ותוקנו בהם שתי אי-דיוקים:
-  ההפניה ל"תיבת התאור" תוקנה ל"תיבת המשמרת" (השם הנכון של השדה), וההסבר על חסימת היעדרויות
-  בסופ"ש עודכן לציין במפורש שמחלה ומילואים מותרים.
-- **שלד חוברת הדרכה** עם טקסט מתוקן (סיסמה 8 תווים, תיאור `חש` נכון, שמות הכפתורים האמיתיים)
-  ורשימת צילומי מסך מדויקת.
+The app went through a full visual redesign - navy + amber palette, Heebo font, a split login
+screen (brand panel + form), and dashboard cards with icon badges. **No id, onclick, or DOM
+structure the JS depends on was changed** - only `style.css` and the markup in `index.html`. Before
+and after the change, every `id` the JS reads (across all 8 files) was compared automatically
+against what actually exists in `index.html` - including critical "next sibling" relationships
+(like the lock button that must sit immediately after its balance field). Nothing was missing.
 
-## עיצוב חדש (אושר תחילה כ-mockup ב-Design canvas, עכשיו מיושם בפועל)
+Emoji were intentionally left in two places: the show/hide-password buttons and the balance lock
+buttons, because the JS writes the emoji into them directly at runtime - changing those would mean
+editing logic, not just styling.
 
-האפליקציה עברה שדרוג עיצוב מלא - פלטת ניווי+ענבר, גופן Heebo, מסך כניסה מפוצל (פאנל מותג + טופס),
-וכרטיסי דשבורד עם תגי אייקון. **שום id, onclick, או מבנה DOM שה-JS תלוי בו לא שונה** - רק
-`style.css` ומראה `index.html` (ראו "מה תוקן" למטה לפירוט המלא, ו"מה לא נעשה" למה שנשאר אמוג'י
-בכוונה: כפתורי הצג/הסתר סיסמה ומנעולי היתרות, כי ה-JS כותב לתוכם ישירות בזמן ריצה - שינוי שם
-ידרוש גם עריכת לוגיקה, לא רק עיצוב).
+## What's not done (and why)
 
-**בדיקת בטיחות שבוצעה:** לפני ואחרי השינוי, הושווה אוטומטית כל `id` שה-JS קורא לו (ב-8 הקבצים)
-מול מה שקיים בפועל ב-`index.html` - כולל זיהוי יחסי "אח הבא" קריטיים (כמו כפתור המנעול שחייב
-להיות מיד אחרי שדה היתרה). שום דבר לא חסר.
-
-## שיפורי עיצוב (סבב קודם)
-
-יושמו לפי רשימת ההערות העיצוביות, ללא נגיעה בלוגיקה/בחישובים (רק `style.css` ו-`index.html`):
-
-1. **איחוד צבעים:** נוספו משתני CSS משותפים (`:root { --c-primary: #1565c0; ... }`) ומסך הכניסה
-   (שהשתמש בכחול שונה, `#2563eb`) הועבר לאותה פלטה של המסך הראשי - כדי שלא יראו כשני מוצרים שונים.
-2. **התאמה לנייד:** עמודות התאריך בטבלה נדבקות (sticky) בגלילה אופקית, ופריסת הכפתורים/הדשבורד
-   נשברת ומתאימה את עצמה למסכים צרים מ-700px (לא היה קיים קודם כלל במסך הראשי).
-3. **מקרא צבעים קבוע** (`#colorLegend`) מעל הטבלה: היעדרות/ניכוי/חג/שישי-שבת, במקום להסתמך רק על
-   tooltip שלא תמיד נראה בנייד.
-4. **הבלטת נתונים כספיים:** כרטיסי "אש"ל" ו"ערך ש"נ" בדשבורד בולטים יותר (גופן גדול יותר, מסגרת עבה
-   יותר) מכרטיסי הספירה הכלליים (משמרות/שעות).
-5. **פאביקון** נוסף (לא היה קיים קודם).
-
-**נדחה בכוונה** (דורש אימות ויזואלי אמיתי בדפדפן, שאין לי גישה אליו בסביבה הזו): החלפת כל האייקונים
-מאמוג'י לסט SVG אחיד, ואיחוד מלא של סולם גדלי הטקסט (כרגע כ-15 גדלים שונים ברחבי `style.css`).
-שני אלה דורשים בדיקה חזותית בפועל כדי לא להסתכן בתוצאה גרועה יותר - מומלץ לבצע כשיש אפשרות לבדוק
-על מסך אמיתי, או שאני יכול להכין הצעה ואתה תאשר ויזואלית.
-
-## מה לא נעשה (ולמה)
-
-- **ערפול בפועל** - מתבצע אצלך ב-obfuscator.io, לא כאן (ראה למעלה).
-- **חגי השנה הבאה** - אסור להמציא תאריכים ושעות תקן; יש לקחת מחוזר הנציבות כשיתפרסם.
-- **אכיפת 15.11.2026 וכללי Firestore בצד השרת, מייל המנהל כ-claim** - דורש שינוי בקונסולת Firebase,
-  לא בקוד הצד-לקוח.
-- **החוברת הסופית עם צילומי מסך אמיתיים** - ממתינה לצילומים ממך.
+- **Actual obfuscation** - happens on your end at obfuscator.io, not here (see above).
+- **Next year's holidays** - dates and standard hours must come from the official circular when
+  published; not something to invent.
+- **Enforcing the 15.11.2026 deadline and Firestore rules server-side, the admin email as a custom
+  claim** - requires changes in the Firebase console, not in the client-side code.
+- **The final manual with real screenshots** - waiting on your screenshots.
+- **Full emoji-to-SVG icon system, and a fully unified font-size scale** - deferred; both need real
+  visual QA in an actual browser, which this sandbox can't do.

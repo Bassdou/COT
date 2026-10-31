@@ -52,6 +52,14 @@ test('content-loader.js מפנה לקובצי התוכן הקיימים', () => 
   }
 });
 
+test('נוהל עליה לפרודקשן (DEPLOY.md) קיים ומזכיר את הבדיקה הקריטית ביותר (ENABLE_TEST_BYPASS)', () => {
+  const deployPath = path.join(root, 'DEPLOY.md');
+  assert.ok(fs.existsSync(deployPath), 'DEPLOY.md לא נמצא');
+  const deploy = fs.readFileSync(deployPath, 'utf8');
+  assert.ok(deploy.includes('ENABLE_TEST_BYPASS'));
+  assert.ok(deploy.includes('calculator.js'));
+});
+
 test('קובצי PDF משפטיים (תקנון, פרטיות, נגישות) קיימים', { todo: 'terms.pdf / privacy.pdf / accessibility.pdf לא צורפו לחבילה' }, () => {
   for (const f of ['terms.pdf', 'privacy.pdf', 'accessibility.pdf']) assert.ok(fs.existsSync(path.join(root, f)), f);
 });
@@ -84,6 +92,12 @@ test('שורת קוביות הסיכום (kpiRow) מופיעה לפני הטבל
   const iTable = html.indexOf('id="tableContainer"');
   assert.ok(iPanel > -1 && iKpi > -1 && iTable > -1);
   assert.ok(iPanel < iKpi && iKpi < iTable, 'הסדר הצפוי: רצועת בקרה -> קוביות סיכום -> טבלה');
+});
+
+test('שורות הסיכום (tfoot) בטבלה אינן נדבקות (sticky) בגלילה אופקית, כדי שלא יכסו ערכים', () => {
+  const css = fs.readFileSync(path.join(root, 'style.css'), 'utf8');
+  assert.ok(!/#timesheet\s+tfoot\s+td:first-child\s*\{[^}]*position:\s*sticky/.test(css),
+    'שורת הסיכום הרחבה (colspan=9) עדיין נדבקת - תכסה ערכים אמיתיים בגלילה');
 });
 
 test('רקע מסך הכניסה בהיר (כדי שהכרטיס, כולל הפאנל הכהה, יבלוט עליו)', () => {

@@ -1,4 +1,4 @@
-<!-- COT System Version: V202610302143 -->
+<!-- COT System Version: V202610310155 -->
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
@@ -154,6 +154,9 @@
                     <li id="force-req-spc" class="invalid">תו מיוחד</li>
                 </ul>
                 <button class="btn-submit" onclick="updateOldPassword()">שמור והיכנס</button>
+                <div id="forcePasswordCancelRow" style="display:none; text-align:center; margin-top:14px;">
+                    <a href="#" onclick="cancelPasswordUpdate(); return false;" class="forgot-pwd-link">ביטול - אמשיך עם הסיסמה הנוכחית בינתיים</a>
+                </div>
                 <div id="forceError" class="msg-box error-msg"></div>
             </div>
         </div>
@@ -176,14 +179,14 @@
 
 <div id="securityBanner" style="display:none; max-width: 1200px; margin: 0 auto;"></div>
 
-<div id="cloudBalancesPanel" style="display: none; background: #EAF0FA; color: #1D4E89; padding: 10px 18px; align-items: center; justify-content: center; gap: 16px; font-size: 12.5px; box-shadow: none; border: 1px solid #D6E2F2; border-radius: 12px; margin-bottom: 20px; flex-wrap: wrap;">
+<div id="cloudBalancesPanel" style="display: none; background: #EAF0FA; color: #1D4E89; padding: 12px 20px; align-items: center; justify-content: center; gap: 18px; font-size: 15px; box-shadow: none; border: 1px solid #D6E2F2; border-radius: 12px; margin-bottom: 20px; flex-wrap: wrap;">
     <span style="font-weight: 800; color: #1D4E89;" id="cloudLastMonthTitle">החודש האחרון:</span>
     <div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;">
-        <span title="חופש רגיל">חופש: <strong id="cloudReg">0.00</strong></span>
-        <span title="חופש שבת">ח. שבת: <strong id="cloudShab">0.00</strong></span>
-        <span title="ימי מחלה">מחלה: <strong id="cloudSick">0.00</strong></span>
-        <span title="הצהרה">הצהרה: <strong id="cloudDec">0.00</strong></span>
-        <span title="ימי בחירה">בחירה: <strong id="cloudCho">0.00</strong></span>
+        <span title="חופש רגיל">🏖️ חופש: <strong id="cloudReg">0.00</strong></span>
+        <span title="חופש שבת">🗓️ ח. שבת: <strong id="cloudShab">0.00</strong></span>
+        <span title="ימי מחלה">🩺 מחלה: <strong id="cloudSick">0.00</strong></span>
+        <span title="הצהרה">📋 הצהרה: <strong id="cloudDec">0.00</strong></span>
+        <span title="ימי בחירה">✅ בחירה: <strong id="cloudCho">0.00</strong></span>
     </div>
 </div>
 
@@ -303,11 +306,14 @@
         <div class="balance-row" style="font-weight:bold; color:#2c3e50;"><span>יתרה סופית:</span><span id="bal_close_sick">0.00</span></div>
     </div>
     <div class="dash-card balance-card">
-        <h4>הצהרה / בחירה</h4>
-        <div class="balance-row"><span>פתיחה הצהרה:</span><div class="balance-input-wrap"><input type="number" id="bal_open_dec" class="bal-input locked-input" value="0.00" step="0.01" readonly oninput="updateGrandTotal()"><button class="lock-btn" onclick="toggleLock('bal_open_dec', this)">🔒</button></div></div>
-        <div class="balance-row"><span>פתיחה בחירה:</span><div class="balance-input-wrap"><input type="number" id="bal_open_cho" class="bal-input locked-input" value="0.00" step="0.01" readonly oninput="updateGrandTotal()"><button class="lock-btn" onclick="toggleLock('bal_open_cho', this)">🔒</button></div></div>
-        <div class="balance-row" style="margin-top:10px;"><span>נוצל הצהרה:</span><strong id="bal_used_dec" style="color:#c0392b;">0</strong></div>
-        <div class="balance-row"><span>נוצל בחירה:</span><strong id="bal_used_cho" style="color:#c0392b;">0</strong></div>
+        <h4>הצהרה</h4>
+        <div class="balance-row"><span>פתיחה:</span><div class="balance-input-wrap"><input type="number" id="bal_open_dec" class="bal-input locked-input" value="0.00" step="0.01" readonly oninput="updateGrandTotal()"><button class="lock-btn" onclick="toggleLock('bal_open_dec', this)">🔒</button></div></div>
+        <div class="balance-row"><span>נוצל (-):</span><strong id="bal_used_dec" style="color:#c0392b;">0</strong></div>
+    </div>
+    <div class="dash-card balance-card">
+        <h4>בחירה</h4>
+        <div class="balance-row"><span>פתיחה:</span><div class="balance-input-wrap"><input type="number" id="bal_open_cho" class="bal-input locked-input" value="0.00" step="0.01" readonly oninput="updateGrandTotal()"><button class="lock-btn" onclick="toggleLock('bal_open_cho', this)">🔒</button></div></div>
+        <div class="balance-row"><span>נוצל (-):</span><strong id="bal_used_cho" style="color:#c0392b;">0</strong></div>
     </div>
     <div class="dash-card balance-card" style="width:160px;">
         <h4>מחלת בן משפחה</h4>
@@ -340,7 +346,7 @@
 <div style="width: 100%; margin-top: 25px; margin-bottom: 60px; display:flex; justify-content:center; gap:20px; flex-wrap: wrap;">
     <button class="btn-close-month btn-3d" id="closeMonthBtn" onclick="closeMonth()" style="display:none;">סגור חודש</button>
     <button class="btn-print btn-3d" id="printBtn" onclick="window.print()" style="display:none;">הדפס גליון / PDF</button>
-    <button class="btn-3d hide-print" id="exportExcelBtn" onclick="document.getElementById('excelExportModal').style.display='block'" style="display:none; background-color: #15803D; color: white; padding: 13px 26px; border-radius: 10px; font-size: 14px; font-weight: 700; border: none; cursor: pointer;">ייצא לאקסל</button>
+    <button class="btn-3d hide-print" id="exportExcelBtn" onclick="document.getElementById('excelExportModal').style.display='block'" style="display:none; background-color: #15803D; color: white; padding: 15px 30px; border-radius: 10px; font-size: 16px; font-weight: 800; border: none; cursor: pointer; box-shadow: 0 3px 10px rgba(21,128,61,0.35);">ייצא לאקסל</button>
 </div>
 <input type="file" id="excelFileLoader" accept=".xlsx" style="display: none;" onchange="processExcelExport(event)">
 

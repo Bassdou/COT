@@ -1,4 +1,4 @@
-/* COT System Version: V202610302143 */
+/* COT System Version: V202610310155 */
 // קובץ: 03-auth.js
 // הרשמה, כניסה, איפוס סיסמה, מצב הבדיקות הסמוי (secretBypass), נעילת מסך בחוסר פעילות, והתנתקות.
 
@@ -171,6 +171,8 @@ window.enterMainApp = function(user, userDoc = null) {
     let banner = document.getElementById('securityBanner');
     if (banner) {
         let isVerified = user.emailVerified;
+        let hasStrongPwd = userDoc && userDoc.exists ? userDoc.data().hasStrongPassword === true : true; // אם אין מסמך זמין כאן, לא מציגים אזהרת סיסמה (ראו הערה למטה)
+        let deadlineStr = SECURITY_DEADLINE.toLocaleDateString('he-IL');
         if (ENFORCE_STRICT_SECURITY) {
             if (!isVerified) {
                 banner.style.display = 'block';
@@ -182,17 +184,31 @@ window.enterMainApp = function(user, userDoc = null) {
                 if(window.enableControls) window.enableControls(true);
             }
         } else {
+            let daysLeft = Math.ceil((SECURITY_DEADLINE.getTime() - Date.now()) / (1000 * 60 * 60 * 24));
             if (!isVerified) {
-                let daysLeft = Math.ceil((SECURITY_DEADLINE.getTime() - Date.now()) / (1000 * 60 * 60 * 24));
                 banner.style.display = 'block';
                 banner.className = 'warning-banner';
-                banner.innerHTML = `⚠️ <b>עדכון אבטחה למשתמשים קיימים יחול בעוד ${daysLeft} ימים.</b> עליך לאמת את חשבונך כדי למנוע חסימה עתידית. <a href="#" onclick="window.resendVerify()">לשליחת מייל אימות</a>`;
+                banner.innerHTML = `⚠️ <b>עדכון אבטחה למשתמשים קיימים יחול בתאריך ${deadlineStr} (בעוד ${daysLeft} ימים).</b> עליך לאמת את חשבונך כדי למנוע חסימה עתידית. <a href="#" onclick="window.resendVerify()">לשליחת מייל אימות</a>`;
+            } else if (!hasStrongPwd) {
+                // משתמש ותיק עם סיסמה ישנה שאינה עומדת בתקן החדש - עדיין לא נחסם, אבל מוצע לו לעדכן מראש
+                banner.style.display = 'block';
+                banner.className = 'warning-banner';
+                banner.innerHTML = `⚠️ <b>הסיסמה שלך אינה עומדת בתקן האבטחה החדש.</b> החל מתאריך ${deadlineStr} (בעוד ${daysLeft} ימים) תידרש להחליף אותה כדי להמשיך לעבוד - מומלץ לעדכן כבר עכשיו. <a href="#" onclick="window.openPasswordUpdatePrompt(); return false;">לחץ כאן להחלפת הסיסמה כעת</a>`;
             } else {
                 banner.style.display = 'none';
             }
             if(window.enableControls) window.enableControls(true);
         }
     }
+};
+
+// פתיחה מרצון (לא כפויה) של מסך עדכון הסיסמה, מתוך באנר האזהרה - כולל אפשרות ביטול וחזרה לעבודה.
+window.openPasswordUpdatePrompt = function() {
+    if(document.getElementById('forcePasswordCancelRow')) document.getElementById('forcePasswordCancelRow').style.display = 'block';
+    if(document.getElementById('forcePasswordScreen')) document.getElementById('forcePasswordScreen').style.display = 'flex';
+};
+window.cancelPasswordUpdate = function() {
+    if(document.getElementById('forcePasswordScreen')) document.getElementById('forcePasswordScreen').style.display = 'none';
 };
 
 window.resendVerify = function() { 

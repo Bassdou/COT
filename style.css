@@ -1,4 +1,4 @@
-/* COT System Version: V202610302143 */
+/* COT System Version: V202610310155 */
 /* === קובץ עיצוב: style.css === */
 /* עיצוב חדש (ניווי + ענבר), מבוסס על ההצעה שאושרה ב-Design canvas. כל שמות המחלקות/המזהים
    שה-JS תלוי בהם (ראו 01-shift-codes.js / calculator.js / components.js וכו') נשארו בדיוק כפי
@@ -46,15 +46,15 @@ input:focus-visible, button:focus-visible, select:focus-visible, a:focus-visible
 .btn-logout { background-color: transparent; color: #CBD5E1; border: 1px solid rgba(255,255,255,0.18); padding: 9px 14px; font-size: 13px; }
 .btn-logout:hover { background-color: rgba(255,255,255,0.08); }
 
-.btn-load, .btn-save { background-color: #fff; color: #334155; border: 1.5px solid var(--line); box-shadow: none; }
+.btn-load, .btn-save { background-color: #fff; color: #334155; border: 1.5px solid var(--line); box-shadow: 0 2px 6px rgba(var(--c-primary-rgb), 0.08); }
 .btn-load:hover, .btn-save:hover { background-color: #F7F9FC; }
-.btn-primary { background-color: var(--c-primary); color: white; }
+.btn-primary { background-color: var(--c-primary); color: white; box-shadow: 0 3px 10px rgba(var(--c-primary-rgb), 0.35); }
 .btn-primary:hover { background-color: var(--c-primary-dark); }
-.btn-reset { background-color: #fff; color: var(--danger); border: 1.5px solid #F2D4D4; }
+.btn-reset { background-color: #fff; color: var(--danger); border: 1.5px solid #F2D4D4; box-shadow: 0 2px 6px rgba(179, 38, 30, 0.08); }
 .btn-reset:hover { background-color: #FDF2F2; }
 
-.btn-print { background-color: #fff; color: #334155; border: 1.5px solid var(--line); padding: 13px 26px; font-size: 14px; border-radius: 10px; }
-.btn-close-month { background-color: var(--amber); color: white; padding: 13px 26px; font-size: 14px; border-radius: 10px; margin-right: 15px; }
+.btn-print { background-color: #fff; color: #334155; border: 1.5px solid var(--line); padding: 15px 30px; font-size: 16px; font-weight: 700; border-radius: 10px; box-shadow: 0 2px 6px rgba(var(--c-primary-rgb), 0.08); }
+.btn-close-month { background-color: var(--amber); color: white; padding: 15px 30px; font-size: 16px; font-weight: 800; border-radius: 10px; margin-right: 15px; box-shadow: 0 3px 10px rgba(176, 111, 31, 0.35); }
 .btn-close-month:hover { background-color: #96590F; }
 
 .header-panel { background: var(--surface); padding: 20px 24px; border-radius: var(--radius); box-shadow: 0 4px 16px rgba(20,33,58,0.1); border: 1px solid var(--line); margin-bottom: 20px; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 20px; }
@@ -65,7 +65,7 @@ input:focus-visible, button:focus-visible, select:focus-visible, a:focus-visible
 
 .actions-section { flex: 0 0 auto; display: flex; justify-content: flex-end; }
 .action-grid { display: flex; flex-wrap: wrap; gap: 10px; }
-.action-grid button { padding: 11px 16px; font-size: 13.5px; white-space: nowrap; }
+.action-grid button { padding: 12px 18px; font-size: 16px; font-weight: 700; white-space: nowrap; box-shadow: 0 2px 6px rgba(var(--c-primary-rgb), 0.12); }
 
 .table-container { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow); overflow-x: auto; max-height: 65vh; margin-bottom: 20px; padding: 4px; }
 table { width: max-content; margin: 0 auto; border-collapse: collapse; white-space: nowrap; table-layout: auto; }
@@ -75,10 +75,11 @@ thead { position: sticky; top: 0; z-index: 10; }
 #timesheet thead tr:first-child th:first-child { position: sticky; right: 0; z-index: 12; }
 #timesheet tbody td:nth-child(1) { position: sticky; right: 0; z-index: 5; }
 #timesheet tbody td:nth-child(2) { position: sticky; right: 30px; z-index: 5; }
-#timesheet tfoot td:first-child { position: sticky; right: 0; z-index: 5; }
+/* שורות הסיכום (tfoot) לא נדבקות: תא התווית שלהן רחב (colspan=9), ואם היה נדבק הוא היה מכסה
+   ערכים אמיתיים בטבלה בזמן גלילה. במקום זאת הן גוללות רגיל, ועוברות מתחת לעמודת התאריך הנעולה. */
 
 th, td { border: 1px solid var(--line); padding: 2px 2px; text-align: center; font-size: 13px; vertical-align: middle; }
-th { background-color: var(--navy-900); color: white; font-size: 12px; padding: 4px 2px; border-color: rgba(255,255,255,0.18); }
+th { background-color: var(--c-primary); color: white; font-size: 12px; padding: 4px 2px; border-color: rgba(255,255,255,0.18); }
 /* קו דק בין כל עמודה (ברירת מחדל, מעל); קו מודגש רק בגבולות הקבוצות הראשיות - תקן/רגילות, סוף כל קבוצת אחוזים, וערך */
 .thick-border-left { border-left: 3px solid #90A6C4 !important; }
 th.thick-border-left { border-left: 3px solid rgba(255,255,255,0.55) !important; }
@@ -92,9 +93,9 @@ th.thick-border-left { border-left: 3px solid rgba(255,255,255,0.55) !important;
 .day-fri { color: var(--c-primary-dark); font-weight: 700; background-color: rgba(225, 245, 254, 0.7) !important; }
 .row-sat td { border-bottom: 2px solid var(--c-primary) !important; }
 
-.color-legend { display: flex; flex-wrap: wrap; justify-content: center; gap: 16px; margin: 10px 0 14px; font-size: 12.5px; color: var(--muted); }
-.legend-item { display: flex; align-items: center; gap: 5px; }
-.legend-swatch { width: 13px; height: 13px; border-radius: 4px; display: inline-block; border: 1px solid rgba(0,0,0,0.1); }
+.color-legend { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; margin: 12px 0 16px; font-size: 15px; font-weight: 600; color: var(--ink); }
+.legend-item { display: flex; align-items: center; gap: 7px; }
+.legend-swatch { width: 15px; height: 15px; border-radius: 4px; display: inline-block; border: 1px solid rgba(0,0,0,0.1); }
 .legend-absence { background-color: #7C3AED; }
 .legend-negative { background-color: var(--danger); }
 .legend-holiday { background-color: var(--amber); }
@@ -109,30 +110,30 @@ th.thick-border-left { border-left: 3px solid rgba(255,255,255,0.55) !important;
 /* שורת 5 קוביות הסיכום (לא כרטיסי יתרות) ברוחב מלא ואחיד, כמו בעיצוב המאושר. */
 .kpi-row { width: 100%; display: grid; grid-template-columns: repeat(5, minmax(120px, 1fr)); gap: 14px; }
 .dash-card { background: var(--surface); padding: 16px 18px; border-radius: var(--radius); width: 140px; text-align: center; box-shadow: var(--shadow); flex-shrink: 0; position: relative; }
-.kpi-row .dash-card { width: auto; }
+.kpi-row .dash-card { width: auto; padding: 22px 18px; }
 .dash-icon { width: 34px; height: 34px; border-radius: 9px; background: var(--ground); color: var(--muted); display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; }
 .dash-icon-amber { background: var(--amber-tint); color: var(--amber); }
 .dash-icon-primary { background: #E3ECF8; color: var(--c-primary); }
-.dash-card h4 { margin: 0 0 10px 0; font-size: 12.5px; color: var(--muted); font-weight: 700; }
-.dash-card .val { font-size: 18px; font-weight: 800; color: var(--navy-900); }
-.dash-card-muted .val { font-size: 16px; }
+.dash-card h4 { margin: 0 0 12px 0; font-size: 14px; color: var(--muted); font-weight: 700; }
+.dash-card .val { font-size: 21px; font-weight: 800; color: var(--navy-900); }
+.dash-card-muted .val { font-size: 19px; }
 .dash-sub { font-size: 10.5px; color: var(--muted); margin-top: 4px; min-height: 13px; }
 .dash-card-highlight { box-shadow: 0 4px 14px rgba(20,33,58,0.1); }
-.dash-card-highlight .val { font-size: 23px; }
+.dash-card-highlight .val { font-size: 27px; }
 
 .balance-card { width: 220px; text-align: right; }
-.balance-card h4 { text-align: center; margin-bottom: 12px; font-size: 13.5px; color: var(--navy-900); border-bottom: 1px solid var(--line); padding-bottom: 6px; }
-.balance-row { display: flex; justify-content: space-between; align-items: center; font-size: 13px; margin-bottom: 6px; color: var(--muted); }
+.balance-card h4 { text-align: center; margin-bottom: 14px; font-size: 16px; color: var(--navy-900); border-bottom: 1px solid var(--line); padding-bottom: 8px; }
+.balance-row { display: flex; justify-content: space-between; align-items: center; font-size: 14.5px; font-weight: 600; margin-bottom: 8px; color: var(--muted); }
 .balance-input-wrap { display: flex; align-items: center; gap: 4px; }
-.bal-input { width: 65px; text-align: center; font-weight: 700; font-size: 13px; padding: 3px; border-radius: 6px; border: 1.5px solid var(--line); outline: none; transition: 0.2s; color: var(--navy-900);}
+.bal-input { width: 68px; text-align: center; font-weight: 700; font-size: 14.5px; padding: 4px; border-radius: 6px; border: 1.5px solid var(--line); outline: none; transition: 0.2s; color: var(--navy-900);}
 .locked-input { background-color: #F7F9FC; color: var(--muted); border-color: var(--line); }
-.lock-btn { cursor: pointer; font-size: 12px; background: #FAFBFD; border: 1px solid var(--line); border-radius: 7px; width: 24px; height: 24px; padding: 0; transition: 0.2s; }
+.lock-btn { cursor: pointer; font-size: 14px; background: #FAFBFD; border: 1px solid var(--line); border-radius: 7px; width: 28px; height: 28px; padding: 0; transition: 0.2s; }
 .lock-btn:hover { background: #F0F4F9; }
 .tlush-card { background: var(--amber-tint); width: 180px; } .tlush-card .val { color: var(--amber); font-size: 22px; margin-top: 10px;}
 
 .balances-table-wrapper { width: 100%; max-width: 650px; margin: 30px auto; background: var(--surface); padding: 20px; border-radius: var(--radius); box-shadow: var(--shadow); }
 .balances-table { width: 100%; border-collapse: collapse; text-align: center; margin-top: 15px; }
-.balances-table th { background-color: var(--navy-900); color: white; padding: 10px; font-size: 14px; border: 1px solid var(--navy-700); }
+.balances-table th { background-color: var(--c-primary); color: white; padding: 10px; font-size: 14px; border: 1px solid var(--navy-700); }
 .balances-table td { border: 1px solid var(--line); padding: 10px; font-size: 15px; color: var(--ink); }
 .balances-table tr:nth-child(even) { background-color: #F7F9FC; }
 .balances-table tr:hover { background-color: #EAF0FA; }
@@ -147,7 +148,7 @@ th.thick-border-left { border-left: 3px solid rgba(255,255,255,0.55) !important;
 .modal-header { border-bottom: 2px solid var(--line); padding-bottom: 10px; margin-bottom: 15px; }
 .modal-header h2 { margin: 0; color: var(--navy-900); font-size: 21px; }
 .info-table { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
-.info-table th { background-color: var(--navy-900); color: white; padding: 8px; font-size: 14px; text-align: right;}
+.info-table th { background-color: var(--c-primary); color: white; padding: 8px; font-size: 14px; text-align: right;}
 .info-table td { padding: 6px 8px; border-bottom: 1px solid var(--line); font-size: 14px; color: var(--ink); text-align: right;}
 .code-badge { background-color: var(--ground); color: var(--c-primary); padding: 2px 6px; border-radius: 6px; font-weight: 700; font-family: monospace; border: 1px solid var(--line); display: inline-block; min-width: 30px; text-align: center;}
 

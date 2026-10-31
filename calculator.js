@@ -1,1 +1,516 @@
-var _0x37563c=_0x52a5;function _0x198b(){var _0x1bb0ca=['empty-print','\x22\x20id=\x22val-K-','day-fri','getDate','reg','__totalsBatchDepth','דצמבר','kpiRow','innerText','day-sat','cho','monthYearSelect','monthlyBalances','<td\x20class=\x22col-sep\x20val-cell\x20','שעון\x20קיץ','הצהרה','0.00','some','tbl_bal_used_mil','sum-hours-total','options','bal_close_','<span\x20style=\x22color:#e74c3c;\x20display:block;\x20text-align:left;\x22\x20dir=\x22ltr\x22>-1.00</span>','9018254BBBpIO','\x22\x20style=\x22width:\x2030px;\x20min-width:\x2030px;\x22>','printBtn','inline-block','getActiveMonthKey','tbl_bal_used_fam',')\x20.shift-type-input','<span\x20style=\x22color:#e67e22\x22>','dashCarryOver','\x22\x20data-val=\x220\x22></td>','getAttribute','\x20col-sep\x22\x20id=\x22val-desc-','setDate','factor','data-cost','data-date','runTotalsBatch','block','<tr\x20class=\x22','כולל\x20','trim','\x22\x20id=\x22val-Q-','getTime','dec','\x22\x20id=\x22val-U-','הכנס\x20שם\x20עובד','forEach','.time-input',':00','\x22\x20style=\x22font-size:\x2012px;\x20font-weight:\x20bold;\x20background-color:\x20rgba(248,\x20251,\x20255,\x200.5);\x20text-align:\x20right;\x20padding-right:\x205px;\x20white-space:\x20nowrap;\x20overflow:\x20hidden;\x20text-overflow:\x20ellipsis;\x22\x20data-hol=\x22','classList','printDashEshel','אפריל','indexOf','remove','\x20₪.\x20נא\x20לעדכן\x20בהתאם.','<span\x20style=\x22color:#e74c3c;\x20display:inline-block;\x22\x20dir=\x22ltr\x22>','WEEKEND_BLOCKED_ABSENCE_CODES','bal_used_mil','text','value','hebrew','standardHours','נתוני_משמרות','title','\x22\x20style=\x22background-color:\x20','⚠️\x20שים\x20לב!\x20חרגת\x20ממכסת\x205\x20משמרות\x20בשבוע\x20<br><span\x20style=\x27font-size:13px;\x20font-weight:normal;\x27>(כולל\x20','val-total-hours-','replace','handleShiftType','closest','שגיאה\x20בחישוב\x20השורה:\x20','\x20col-sep\x20hide-print\x22><input\x20type=\x22text\x22\x20class=\x22shift-type-input\x22\x20maxlength=\x223\x22\x20style=\x22width:\x2035px;\x22\x20onchange=\x22handleShiftType(this)\x22></td>','eshelRate','max','eve','onclick','min','מרץ','hourlyRate','summaryPanel','innerHTML','sum-hours-shabbat','tbl_bal_close_','employeeName','6212065XqKLwc','מחלת\x20בן\x20משפחה','printMonthYearText','floor',';\x22>','\x22><input\x20type=\x22text\x22\x20class=\x22time-input\x20empty-print\x22\x20maxlength=\x225\x22\x20placeholder=\x22\x22\x20onchange=\x22formatTimeInput(this)\x22></td>','flex','\x22\x20id=\x22val-I-','#e8f5e9','\x22\x20id=\x22val-O-','carryMaxInfo','12153650QQRGoz','פברואר','עפ\x22י\x20הסכם','</span></td>','sum-cost-total','tableContainer','calculateRow','locked-input','961011eEGLOA','אוגוסט','מיל','</tr>','HOLIDAYS_DB','focus','option','<td\x20class=\x22val-cell\x20','\x22\x20id=\x22val-S-','<span\x20style=\x22color:#e74c3c;\x20display:block;\x20text-align:left;\x22\x20dir=\x22ltr\x22>','val-cost-','שעון\x20חורף','row-sat','createElement','נוכחות','\x20thick-border-left\x22\x20id=\x22val-R-','round','dashGross','grid','.shift-type-input','carryOverData','backgroundColor','חופש','updateGrandTotal','tr:nth-child(','type','<td\x20class=\x22col-sep\x20','data-gross','\x20thick-border-left\x22\x20id=\x22val-cost-','\x20|\x20עבור:\x20','<td\x20class=\x22','add','\x22\x20id=\x22val-J-','9JqkFuz','values','\x22\x20data-is-shift=\x220\x22\x20data-cost=\x220\x22\x20data-gross=\x220\x22></td>','data-val','sum-hours-totalShift','\x22\x20id=\x22val-V-','סגור\x20חודש','</span>','#fff3e0','shab','1633230XfbuHG','holiday','שמור\x20גליון','setAttribute','val-shabbat-hours-','6893512wTeMUe','closeMonthBtn','\x20|\x20<span\x20style=\x22color:#e74c3c;\x20font-weight:bold;\x22>לא\x20מזכה\x20בתקן\x20בסופ\x22ש</span>','selectedIndex','getDay','generateTable','toFixed','SHIFT_CODES','\x20(<span\x20style=\x22color:#e67e22\x22>','מבמ','getMonth','\x22\x20id=\x22val-P-','\x20print-thick-right\x22><input\x20type=\x22text\x22\x20class=\x22time-input\x20empty-print\x22\x20maxlength=\x225\x22\x20placeholder=\x22\x22\x20onchange=\x22formatTimeInput(this)\x22\x20data-date=\x22','sum-hours-','length','ספטמבר','tbl_bal_open_','1kiBgZI','querySelectorAll','split','אוקטובר','querySelector','|\x20עבור:\x20','</span>)','חופש\x20שבת','includes','display','printEmployeeNameDisplay','נובמבר','\x20thick-border-left\x22\x20id=\x22val-W-','val-','tbl_bal_used_','__totalsPending','getFullYear','substring','</td>','ABSENCE_CODES','<span\x20style=\x22color:#8e44ad;\x20font-weight:bold;\x22>','dashShifts','getElementById','nextElementSibling','\x22><span\x20style=\x22color:#e67e22\x22>','bal_used_','data-is-shift','tbody','bal_open_','יולי','val-desc-','מילואים','\x20משמרות\x20נגררות)</span>','1377106ouoZTg','style','dashStandard','4yBAdQt','(מקסימום\x20אפשרי\x20לחודש\x20זה:\x20','sick','weeklyWarning','apply','selected','\x20col-sep\x22\x20style=\x22width:\x2030px;\x20min-width:\x2030px;\x22>','data-hol'];_0x198b=function(){return _0x1bb0ca;};return _0x198b();}(function(_0x55b521,_0x45d1bd){var _0x3f50ce=_0x52a5,_0x1ebd17=_0x55b521();while(!![]){try{var _0x1996de=-parseInt(_0x3f50ce(0x236))/0x1*(parseInt(_0x3f50ce(0x257))/0x2)+-parseInt(_0x3f50ce(0x1f5))/0x3+-parseInt(_0x3f50ce(0x25a))/0x4*(-parseInt(_0x3f50ce(0x2ba))/0x5)+-parseInt(_0x3f50ce(0x220))/0x6+-parseInt(_0x3f50ce(0x279))/0x7+parseInt(_0x3f50ce(0x225))/0x8*(parseInt(_0x3f50ce(0x216))/0x9)+parseInt(_0x3f50ce(0x1ed))/0xa;if(_0x1996de===_0x45d1bd)break;else _0x1ebd17['push'](_0x1ebd17['shift']());}catch(_0x25a8b6){_0x1ebd17['push'](_0x1ebd17['shift']());}}}(_0x198b,0xb71e2));var daysHebrew=['א\x27','ב\x27','ג\x27','ד\x27','ה\x27','ו\x27','ש\x27'],columnsData=[{'id':'I','factor':0x0},{'id':'I2','factor':0x0},{'id':'J','factor':0x1},{'id':'K','factor':1.25},{'id':'L','factor':1.5},{'id':'M','factor':1.75},{'id':'N','factor':0x2},{'id':'O','factor':1.8},{'id':'P','factor':1.875},{'id':'Q','factor':2.25},{'id':'R','factor':2.5},{'id':'S','factor':0.2},{'id':'T','factor':0.5},{'id':'U','factor':0.75},{'id':'V','factor':0.875},{'id':'W','factor':0x1}];function pad2(_0x1fed67){return(_0x1fed67<0xa?'0':'')+_0x1fed67;}function initMonthYearSelect(){var _0x4de97f=_0x52a5,_0x15e85a=document[_0x4de97f(0x24c)](_0x4de97f(0x26d));if(!_0x15e85a||_0x15e85a[_0x4de97f(0x276)]['length']>0x0)return;var _0x33cd1f=['ינואר',_0x4de97f(0x1ee),_0x4de97f(0x2b3),_0x4de97f(0x299),'מאי','יוני',_0x4de97f(0x253),_0x4de97f(0x1f6),_0x4de97f(0x234),_0x4de97f(0x239),_0x4de97f(0x241),_0x4de97f(0x268)],_0x32d7af=new Date(),_0x81250e=_0x32d7af['getMonth'](),_0x61bf59=_0x32d7af[_0x4de97f(0x246)]();_0x81250e===0x0&&(_0x81250e=0xc,_0x61bf59--);for(var _0xcde0ec=_0x32d7af[_0x4de97f(0x246)]()-0x1;_0xcde0ec<=_0x32d7af['getFullYear']()+0x2;_0xcde0ec++){for(var _0x182936=0x1;_0x182936<=0xc;_0x182936++){var _0x4641a2=document[_0x4de97f(0x202)](_0x4de97f(0x1fb));_0x4641a2[_0x4de97f(0x2a1)]=_0xcde0ec+'-'+pad2(_0x182936),_0x4641a2['text']=_0x33cd1f[_0x182936-0x1]+'\x20'+_0xcde0ec;if(_0xcde0ec===_0x61bf59&&_0x182936===_0x81250e)_0x4641a2[_0x4de97f(0x25f)]=!![];if(_0x15e85a)_0x15e85a[_0x4de97f(0x214)](_0x4641a2);}}}function getSelectedMonthYear(){var _0x2f5d4e=_0x52a5,_0x510981=document[_0x2f5d4e(0x24c)](_0x2f5d4e(0x26d)),_0x5d192a=_0x510981?_0x510981[_0x2f5d4e(0x2a1)]:null;if(!_0x5d192a)return{'y':new Date()[_0x2f5d4e(0x246)](),'m':new Date()[_0x2f5d4e(0x22f)]()+0x1};return{'y':parseInt(_0x5d192a[_0x2f5d4e(0x238)]('-')[0x0],0xa),'m':parseInt(_0x5d192a['split']('-')[0x1],0xa)};}function _0x52a5(_0x3180ba,_0x5c000e){_0x3180ba=_0x3180ba-0x1e3;var _0x198be6=_0x198b();var _0x52a5bb=_0x198be6[_0x3180ba];return _0x52a5bb;}function updateTitles(){var _0x2f6fd3=_0x52a5,_0x343feb=document['getElementById'](_0x2f6fd3(0x2b9)),_0x59fe12=document[_0x2f6fd3(0x24c)]('monthYearSelect');if(!_0x343feb||!_0x59fe12)return;var _0xc1398d=_0x343feb[_0x2f6fd3(0x2a1)][_0x2f6fd3(0x28d)](),_0x33bf8=_0x59fe12[_0x2f6fd3(0x276)][_0x59fe12[_0x2f6fd3(0x228)]][_0x2f6fd3(0x2a0)];let _0x49804f=document[_0x2f6fd3(0x24c)](_0x2f6fd3(0x1e4));if(_0x49804f)_0x49804f[_0x2f6fd3(0x26a)]=_0x33bf8;var _0x246012=document[_0x2f6fd3(0x24c)]('sheetTitle'),_0x35e2d2=document[_0x2f6fd3(0x24c)](_0x2f6fd3(0x240));if(_0xc1398d!==''){if(_0x246012)_0x246012[_0x2f6fd3(0x26a)]='דוח\x20שעות\x20משמרות\x20-\x20'+_0x33bf8+_0x2f6fd3(0x212)+_0xc1398d;_0x35e2d2&&(_0x35e2d2[_0x2f6fd3(0x26a)]=_0x2f6fd3(0x23b)+_0xc1398d,_0x35e2d2[_0x2f6fd3(0x258)][_0x2f6fd3(0x23f)]=_0x2f6fd3(0x27c));}else{if(_0x246012)_0x246012['innerText']='דוח\x20שעות\x20משמרות\x20-\x20'+_0x33bf8;if(_0x35e2d2)_0x35e2d2[_0x2f6fd3(0x258)]['display']='none';}document[_0x2f6fd3(0x2a5)]=(_0xc1398d?_0xc1398d[_0x2f6fd3(0x2a9)](/\s+/g,'_'):_0x2f6fd3(0x2a4))+'_'+_0x33bf8[_0x2f6fd3(0x2a9)]('\x20','_');}window['formatTimeInput']=function(_0x416203){var _0x18a25b=_0x52a5,_0x1a3d44=_0x416203['value'][_0x18a25b(0x28d)]();if(_0x1a3d44===''){_0x416203[_0x18a25b(0x2a1)]='',calculateRow(_0x416203);return;}var _0x3f544b=_0x1a3d44[_0x18a25b(0x2a9)](/[^\d]/g,'');if(_0x3f544b==='')_0x416203[_0x18a25b(0x2a1)]='';else{if(_0x3f544b[_0x18a25b(0x233)]<=0x2)_0x416203[_0x18a25b(0x2a1)]=pad2(Math['min'](parseInt(_0x3f544b,0xa),0x17))+_0x18a25b(0x295);else{if(_0x3f544b['length']===0x3)_0x416203['value']='0'+parseInt(_0x3f544b['substring'](0x0,0x1),0xa)+':'+pad2(Math[_0x18a25b(0x2b2)](parseInt(_0x3f544b[_0x18a25b(0x247)](0x1,0x3),0xa),0x3b));else _0x416203[_0x18a25b(0x2a1)]=pad2(Math['min'](parseInt(_0x3f544b[_0x18a25b(0x247)](0x0,0x2),0xa),0x17))+':'+pad2(Math['min'](parseInt(_0x3f544b[_0x18a25b(0x247)](0x2,0x4),0xa),0x3b));}}calculateRow(_0x416203);},window[_0x37563c(0x22a)]=function(){var _0x4e1650=_0x37563c,_0x5f0eee=document[_0x4e1650(0x24c)](_0x4e1650(0x2b9)),_0x4fd52e=_0x5f0eee?_0x5f0eee[_0x4e1650(0x2a1)][_0x4e1650(0x28d)]():'';if(!_0x4fd52e){customAlert(_0x4e1650(0x292));if(_0x5f0eee)_0x5f0eee[_0x4e1650(0x1fa)]();return;}var _0xcff577=getSelectedMonthYear(),_0x22e66f=_0xcff577['y']+'-'+pad2(_0xcff577['m']),_0x3cbec8=parseFloat(document[_0x4e1650(0x24c)](_0x4e1650(0x2ae))?.[_0x4e1650(0x2a1)])||0x0;if([0x1,0x4,0x7,0xa][_0x4e1650(0x23e)](_0xcff577['m'])&&_0x3cbec8<MINIMUM_ESHEL_RATE)customAlert('שים\x20לב,\x20תחילת\x20רבעון:\x20תעריף\x20האש\x22ל\x20המעודכן\x20הוא\x20'+MINIMUM_ESHEL_RATE+_0x4e1650(0x29c));if(window['carryOverData'][_0x22e66f]===undefined){var _0x21d72f=new Date(_0xcff577['y'],_0xcff577['m']-0x1,0x0);if(_0x21d72f[_0x4e1650(0x229)]()===0x6)window['carryOverData'][_0x22e66f]=0x0;else{let _0x5ab4c6=document[_0x4e1650(0x24c)]('manualCarryInput');_0x5ab4c6&&(_0x5ab4c6[_0x4e1650(0x2af)]=_0x21d72f[_0x4e1650(0x229)]()+0x1,_0x5ab4c6['value']='0');let _0x1676df=document['getElementById'](_0x4e1650(0x1ec));if(_0x1676df)_0x1676df[_0x4e1650(0x26a)]=_0x4e1650(0x25b)+(_0x21d72f[_0x4e1650(0x229)]()+0x1)+')';let _0x5284c4=document[_0x4e1650(0x24c)]('firstMonthCarryModal');if(_0x5284c4)_0x5284c4[_0x4e1650(0x258)][_0x4e1650(0x23f)]='block';}}updateTitles();let _0x2c755b=window[_0x4e1650(0x26e)][_0x22e66f]||{'reg':0x0,'shab':0x0,'sick':0x0,'dec':0x0,'cho':0x0};['reg',_0x4e1650(0x21f),_0x4e1650(0x25c),_0x4e1650(0x290),'cho'][_0x4e1650(0x293)](_0x170b2f=>{var _0x5b5712=_0x4e1650;let _0x45848=document[_0x5b5712(0x24c)](_0x5b5712(0x252)+_0x170b2f);if(_0x45848){_0x45848[_0x5b5712(0x2a1)]=_0x2c755b[_0x170b2f][_0x5b5712(0x22b)](0x2),_0x45848['readOnly']=!![],_0x45848[_0x5b5712(0x297)][_0x5b5712(0x214)](_0x5b5712(0x1f4));if(_0x45848[_0x5b5712(0x24d)])_0x45848[_0x5b5712(0x24d)][_0x5b5712(0x26a)]='🔒';}});var _0x6536dd=new Date(_0xcff577['y'],_0xcff577['m'],0x0)['getDate'](),_0x1845e1=document['getElementById'](_0x4e1650(0x251)),_0xed6cc8='',_0x4100ec=0x0;for(var _0x4cf6e1=0x1;_0x4cf6e1<=_0x6536dd;_0x4cf6e1++){var _0x2ad7c5=new Date(_0xcff577['y'],_0xcff577['m']-0x1,_0x4cf6e1)[_0x4e1650(0x229)]();if(_0x2ad7c5===0x0&&_0x4cf6e1>0x1)_0x4100ec=0x1-_0x4100ec;var _0x33c796=_0x2ad7c5===0x5?_0x4e1650(0x264):_0x2ad7c5===0x6?_0x4e1650(0x26b):'',_0x497eed=_0x2ad7c5===0x6?_0x4e1650(0x201):'',_0x4d9532=window[_0x4e1650(0x1f9)]&&window[_0x4e1650(0x1f9)][_0xcff577['y']+'-'+pad2(_0xcff577['m'])+'-'+pad2(_0x4cf6e1)]?window[_0x4e1650(0x1f9)][_0xcff577['y']+'-'+pad2(_0xcff577['m'])+'-'+pad2(_0x4cf6e1)]:null,_0x2347cc=_0x4d9532?_0x4d9532[_0x4e1650(0x2a2)][_0x4e1650(0x238)]('(')[0x0]['trim']():'';_0xed6cc8+=_0x4e1650(0x28b)+_0x497eed+_0x4e1650(0x2a6)+(_0x4100ec===0x0?_0x4e1650(0x1ea):_0x4e1650(0x21e))+_0x4e1650(0x1e6)+_0x4e1650(0x213)+_0x33c796+_0x4e1650(0x27a)+pad2(_0x4cf6e1)+_0x4e1650(0x248)+_0x4e1650(0x213)+_0x33c796+_0x4e1650(0x260)+daysHebrew[_0x2ad7c5]+_0x4e1650(0x248)+_0x4e1650(0x213)+_0x33c796+_0x4e1650(0x2ad)+_0x4e1650(0x213)+_0x33c796+_0x4e1650(0x231)+_0xcff577['y']+'-'+_0xcff577['m']+'-'+_0x4cf6e1+'\x22></td>'+_0x4e1650(0x20f)+_0x33c796+_0x4e1650(0x1e7)+_0x4e1650(0x213)+_0x33c796+_0x4e1650(0x284)+_0x4cf6e1+_0x4e1650(0x296)+_0x2347cc+_0x4e1650(0x24e)+_0x2347cc+_0x4e1650(0x1f0)+_0x4e1650(0x1fc)+_0x33c796+'\x22\x20id=\x22val-total-hours-'+_0x4cf6e1+_0x4e1650(0x282)+_0x4e1650(0x26f)+_0x33c796+'\x22\x20id=\x22val-shabbat-hours-'+_0x4cf6e1+_0x4e1650(0x282)+_0x4e1650(0x26f)+_0x33c796+_0x4e1650(0x1e9)+_0x4cf6e1+_0x4e1650(0x282)+_0x4e1650(0x26f)+_0x33c796+'\x20thick-border-left\x22\x20id=\x22val-I2-'+_0x4cf6e1+_0x4e1650(0x282)+_0x4e1650(0x1fc)+_0x33c796+_0x4e1650(0x215)+_0x4cf6e1+_0x4e1650(0x282)+_0x4e1650(0x1fc)+_0x33c796+_0x4e1650(0x263)+_0x4cf6e1+_0x4e1650(0x282)+_0x4e1650(0x26f)+_0x33c796+'\x20thick-border-left\x22\x20id=\x22val-L-'+_0x4cf6e1+_0x4e1650(0x282)+_0x4e1650(0x1fc)+_0x33c796+'\x22\x20id=\x22val-M-'+_0x4cf6e1+_0x4e1650(0x282)+_0x4e1650(0x26f)+_0x33c796+'\x20thick-border-left\x22\x20id=\x22val-N-'+_0x4cf6e1+_0x4e1650(0x282)+_0x4e1650(0x1fc)+_0x33c796+_0x4e1650(0x1eb)+_0x4cf6e1+_0x4e1650(0x282)+_0x4e1650(0x1fc)+_0x33c796+_0x4e1650(0x230)+_0x4cf6e1+_0x4e1650(0x282)+_0x4e1650(0x1fc)+_0x33c796+_0x4e1650(0x28e)+_0x4cf6e1+'\x22\x20data-val=\x220\x22></td>'+_0x4e1650(0x26f)+_0x33c796+_0x4e1650(0x204)+_0x4cf6e1+_0x4e1650(0x282)+_0x4e1650(0x1fc)+_0x33c796+_0x4e1650(0x1fd)+_0x4cf6e1+_0x4e1650(0x282)+_0x4e1650(0x1fc)+_0x33c796+'\x22\x20id=\x22val-T-'+_0x4cf6e1+_0x4e1650(0x282)+'<td\x20class=\x22val-cell\x20'+_0x33c796+_0x4e1650(0x291)+_0x4cf6e1+'\x22\x20data-val=\x220\x22></td>'+_0x4e1650(0x1fc)+_0x33c796+_0x4e1650(0x21b)+_0x4cf6e1+_0x4e1650(0x282)+_0x4e1650(0x26f)+_0x33c796+_0x4e1650(0x242)+_0x4cf6e1+_0x4e1650(0x282)+_0x4e1650(0x26f)+_0x33c796+_0x4e1650(0x211)+_0x4cf6e1+_0x4e1650(0x218)+_0x4e1650(0x1f8);}if(_0x1845e1)_0x1845e1[_0x4e1650(0x2b6)]=_0xed6cc8;var _0x417856=window[_0x4e1650(0x27d)](),_0x4146a7=document[_0x4e1650(0x24c)]('closeMonthBtn');_0x4146a7&&(!_0x417856||_0x22e66f===_0x417856?(_0x4146a7[_0x4e1650(0x26a)]=_0x4e1650(0x21c),_0x4146a7[_0x4e1650(0x2b1)]=function(){closeMonth();},_0x4146a7[_0x4e1650(0x258)][_0x4e1650(0x20a)]=''):(_0x4146a7['innerText']=_0x4e1650(0x222),_0x4146a7[_0x4e1650(0x2b1)]=function(){saveData();},_0x4146a7[_0x4e1650(0x258)]['backgroundColor']='#2980b9'));[_0x4e1650(0x1f2),'summaryPanel',_0x4e1650(0x269),_0x4e1650(0x27b),'exportExcelBtn',_0x4e1650(0x226)][_0x4e1650(0x293)](_0x50de2a=>{var _0x516686=_0x4e1650;let _0x29d871=document[_0x516686(0x24c)](_0x50de2a);if(!_0x29d871)return;_0x29d871[_0x516686(0x258)]['display']=_0x50de2a===_0x516686(0x2b5)?_0x516686(0x1e8):_0x50de2a===_0x516686(0x269)?_0x516686(0x207):_0x516686(0x27c);});if(document[_0x4e1650(0x24c)](_0x4e1650(0x1f2)))document['getElementById'](_0x4e1650(0x1f2))[_0x4e1650(0x258)]['display']=_0x4e1650(0x28a);updateGrandTotal();},window[_0x37563c(0x2aa)]=function(_0x283600){var _0x571a20=_0x37563c,_0x376430=_0x283600[_0x571a20(0x2a1)]['trim']()[_0x571a20(0x2a9)](/"/g,'')['replace'](/'/g,''),_0x31f20a=_0x283600['closest']('tr');if(!_0x31f20a)return;var _0x4b57f4=_0x31f20a[_0x571a20(0x237)]('.time-input');if(!_0x4b57f4||_0x4b57f4['length']<0x2)return;var _0x2538dd=_0x4b57f4[0x0]['getAttribute'](_0x571a20(0x288));if(_0x2538dd){var _0x24c668=new Date(_0x2538dd[_0x571a20(0x238)]('-')[0x0],parseInt(_0x2538dd['split']('-')[0x1],0xa)-0x1,_0x2538dd['split']('-')[0x2])['getDay']();(_0x24c668===0x5||_0x24c668===0x6)&&window[_0x571a20(0x29e)][_0x571a20(0x23e)](_0x376430)&&(customAlert('שים\x20לב:\x20לא\x20ניתן\x20להזין\x20היעדרות\x20מסוג\x20זה\x20בסופ\x22ש\x20(למעט\x20\x27מח\x27\x20ו-\x27מיל\x27).'),_0x283600[_0x571a20(0x2a1)]='',_0x376430='');}var _0x108255=window[_0x571a20(0x22c)];if(_0x108255[_0x376430])_0x4b57f4[0x0]['value']=_0x108255[_0x376430][0x0],_0x4b57f4[0x1][_0x571a20(0x2a1)]=_0x108255[_0x376430][0x1],_0x4b57f4[0x0]['classList'][_0x571a20(0x29b)](_0x571a20(0x262)),_0x4b57f4[0x1]['classList'][_0x571a20(0x29b)](_0x571a20(0x262));else(window[_0x571a20(0x249)][_0x571a20(0x23e)](_0x376430)||_0x376430==='')&&(_0x4b57f4[0x0][_0x571a20(0x2a1)]='',_0x4b57f4[0x1][_0x571a20(0x2a1)]='',_0x4b57f4[0x0]['classList'][_0x571a20(0x214)]('empty-print'),_0x4b57f4[0x1][_0x571a20(0x297)][_0x571a20(0x214)](_0x571a20(0x262)));calculateRow(_0x4b57f4[0x0]);},window[_0x37563c(0x1f3)]=function(_0x4c3056){var _0x12cd35=_0x37563c;try{var _0x22d939=_0x4c3056[_0x12cd35(0x2ab)]('tr'),_0x114eb0=_0x22d939[_0x12cd35(0x237)](_0x12cd35(0x294)),_0x5e90f3=_0x114eb0[0x0]['value'],_0x3fe08f=_0x114eb0[0x1]['value'];if(_0x5e90f3)_0x114eb0[0x0][_0x12cd35(0x297)][_0x12cd35(0x29b)](_0x12cd35(0x262));else _0x114eb0[0x0][_0x12cd35(0x297)][_0x12cd35(0x214)](_0x12cd35(0x262));if(_0x3fe08f)_0x114eb0[0x1]['classList']['remove'](_0x12cd35(0x262));else _0x114eb0[0x1][_0x12cd35(0x297)]['add'](_0x12cd35(0x262));var _0x1337aa=_0x114eb0[0x0][_0x12cd35(0x283)](_0x12cd35(0x288)),_0x360533=_0x1337aa['split']('-')[0x2],_0x5204a4=document[_0x12cd35(0x24c)]('val-cost-'+_0x360533),_0x154f6c=document[_0x12cd35(0x24c)]('val-total-hours-'+_0x360533),_0x592df3=document[_0x12cd35(0x24c)](_0x12cd35(0x224)+_0x360533),_0x176694=(_0x22d939[_0x12cd35(0x23a)](_0x12cd35(0x208))?_0x22d939['querySelector'](_0x12cd35(0x208))[_0x12cd35(0x2a1)][_0x12cd35(0x28d)]():'')[_0x12cd35(0x2a9)](/"/g,'')[_0x12cd35(0x2a9)](/'/g,''),_0x4e2d76=window[_0x12cd35(0x249)][_0x12cd35(0x23e)](_0x176694),_0x2502bf=parseInt(_0x1337aa['split']('-')[0x1],0xa),_0x59e73b=new Date(_0x1337aa[_0x12cd35(0x238)]('-')[0x0],_0x2502bf-0x1,_0x1337aa[_0x12cd35(0x238)]('-')[0x2]),_0x408c6c=_0x59e73b[_0x12cd35(0x229)]()+0x1,_0x4953c6=_0x59e73b['getFullYear']()+'-'+pad2(_0x59e73b['getMonth']()+0x1)+'-'+pad2(_0x59e73b[_0x12cd35(0x265)]()),_0x44941d=window[_0x12cd35(0x1f9)]?window[_0x12cd35(0x1f9)][_0x4953c6]:null;if(!_0x5e90f3||!_0x3fe08f||_0x5e90f3['indexOf'](':')===-0x1||_0x3fe08f[_0x12cd35(0x29a)](':')===-0x1){let _0x745b6b=![],_0x376db9=0x0,_0x5493b5=![];if(_0x4e2d76){if((_0x408c6c===0x6||_0x408c6c===0x7)&&window[_0x12cd35(0x29e)][_0x12cd35(0x23e)](_0x176694))_0x745b6b=![],_0x5493b5=!![];else{_0x745b6b=!(_0x176694===_0x12cd35(0x1f7)&&(_0x408c6c===0x6||_0x408c6c===0x7));if(_0x176694==='מח'||_0x176694==='מבמ'){if(_0x44941d&&_0x44941d[_0x12cd35(0x2a3)]!==undefined)_0x376db9=_0x44941d[_0x12cd35(0x2a3)];else{if(_0x408c6c===0x6)_0x376db9=6.5;else _0x408c6c===0x7?_0x376db9=0x8:_0x376db9=0x8;}}else _0x376db9=0x8;}}_0x154f6c&&(_0x745b6b&&_0x376db9>0x0?(_0x154f6c['innerHTML']=_0x12cd35(0x24a)+_0x376db9['toFixed'](0x2)+'</span>',_0x154f6c[_0x12cd35(0x223)](_0x12cd35(0x219),_0x376db9)):(_0x154f6c[_0x12cd35(0x26a)]='',_0x154f6c[_0x12cd35(0x223)](_0x12cd35(0x219),'0')));_0x592df3&&(_0x176694==='חש'?(_0x592df3[_0x12cd35(0x2b6)]=_0x12cd35(0x278),_0x592df3[_0x12cd35(0x223)]('data-val','-1')):(_0x592df3[_0x12cd35(0x26a)]='',_0x592df3['setAttribute']('data-val','0')));for(var _0x45cc8e=0x0;_0x45cc8e<columnsData[_0x12cd35(0x233)];_0x45cc8e++){var _0x5279f9=document['getElementById'](_0x12cd35(0x243)+columnsData[_0x45cc8e]['id']+'-'+_0x360533);_0x5279f9&&(columnsData[_0x45cc8e]['id']==='I'&&_0x745b6b&&_0x376db9>0x0?(_0x5279f9[_0x12cd35(0x2b6)]='<span\x20style=\x22color:#8e44ad;\x20font-weight:bold;\x22>'+_0x376db9['toFixed'](0x2)+_0x12cd35(0x21d),_0x5279f9['setAttribute'](_0x12cd35(0x219),_0x376db9)):(_0x5279f9['innerText']='',_0x5279f9['setAttribute'](_0x12cd35(0x219),'0')));}_0x5204a4&&(_0x5204a4[_0x12cd35(0x26a)]='',_0x5204a4[_0x12cd35(0x223)](_0x12cd35(0x250),'0'),_0x5204a4[_0x12cd35(0x223)](_0x12cd35(0x287),'0'),_0x5204a4[_0x12cd35(0x223)](_0x12cd35(0x210),'0'));var _0x586927=document[_0x12cd35(0x24c)]('val-desc-'+_0x360533);if(_0x586927){var _0x6fec11=_0x586927[_0x12cd35(0x283)](_0x12cd35(0x261))||'',_0x457721='';_0x4e2d76&&(_0x457721={'ח':_0x12cd35(0x20b),'חש':_0x12cd35(0x23d),'מח':'מחלה','הצ':_0x12cd35(0x271),'בח':'בחירה','מבמ':_0x12cd35(0x1e3),'הס':_0x12cd35(0x1ef),'מיל':_0x12cd35(0x255)}[_0x176694]);var _0x36068b='';if(_0x457721)_0x36068b='<span\x20style=\x22color:#1565c0\x22>'+_0x457721+'</span>';if(_0x6fec11)_0x36068b+=_0x36068b?_0x12cd35(0x22d)+_0x6fec11+_0x12cd35(0x23c):_0x12cd35(0x280)+_0x6fec11+_0x12cd35(0x21d);_0x5493b5&&(_0x36068b+=_0x12cd35(0x227)),_0x586927['innerHTML']=_0x36068b;}updateGrandTotal();return;}var _0x3790b2=parseFloat(document[_0x12cd35(0x24c)](_0x12cd35(0x2b4))?.[_0x12cd35(0x2a1)]||0x0),_0x273b2d=parseInt(_0x5e90f3[_0x12cd35(0x238)](':')[0x0],0xa),_0x1bb96c=parseInt(_0x5e90f3[_0x12cd35(0x238)](':')[0x1],0xa),_0x3204ec=parseInt(_0x3fe08f[_0x12cd35(0x238)](':')[0x0],0xa),_0x277478=parseInt(_0x3fe08f['split'](':')[0x1],0xa),_0xd774cc=_0x273b2d+_0x1bb96c/0x3c,_0x25ef91=_0x3204ec+_0x277478/0x3c;if(_0x25ef91<=_0xd774cc)_0x25ef91+=0x18;var _0x6faa60=Math[_0x12cd35(0x205)]((_0x25ef91-_0xd774cc)*0x3c),_0x3aeb97=new Date(_0x59e73b[_0x12cd35(0x246)](),_0x59e73b['getMonth'](),_0x59e73b[_0x12cd35(0x265)](),_0x273b2d,_0x1bb96c)['getTime'](),_0x321d3e=_0x3aeb97+_0x6faa60*0xea60,_0x1aa583=_0x59e73b[_0x12cd35(0x246)](),_0x15a589=new Date(_0x1aa583,0x9,0x1f),_0x1accf3=new Date(_0x1aa583,0x9,0x1f-_0x15a589[_0x12cd35(0x229)]()),_0x512321=new Date(_0x1aa583,0x9,_0x1accf3['getDate'](),0x2,0x0)[_0x12cd35(0x28f)](),_0xf3c559=new Date(_0x1aa583,0x2,0x1f),_0x40f648=new Date(_0x1aa583,0x2,0x1f-_0xf3c559[_0x12cd35(0x229)]()),_0x3f885b=new Date(_0x1aa583,0x2,_0x40f648['getDate']()-0x2,0x2,0x0)[_0x12cd35(0x28f)](),_0x492684=![],_0x51e624=![],_0x21f8e7=0x0,_0x5b186d=_0x6faa60;if(_0x3aeb97<_0x512321&&_0x321d3e>_0x512321)_0x492684=!![],_0x5b186d+=0x3c,_0x21f8e7=(_0x512321-_0x3aeb97)/0xea60;else _0x3aeb97<_0x3f885b&&_0x321d3e>_0x3f885b&&(_0x51e624=!![],_0x5b186d-=0x3c,_0x21f8e7=(_0x3f885b-_0x3aeb97)/0xea60);var _0x3900c5=document[_0x12cd35(0x24c)](_0x12cd35(0x254)+_0x360533);if(_0x3900c5){var _0x59f920=_0x3900c5[_0x12cd35(0x283)](_0x12cd35(0x261))||'',_0x2935c4=_0x12cd35(0x203),_0xb81b50=_0x492684?_0x12cd35(0x200):_0x51e624?_0x12cd35(0x270):'',_0x1d07b6='<span\x20style=\x22color:#1565c0\x22>'+_0x2935c4+_0x12cd35(0x21d);if(_0x59f920)_0x1d07b6+='\x20(<span\x20style=\x22color:#e67e22\x22>'+_0x59f920+'</span>)';if(_0xb81b50)_0x1d07b6+='\x20|\x20<span\x20style=\x22color:#8e44ad;\x20font-weight:bold;\x22>'+_0xb81b50+'</span>';_0x3900c5[_0x12cd35(0x2b6)]=_0x1d07b6;}_0x154f6c&&(_0x5b186d>0x0?(_0x154f6c[_0x12cd35(0x26a)]=(_0x5b186d/0x3c)[_0x12cd35(0x22b)](0x2),_0x154f6c['setAttribute'](_0x12cd35(0x219),_0x5b186d/0x3c)):(_0x154f6c[_0x12cd35(0x26a)]='',_0x154f6c['setAttribute']('data-val','0')));var _0x110271=0x0,_0x2cd407=0x0;for(var _0x26fe80=0x1;_0x26fe80<=_0x5b186d;_0x26fe80++){var _0xe4b36e=_0x26fe80;if(_0x492684&&_0x26fe80>_0x21f8e7)_0xe4b36e=_0x26fe80-0x3c;else{if(_0x51e624&&_0x26fe80>_0x21f8e7)_0xe4b36e=_0x26fe80+0x3c;}var _0x343996=(_0xd774cc+(_0xe4b36e-0.5)/0x3c)%0x18;if(_0x343996>=0x16||_0x343996<0x6)_0x110271++;if(_0x343996>=0xe&&_0x343996<0x16)_0x2cd407++;}var _0x48175e=_0x110271>=0x78,_0x4b9f8b=_0x273b2d+_0x1bb96c/0x3c>=0xe||_0x2cd407>=0xb4,_0x2ae06c=_0x273b2d+_0x1bb96c/0x3c>=0xc||_0x273b2d+_0x1bb96c/0x3c<=0x3,_0x1dd4a1={'I':0x0,'I2':0x0,'J':0x0,'K':0x0,'L':0x0,'M':0x0,'N':0x0,'O':0x0,'P':0x0,'Q':0x0,'R':0x0,'S':0x0,'T':0x0,'U':0x0,'V':0x0,'W':0x0},_0x1aff85=0x0,_0x5cfc27=_0x44941d&&_0x44941d[_0x12cd35(0x20e)]===_0x12cd35(0x2b0),_0x435884=_0x44941d&&_0x44941d[_0x12cd35(0x20e)]==='holiday';if(_0x408c6c===0x6&&_0x5cfc27&&!_0x48175e){var _0x4176bc=_0x44941d?.[_0x12cd35(0x2a3)]?_0x44941d[_0x12cd35(0x2a3)]*0x3c:0x14a;_0x1dd4a1['I']=Math[_0x12cd35(0x2b2)](_0x5b186d,_0x4176bc),_0x1dd4a1['J']=Math['max'](0x0,Math[_0x12cd35(0x2b2)](_0x5b186d-_0x4176bc,0x3c)),_0x1dd4a1['K']=Math[_0x12cd35(0x2af)](0x0,Math[_0x12cd35(0x2b2)](_0x5b186d-(_0x4176bc+0x3c),0x78)),_0x1dd4a1['L']=_0x1dd4a1['O']=Math[_0x12cd35(0x2af)](0x0,_0x5b186d-(_0x4176bc+0xb4));}else{var _0xe7d01e=0x8*0x3c,_0x2eb909=0xa*0x3c;if(_0x44941d?.[_0x12cd35(0x2a3)]!==undefined&&!_0x48175e)_0xe7d01e=_0x44941d[_0x12cd35(0x2a3)]*0x3c,_0x2eb909=_0xe7d01e+0x78;else{if(_0x408c6c===0x6)_0xe7d01e=6.5*0x3c,_0x2eb909=8.5*0x3c;else _0x48175e&&(_0xe7d01e=0x7*0x3c,_0x2eb909=0x9*0x3c);}for(var _0x110517=0x1;_0x110517<=_0x5b186d;_0x110517++){var _0x1ad0c1=_0x110517;if(_0x492684&&_0x110517>_0x21f8e7)_0x1ad0c1=_0x110517-0x3c;else{if(_0x51e624&&_0x110517>_0x21f8e7)_0x1ad0c1=_0x110517+0x3c;}var _0x29e477=_0xd774cc+(_0x1ad0c1-0.5)/0x3c,_0x36f2b9=(_0x408c6c-0x1+Math['floor'](_0x29e477/0x18))%0x7+0x1,_0x930b2d=_0x29e477%0x18,_0x4afe45=new Date(_0x59e73b['getTime']());if(_0x29e477>=0x18)_0x4afe45[_0x12cd35(0x285)](_0x4afe45[_0x12cd35(0x265)]()+0x1);var _0xa9bc64=window[_0x12cd35(0x1f9)]?window[_0x12cd35(0x1f9)][_0x4afe45['getFullYear']()+'-'+pad2(_0x4afe45[_0x12cd35(0x22f)]()+0x1)+'-'+pad2(_0x4afe45[_0x12cd35(0x265)]())]:null,_0x451a41=new Date(_0x4afe45['getTime']());_0x451a41[_0x12cd35(0x285)](_0x451a41['getDate']()-0x1);var _0xd2c411=window[_0x12cd35(0x1f9)]?window[_0x12cd35(0x1f9)][_0x451a41['getFullYear']()+'-'+pad2(_0x451a41[_0x12cd35(0x22f)]()+0x1)+'-'+pad2(_0x451a41[_0x12cd35(0x265)]())]:null,_0x29c83f=_0x36f2b9===0x6&&_0x930b2d>=(_0x2502bf>=0x4&&_0x2502bf<=0x9?0x12:0x11)||_0x36f2b9===0x7||_0x36f2b9===0x1&&_0x930b2d<0x6||_0xa9bc64?.['type']===_0x12cd35(0x221)||_0xd2c411?.['type']===_0x12cd35(0x221)&&_0x930b2d<0x6,_0x2e8997=_0x29c83f||_0x435884&&_0x48175e||_0x408c6c===0x7;if(_0x29c83f&&!(_0x408c6c===0x6&&_0x5cfc27&&!_0x48175e))_0x1aff85++;var _0x51b8a5=_0x930b2d>=0x16||_0x930b2d<0x6||_0x48175e&&_0x2ae06c&&_0x29e477>=(_0x273b2d<0x6?0x6:0x1e)||_0x435884&&_0x48175e&&_0x110517>_0xe7d01e,_0x379b4f=_0x2e8997?_0x51b8a5?0x2:1.75:_0x51b8a5?1.5:_0x930b2d>=0xe&&_0x930b2d<0x16&&_0x4b9f8b?1.2:0x1,_0x1f15d1=_0x110517>_0x2eb909?1.5:_0x110517>_0xe7d01e?1.25:0x1,_0x272e6f=Math[_0x12cd35(0x205)]((_0x2e8997?_0x379b4f+(_0x1f15d1-0x1):_0x379b4f*_0x1f15d1)*0x3e8)/0x3e8;if(_0x1f15d1===0x1){if(_0x2e8997){_0x1dd4a1['I']++;if(_0x379b4f===1.75)_0x1dd4a1['U']++;else{if(_0x379b4f===0x2)_0x1dd4a1['W']++;}}else{_0x1dd4a1['I']++;if(_0x379b4f===1.2)_0x1dd4a1['S']++;else{if(_0x379b4f===1.5)_0x1dd4a1['T']++;}}}else{if(_0x272e6f===1.25)_0x1dd4a1['K']++;else{if(_0x272e6f===1.5)_0x1dd4a1['L']++;else{if(_0x272e6f===1.75)_0x1dd4a1['M']++;else{if(_0x272e6f===1.8)_0x1dd4a1['O']++;else{if(_0x272e6f===1.875)_0x1dd4a1['P']++;else{if(_0x272e6f===0x2)_0x1dd4a1['N']++;else{if(_0x272e6f===2.25)_0x1dd4a1['Q']++;else{if(_0x272e6f===2.5)_0x1dd4a1['R']++;else{if(!_0x2e8997&&_0x1f15d1===1.25)_0x1dd4a1['K']++;else _0x1dd4a1['J']++;}}}}}}}}}}}_0x1dd4a1['I2']=_0x1dd4a1['I'];if(_0x592df3){var _0x26d519=0x0;if(_0x176694==='חש')_0x26d519=-0x1;else _0x1aff85>=0x78&&(_0x26d519=_0x1aff85/0x3c/0x8);_0x26d519!==0x0?(_0x592df3[_0x12cd35(0x2b6)]=_0x26d519<0x0?_0x12cd35(0x1fe)+_0x26d519[_0x12cd35(0x22b)](0x2)+_0x12cd35(0x21d):_0x26d519[_0x12cd35(0x22b)](0x2),_0x592df3['setAttribute'](_0x12cd35(0x219),_0x26d519)):(_0x592df3[_0x12cd35(0x26a)]='',_0x592df3[_0x12cd35(0x223)](_0x12cd35(0x219),'0'));}var _0x5207b9=0x0;columnsData[_0x12cd35(0x293)](_0x1a4c56=>{var _0x531307=_0x12cd35,_0x21f44a=document[_0x531307(0x24c)](_0x531307(0x243)+_0x1a4c56['id']+'-'+_0x360533);if(_0x21f44a){if(_0x1dd4a1[_0x1a4c56['id']]>0x0){var _0x398f21=_0x1dd4a1[_0x1a4c56['id']]/0x3c;_0x21f44a[_0x531307(0x26a)]=_0x398f21[_0x531307(0x22b)](0x2),_0x21f44a[_0x531307(0x223)]('data-val',_0x398f21),_0x5207b9+=_0x398f21*_0x1a4c56[_0x531307(0x286)]*_0x3790b2;}else _0x21f44a[_0x531307(0x26a)]='',_0x21f44a[_0x531307(0x223)](_0x531307(0x219),'0');}}),_0x5204a4&&(_0x5204a4[_0x12cd35(0x26a)]=_0x5207b9>0x0?_0x5207b9[_0x12cd35(0x22b)](0x2):'',_0x5204a4['setAttribute']('data-is-shift','1'),_0x5204a4[_0x12cd35(0x223)]('data-cost',_0x5207b9),_0x5204a4[_0x12cd35(0x223)]('data-gross',_0x5b186d)),window['updateGrandTotal']();}catch(_0x8099c6){customAlert(_0x12cd35(0x2ac)+_0x8099c6['message']);}},window['updateGrandTotal']=function(){var _0x8e59f9=_0x37563c,_0x1eb3eb=parseFloat(document['getElementById'](_0x8e59f9(0x2b4))?.[_0x8e59f9(0x2a1)]||0x0),_0x141960=0x0,_0x4ca878=0x0,_0xf88c7=0x0,_0x46d618=0x0,_0x312a2e=0x0,_0x7d5225=0x0,_0x243600=0x0,_0xf9e858=0x0,_0x48ab00=0x0,_0x3bd4d8=0x0,_0xe2d4b3=0x0,_0x3cc8bf=0x0,_0x28d1e7={};columnsData[_0x8e59f9(0x293)](_0x3f73bd=>_0x28d1e7[_0x3f73bd['id']]=0x0);var _0xf44cf4=getSelectedMonthYear(),_0x269409=window[_0x8e59f9(0x209)][_0xf44cf4['y']+'-'+pad2(_0xf44cf4['m'])]?parseInt(window[_0x8e59f9(0x209)][_0xf44cf4['y']+'-'+pad2(_0xf44cf4['m'])],0xa):0x0,_0x3c1ea2={0x0:_0x269409},_0x749ecb=0x0,_0x528c7c=document[_0x8e59f9(0x24c)](_0x8e59f9(0x281));if(_0x528c7c)_0x528c7c[_0x8e59f9(0x26a)]=_0x269409>0x0?_0x8e59f9(0x28c)+_0x269409+'\x20נגררות':'';for(var _0xaea3dc=0x1;_0xaea3dc<=0x1f;_0xaea3dc++){var _0x2a5db9=document['getElementById'](_0x8e59f9(0x1ff)+_0xaea3dc);if(!_0x2a5db9)continue;var _0x2e83b6=new Date(_0xf44cf4['y'],_0xf44cf4['m']-0x1,_0xaea3dc)['getDay']();if(_0x2e83b6===0x0&&_0xaea3dc>0x1)_0x749ecb++;var _0x398acd=document[_0x8e59f9(0x24c)](_0x8e59f9(0x2a8)+_0xaea3dc);if(_0x398acd)_0x312a2e+=parseFloat(_0x398acd[_0x8e59f9(0x283)](_0x8e59f9(0x219))||0x0);var _0x3c6b37=document[_0x8e59f9(0x24c)](_0x8e59f9(0x224)+_0xaea3dc);if(_0x3c6b37)_0x7d5225+=parseFloat(_0x3c6b37[_0x8e59f9(0x283)]('data-val')||0x0);var _0x297835=(document[_0x8e59f9(0x23a)](_0x8e59f9(0x20d)+_0xaea3dc+_0x8e59f9(0x27f))?.[_0x8e59f9(0x2a1)]||'')[_0x8e59f9(0x28d)]()[_0x8e59f9(0x2a9)](/"/g,'')[_0x8e59f9(0x2a9)](/'/g,'');if(_0x297835==='ח')_0x243600++;else{if(_0x297835==='מח')_0xf9e858++;else{if(_0x297835==='הצ')_0x48ab00++;else{if(_0x297835==='בח')_0x3bd4d8++;else{if(_0x297835===_0x8e59f9(0x22e))_0xe2d4b3++;else{if(_0x297835===_0x8e59f9(0x1f7))_0x3cc8bf++;}}}}}(_0x2a5db9[_0x8e59f9(0x283)](_0x8e59f9(0x250))==='1'||window[_0x8e59f9(0x249)][_0x8e59f9(0x23e)](_0x297835))&&(!(_0x297835===_0x8e59f9(0x1f7)&&(_0x2e83b6===0x5||_0x2e83b6===0x6))&&(_0x3c1ea2[_0x749ecb]=(_0x3c1ea2[_0x749ecb]||0x0)+0x1),_0x2a5db9['getAttribute']('data-is-shift')==='1'&&(_0xf88c7++,_0x141960+=parseFloat(_0x2a5db9['getAttribute'](_0x8e59f9(0x287))||0x0),_0x4ca878+=parseInt(_0x2a5db9[_0x8e59f9(0x283)]('data-gross')||0x0,0xa)),columnsData[_0x8e59f9(0x293)](_0xdf7140=>{var _0x338a42=_0x8e59f9,_0xb38a51=document[_0x338a42(0x24c)](_0x338a42(0x243)+_0xdf7140['id']+'-'+_0xaea3dc);if(_0xb38a51)_0x28d1e7[_0xdf7140['id']]+=parseFloat(_0xb38a51[_0x338a42(0x283)]('data-val')||0x0);}));}var _0xbf38e0=document[_0x8e59f9(0x24c)](_0x8e59f9(0x25d));if(_0xbf38e0){if(Object[_0x8e59f9(0x217)](_0x3c1ea2)[_0x8e59f9(0x273)](_0x219366=>_0x219366>0x5))_0xbf38e0[_0x8e59f9(0x258)]['display']='block',_0xbf38e0['innerHTML']=_0x8e59f9(0x2a7)+_0x269409+_0x8e59f9(0x256);else _0xbf38e0[_0x8e59f9(0x258)][_0x8e59f9(0x23f)]='none';}let _0x56801f=document[_0x8e59f9(0x24c)](_0x8e59f9(0x21a));if(_0x56801f)_0x56801f['innerText']=_0x312a2e>0x0?_0x312a2e[_0x8e59f9(0x22b)](0x2):'';let _0x2ca47d=document[_0x8e59f9(0x24c)](_0x8e59f9(0x2b7));if(_0x2ca47d)_0x2ca47d[_0x8e59f9(0x2b6)]=_0x7d5225!==0x0?_0x7d5225<0x0?_0x8e59f9(0x1fe)+_0x7d5225[_0x8e59f9(0x22b)](0x2)+_0x8e59f9(0x21d):_0x7d5225['toFixed'](0x2):'';var _0x5b4003=0x0;columnsData[_0x8e59f9(0x293)](_0x46af9e=>{var _0x54f99e=_0x8e59f9,_0x35ea8c=_0x28d1e7[_0x46af9e['id']],_0x468feb=_0x35ea8c*_0x46af9e[_0x54f99e(0x286)]*_0x1eb3eb;_0x5b4003+=_0x468feb,_0x46d618+=_0x35ea8c;let _0x2fb2e4=document[_0x54f99e(0x24c)](_0x54f99e(0x232)+_0x46af9e['id']);if(_0x2fb2e4)_0x2fb2e4['innerText']=_0x35ea8c>0x0?_0x35ea8c[_0x54f99e(0x22b)](0x2):'';let _0x20c90b=document['getElementById']('sum-cost-'+_0x46af9e['id']);if(_0x20c90b)_0x20c90b[_0x54f99e(0x26a)]=_0x468feb>0x0?_0x468feb[_0x54f99e(0x22b)](0x2):'';});let _0xf7e6aa=document[_0x8e59f9(0x24c)](_0x8e59f9(0x275));if(_0xf7e6aa)_0xf7e6aa[_0x8e59f9(0x26a)]=_0x46d618>0x0?_0x46d618[_0x8e59f9(0x22b)](0x2):_0x8e59f9(0x272);let _0x111208=document[_0x8e59f9(0x24c)](_0x8e59f9(0x1f1));if(_0x111208)_0x111208[_0x8e59f9(0x26a)]=_0x5b4003>0x0?_0x5b4003['toFixed'](0x2):_0x8e59f9(0x272);var _0x1e8aee=Math[_0x8e59f9(0x1e5)](_0x4ca878/0x3c/0x8)*(parseFloat(document[_0x8e59f9(0x24c)](_0x8e59f9(0x2ae))?.['value'])||0x0);let _0x32eb26=document['getElementById'](_0x8e59f9(0x24b));if(_0x32eb26)_0x32eb26[_0x8e59f9(0x26a)]=_0xf88c7;let _0xc61baf=document[_0x8e59f9(0x24c)](_0x8e59f9(0x259));if(_0xc61baf)_0xc61baf['innerText']=(_0x28d1e7['I']||0x0)[_0x8e59f9(0x22b)](0x2);let _0x2a936d=document[_0x8e59f9(0x24c)](_0x8e59f9(0x206));if(_0x2a936d)_0x2a936d[_0x8e59f9(0x26a)]=(_0x4ca878/0x3c)[_0x8e59f9(0x22b)](0x2);let _0x233b76=document[_0x8e59f9(0x24c)]('dashEshel');if(_0x233b76)_0x233b76[_0x8e59f9(0x26a)]=_0x1e8aee['toFixed'](0x2)+'\x20₪';let _0x47f896=document[_0x8e59f9(0x24c)]('tlushCost');if(_0x47f896)_0x47f896['innerText']=_0x5b4003['toFixed'](0x2)+'\x20₪';[_0x8e59f9(0x266),'shab',_0x8e59f9(0x25c),_0x8e59f9(0x290),_0x8e59f9(0x26c)]['forEach'](_0x326847=>{var _0x1470e5=_0x8e59f9;let _0x125859=document[_0x1470e5(0x24c)](_0x1470e5(0x252)+_0x326847),_0x4cfa7c=parseFloat(_0x125859?.[_0x1470e5(0x2a1)]||0x0),_0x4d98e4={'reg':_0x243600,'shab':_0x7d5225,'sick':_0xf9e858,'dec':_0x48ab00,'cho':_0x3bd4d8}[_0x326847],_0x494a44=(_0x326847===_0x1470e5(0x21f)&&_0x4d98e4>0x0?'+':'')+(['dec',_0x1470e5(0x26c)][_0x1470e5(0x23e)](_0x326847)?_0x4d98e4:_0x4d98e4[_0x1470e5(0x22b)](0x2)),_0x24ac8c=(_0x326847===_0x1470e5(0x21f)?_0x4cfa7c+_0x4d98e4:_0x4cfa7c-_0x4d98e4)[_0x1470e5(0x22b)](0x2),_0x1b844f=document['getElementById'](_0x1470e5(0x24f)+_0x326847);if(_0x1b844f){if(_0x326847===_0x1470e5(0x21f)&&_0x4d98e4<0x0)_0x1b844f[_0x1470e5(0x2b6)]=_0x1470e5(0x29d)+_0x4d98e4[_0x1470e5(0x22b)](0x2)+_0x1470e5(0x21d);else _0x1b844f[_0x1470e5(0x26a)]=_0x494a44;}let _0x5bf9b1=document[_0x1470e5(0x24c)](_0x1470e5(0x277)+_0x326847);if(_0x5bf9b1)_0x5bf9b1[_0x1470e5(0x26a)]=_0x24ac8c;let _0x265a49=document['getElementById'](_0x1470e5(0x235)+_0x326847);if(_0x265a49)_0x265a49['innerText']=_0x4cfa7c['toFixed'](0x2);let _0xce7e6d=document['getElementById'](_0x1470e5(0x244)+_0x326847);if(_0xce7e6d){if(_0x326847===_0x1470e5(0x21f)&&_0x4d98e4<0x0)_0xce7e6d['innerHTML']=_0x1470e5(0x29d)+_0x4d98e4['toFixed'](0x2)+_0x1470e5(0x21d);else _0xce7e6d[_0x1470e5(0x26a)]=_0x494a44;}let _0x4ece3d=document['getElementById'](_0x1470e5(0x2b8)+_0x326847);if(_0x4ece3d)_0x4ece3d['innerText']=_0x24ac8c;});let _0x2cb923=document[_0x8e59f9(0x24c)]('bal_used_fam');if(_0x2cb923)_0x2cb923[_0x8e59f9(0x26a)]=_0xe2d4b3[_0x8e59f9(0x22b)](0x2);let _0x63b9d2=document['getElementById'](_0x8e59f9(0x27e));if(_0x63b9d2)_0x63b9d2[_0x8e59f9(0x26a)]=_0xe2d4b3[_0x8e59f9(0x22b)](0x2);let _0x355da0=document[_0x8e59f9(0x24c)](_0x8e59f9(0x29f));if(_0x355da0)_0x355da0[_0x8e59f9(0x26a)]=_0x3cc8bf;let _0x436e5c=document[_0x8e59f9(0x24c)](_0x8e59f9(0x274));if(_0x436e5c)_0x436e5c['innerText']=_0x3cc8bf;let _0xeda338=document['getElementById']('printDashShifts');if(_0xeda338)_0xeda338['innerText']=_0xf88c7;let _0x2ccf85=document['getElementById']('printDashStandard');if(_0x2ccf85)_0x2ccf85[_0x8e59f9(0x26a)]=(_0x28d1e7['I']||0x0)[_0x8e59f9(0x22b)](0x2);let _0x2dab62=document[_0x8e59f9(0x24c)]('printDashGross');if(_0x2dab62)_0x2dab62[_0x8e59f9(0x26a)]=(_0x4ca878/0x3c)[_0x8e59f9(0x22b)](0x2);let _0x481bf5=document[_0x8e59f9(0x24c)](_0x8e59f9(0x298));if(_0x481bf5)_0x481bf5[_0x8e59f9(0x26a)]=_0x1e8aee[_0x8e59f9(0x22b)](0x2)+'\x20₪';let _0x220e60=document[_0x8e59f9(0x24c)]('tlushCostPrint');if(_0x220e60)_0x220e60[_0x8e59f9(0x26a)]=_0x5b4003[_0x8e59f9(0x22b)](0x2)+'\x20₪';},(function(){var _0x34e8ac=_0x37563c,_0x52f864=window['updateGrandTotal'];window[_0x34e8ac(0x267)]=0x0,window[_0x34e8ac(0x245)]=![],window[_0x34e8ac(0x20c)]=function(){var _0x56d5d1=_0x34e8ac;if(window[_0x56d5d1(0x267)]>0x0){window[_0x56d5d1(0x245)]=!![];return;}return _0x52f864[_0x56d5d1(0x25e)](this,arguments);},window[_0x34e8ac(0x289)]=function(_0x3e35e0){var _0x583c9e=_0x34e8ac;window[_0x583c9e(0x267)]++;try{_0x3e35e0();}finally{window[_0x583c9e(0x267)]--;}window['__totalsBatchDepth']===0x0&&window[_0x583c9e(0x245)]&&(window[_0x583c9e(0x245)]=![],_0x52f864());};}());
+/* COT System Version: V202610310155 */
+// קובץ: calculator.js (מנוע החישוב)
+// המוח של המערכת: בניית הטבלה, זיהוי משמרת/היעדרות, וכל נוסחאות השעות הנוספות, השבת, הלילה ומעבר השעון. זהו הקובץ היחיד שיש לערפל (obfuscator.io) - הוא היחיד שצריך להישאר קבוע בשם calculator.js.
+
+var daysHebrew = ["א'", "ב'", "ג'", "ד'", "ה'", "ו'", "ש'"];
+var columnsData = [
+    { id: 'I', factor: 0.0 }, { id: 'I2', factor: 0.0 }, { id: 'J', factor: 1.0 }, { id: 'K', factor: 1.25 }, { id: 'L', factor: 1.5 }, 
+    { id: 'M', factor: 1.75 }, { id: 'N', factor: 2.0 }, { id: 'O', factor: 1.8 }, { id: 'P', factor: 1.875 }, 
+    { id: 'Q', factor: 2.25 }, { id: 'R', factor: 2.5 }, { id: 'S', factor: 0.2 }, { id: 'T', factor: 0.5 }, 
+    { id: 'U', factor: 0.75 }, { id: 'V', factor: 0.875 }, { id: 'W', factor: 1.0 }
+];
+
+function pad2(n) { return (n < 10 ? '0' : '') + n; }
+
+function initMonthYearSelect() {
+    var sel = document.getElementById('monthYearSelect'); if(!sel || sel.options.length > 0) return;
+    var months = ["ינואר", "פברואר", "מרץ", "אפריל", "מאי", "יוני", "יולי", "אוגוסט", "ספטמבר", "אוקטובר", "נובמבר", "דצמבר"], now = new Date();
+    var prevM = now.getMonth(), prevY = now.getFullYear(); if(prevM===0){prevM=12;prevY--;}
+    for (var y = now.getFullYear() - 1; y <= now.getFullYear() + 2; y++) {
+        for (var m = 1; m <= 12; m++) {
+            var opt = document.createElement('option'); opt.value = y + "-" + pad2(m); opt.text = months[m-1] + " " + y;
+            if (y === prevY && m === prevM) opt.selected = true; if(sel) sel.add(opt);
+        }
+    }
+}
+function getSelectedMonthYear() {
+    var sel = document.getElementById('monthYearSelect');
+    var val = sel ? sel.value : null;
+    if(!val) return { y: new Date().getFullYear(), m: new Date().getMonth()+1 };
+    return { y: parseInt(val.split('-')[0], 10), m: parseInt(val.split('-')[1], 10) };
+}
+function updateTitles() {
+    var empNameEl = document.getElementById('employeeName');
+    var sel = document.getElementById('monthYearSelect');
+    if (!empNameEl || !sel) return;
+    
+    var empName = empNameEl.value.trim();
+    var selText = sel.options[sel.selectedIndex].text;
+    
+    let pm = document.getElementById('printMonthYearText');
+    if(pm) pm.innerText = selText;
+    
+    var sheetTitle = document.getElementById('sheetTitle'), printEmpDisplay = document.getElementById('printEmployeeNameDisplay');
+    if (empName !== "") { 
+        if(sheetTitle) sheetTitle.innerText = "דוח שעות משמרות - " + selText + " | עבור: " + empName; 
+        if(printEmpDisplay) { printEmpDisplay.innerText = "| עבור: " + empName; printEmpDisplay.style.display = "inline-block"; }
+    } else { 
+        if(sheetTitle) sheetTitle.innerText = "דוח שעות משמרות - " + selText; 
+        if(printEmpDisplay) printEmpDisplay.style.display = "none"; 
+    }
+    document.title = (empName ? empName.replace(/\s+/g, '_') : "נתוני_משמרות") + "_" + selText.replace(' ', '_');
+}
+
+window.formatTimeInput = function(input) {
+    var originalVal = input.value.trim();
+    if (originalVal === '') { input.value = ''; calculateRow(input); return; }
+    var val = originalVal.replace(/[^\d]/g, '');
+    if (val === '') input.value = '';
+    else if (val.length <= 2) input.value = pad2(Math.min(parseInt(val, 10), 23)) + ':00';
+    else if (val.length === 3) input.value = '0' + parseInt(val.substring(0, 1), 10) + ':' + pad2(Math.min(parseInt(val.substring(1, 3), 10), 59));
+    else input.value = pad2(Math.min(parseInt(val.substring(0, 2), 10), 23)) + ':' + pad2(Math.min(parseInt(val.substring(2, 4), 10), 59));
+    calculateRow(input);
+};
+
+window.generateTable = function() {
+    var empNameEl = document.getElementById('employeeName');
+    var empName = empNameEl ? empNameEl.value.trim() : '';
+    if (!empName) { customAlert("הכנס שם עובד"); if(empNameEl) empNameEl.focus(); return; }
+
+    var ym = getSelectedMonthYear(), curKey = ym.y + "-" + pad2(ym.m);
+    var eshelRate = parseFloat(document.getElementById('eshelRate')?.value)||0;
+    if ([1, 4, 7, 10].includes(ym.m) && eshelRate < MINIMUM_ESHEL_RATE) customAlert("שים לב, תחילת רבעון: תעריף האש\"ל המעודכן הוא " + MINIMUM_ESHEL_RATE + " ₪. נא לעדכן בהתאם.");
+
+    if (window.carryOverData[curKey] === undefined) {
+        var prevMonthLastDay = new Date(ym.y, ym.m - 1, 0); 
+        if (prevMonthLastDay.getDay() === 6) window.carryOverData[curKey] = 0;
+        else {
+            let mInp = document.getElementById('manualCarryInput');
+            if(mInp) { mInp.max = prevMonthLastDay.getDay() + 1; mInp.value = "0"; }
+            let cmInfo = document.getElementById('carryMaxInfo');
+            if(cmInfo) cmInfo.innerText = "(מקסימום אפשרי לחודש זה: " + (prevMonthLastDay.getDay() + 1) + ")";
+            let fMod = document.getElementById('firstMonthCarryModal');
+            if(fMod) fMod.style.display = 'block';
+        }
+    }
+
+    updateTitles();
+    
+    let b = window.monthlyBalances[curKey] || {reg:0,shab:0,sick:0,dec:0,cho:0};
+    ['reg','shab','sick','dec','cho'].forEach(k => {
+        let el = document.getElementById('bal_open_' + k);
+        if(el) { el.value = b[k].toFixed(2); el.readOnly = true; el.classList.add('locked-input'); if(el.nextElementSibling) el.nextElementSibling.innerText = '🔒'; }
+    });
+
+    var daysInMonth = new Date(ym.y, ym.m, 0).getDate(), tbody = document.getElementById('tbody'), htmlContent = '', weekToggle = 0; 
+    for (var i = 1; i <= daysInMonth; i++) {
+        var dayNum = new Date(ym.y, ym.m - 1, i).getDay(); 
+        if (dayNum === 0 && i > 1) weekToggle = 1 - weekToggle;
+        
+        var dayClass = (dayNum === 5) ? "day-fri" : (dayNum === 6) ? "day-sat" : "", trClass = (dayNum === 6) ? "row-sat" : "";
+        var holObj = (window.HOLIDAYS_DB && window.HOLIDAYS_DB[ym.y + "-" + pad2(ym.m) + "-" + pad2(i)]) ? window.HOLIDAYS_DB[ym.y + "-" + pad2(ym.m) + "-" + pad2(i)] : null;
+        var holText = holObj ? holObj.hebrew.split('(')[0].trim() : '';
+
+        htmlContent += '<tr class="' + trClass + '" style="background-color: ' + (weekToggle === 0 ? "#e8f5e9" : "#fff3e0") + ';">' +
+            '<td class="'+dayClass+'" style="width: 30px; min-width: 30px;">' + pad2(i) + '</td>' +
+            '<td class="'+dayClass+' col-sep" style="width: 30px; min-width: 30px;">' + daysHebrew[dayNum] + '</td>' +
+            '<td class="'+dayClass+' col-sep hide-print"><input type="text" class="shift-type-input" maxlength="3" style="width: 35px;" onchange="handleShiftType(this)"></td>' +
+            '<td class="'+dayClass+' print-thick-right"><input type="text" class="time-input empty-print" maxlength="5" placeholder="" onchange="formatTimeInput(this)" data-date="'+ym.y+'-'+ym.m+'-'+i+'"></td>' +
+            '<td class="col-sep '+dayClass+'"><input type="text" class="time-input empty-print" maxlength="5" placeholder="" onchange="formatTimeInput(this)"></td>' +
+            '<td class="'+dayClass+' col-sep" id="val-desc-'+i+'" style="font-size: 12px; font-weight: bold; background-color: rgba(248, 251, 255, 0.5); text-align: right; padding-right: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" data-hol="'+holText+'"><span style="color:#e67e22">' + holText + '</span></td>' +
+            '<td class="val-cell '+dayClass+'" id="val-total-hours-'+i+'" data-val="0"></td>' +
+            '<td class="col-sep val-cell '+dayClass+'" id="val-shabbat-hours-'+i+'" data-val="0"></td>' +
+            '<td class="col-sep val-cell '+dayClass+'" id="val-I-'+i+'" data-val="0"></td>' +
+            '<td class="col-sep val-cell '+dayClass+' thick-border-left" id="val-I2-'+i+'" data-val="0"></td>' +
+            '<td class="val-cell '+dayClass+'" id="val-J-'+i+'" data-val="0"></td>' +
+            '<td class="val-cell '+dayClass+'" id="val-K-'+i+'" data-val="0"></td>' +
+            '<td class="col-sep val-cell '+dayClass+' thick-border-left" id="val-L-'+i+'" data-val="0"></td>' +
+            '<td class="val-cell '+dayClass+'" id="val-M-'+i+'" data-val="0"></td>' +
+            '<td class="col-sep val-cell '+dayClass+' thick-border-left" id="val-N-'+i+'" data-val="0"></td>' +
+            '<td class="val-cell '+dayClass+'" id="val-O-'+i+'" data-val="0"></td>' +
+            '<td class="val-cell '+dayClass+'" id="val-P-'+i+'" data-val="0"></td>' +
+            '<td class="val-cell '+dayClass+'" id="val-Q-'+i+'" data-val="0"></td>' +
+            '<td class="col-sep val-cell '+dayClass+' thick-border-left" id="val-R-'+i+'" data-val="0"></td>' +
+            '<td class="val-cell '+dayClass+'" id="val-S-'+i+'" data-val="0"></td>' +
+            '<td class="val-cell '+dayClass+'" id="val-T-'+i+'" data-val="0"></td>' +
+            '<td class="val-cell '+dayClass+'" id="val-U-'+i+'" data-val="0"></td>' +
+            '<td class="val-cell '+dayClass+'" id="val-V-'+i+'" data-val="0"></td>' +
+            '<td class="col-sep val-cell '+dayClass+' thick-border-left" id="val-W-'+i+'" data-val="0"></td>' +
+            '<td class="col-sep val-cell '+dayClass+' thick-border-left" id="val-cost-'+i+'" data-is-shift="0" data-cost="0" data-gross="0"></td>' +
+        '</tr>';
+    }
+    if (tbody) tbody.innerHTML = htmlContent;
+    
+    var activeMonthKey = window.getActiveMonthKey();
+    var closeBtn = document.getElementById('closeMonthBtn');
+    
+    if (closeBtn) {
+        if (!activeMonthKey || curKey === activeMonthKey) {
+            closeBtn.innerText = 'סגור חודש';
+            closeBtn.onclick = function() { closeMonth(); };
+            closeBtn.style.backgroundColor = '';
+        } else {
+            closeBtn.innerText = 'שמור גליון';
+            closeBtn.onclick = function() { saveData(); };
+            closeBtn.style.backgroundColor = '#2980b9';
+        }
+    }
+
+    ['tableContainer','summaryPanel','kpiRow','printBtn','exportExcelBtn','closeMonthBtn'].forEach(id => {
+        let el = document.getElementById(id);
+        if(!el) return;
+        el.style.display = id==='summaryPanel' ? 'flex' : (id==='kpiRow' ? 'grid' : 'inline-block');
+    });
+    if(document.getElementById('tableContainer')) document.getElementById('tableContainer').style.display = 'block'; 
+    updateGrandTotal();
+};
+
+window.handleShiftType = function(input) {
+    var val = input.value.trim().replace(/"/g, '').replace(/'/g, ''), tr = input.closest('tr'); if (!tr) return;
+    var timeInputs = tr.querySelectorAll('.time-input'); if (!timeInputs || timeInputs.length < 2) return;
+
+    var dateStr = timeInputs[0].getAttribute('data-date');
+    if (dateStr) {
+        var dayNum = new Date(dateStr.split('-')[0], parseInt(dateStr.split('-')[1], 10)-1, dateStr.split('-')[2]).getDay();
+        
+        if ((dayNum === 5 || dayNum === 6) && window.WEEKEND_BLOCKED_ABSENCE_CODES.includes(val)) {
+            customAlert("שים לב: לא ניתן להזין היעדרות מסוג זה בסופ\"ש (למעט 'מח' ו-'מיל').");
+            input.value = ''; val = '';
+        }
+    }
+
+    var shifts = window.SHIFT_CODES;
+    if (shifts[val]) {
+        timeInputs[0].value = shifts[val][0]; timeInputs[1].value = shifts[val][1]; timeInputs[0].classList.remove('empty-print'); timeInputs[1].classList.remove('empty-print');
+    } else if (window.ABSENCE_CODES.includes(val) || val === '') {
+        timeInputs[0].value = ''; timeInputs[1].value = ''; timeInputs[0].classList.add('empty-print'); timeInputs[1].classList.add('empty-print');
+    }
+    calculateRow(timeInputs[0]);
+};
+
+window.calculateRow = function(inputElem) {
+    try {
+        var tr = inputElem.closest('tr'), timeInputs = tr.querySelectorAll('.time-input'), startInput = timeInputs[0].value, endInput = timeInputs[1].value;
+        if (startInput) timeInputs[0].classList.remove('empty-print'); else timeInputs[0].classList.add('empty-print');
+        if (endInput) timeInputs[1].classList.remove('empty-print'); else timeInputs[1].classList.add('empty-print');
+
+        var dateString = timeInputs[0].getAttribute('data-date'), rowId = dateString.split('-')[2]; 
+        var costCell = document.getElementById('val-cost-' + rowId), totalHoursCell = document.getElementById('val-total-hours-' + rowId), shabbatHoursCell = document.getElementById('val-shabbat-hours-' + rowId);
+        var shiftVal = (tr.querySelector('.shift-type-input') ? tr.querySelector('.shift-type-input').value.trim() : '').replace(/"/g, '').replace(/'/g, '');
+        var isAbs = window.ABSENCE_CODES.includes(shiftVal);
+
+        var shiftMonth = parseInt(dateString.split('-')[1], 10), shiftDate = new Date(dateString.split('-')[0], shiftMonth-1, dateString.split('-')[2]), baseDay = shiftDate.getDay() + 1; 
+        var baseDateStr = shiftDate.getFullYear() + "-" + pad2(shiftDate.getMonth()+1) + "-" + pad2(shiftDate.getDate()), baseHolObj = window.HOLIDAYS_DB ? window.HOLIDAYS_DB[baseDateStr] : null;
+
+        if (!startInput || !endInput || startInput.indexOf(':') === -1 || endInput.indexOf(':') === -1) {
+            let grantsTeken = false;
+            let tekenHours = 0;
+            let invalidWeekendAbsence = false;
+
+            if (isAbs) {
+                if ((baseDay === 6 || baseDay === 7) && window.WEEKEND_BLOCKED_ABSENCE_CODES.includes(shiftVal)) {
+                    grantsTeken = false;
+                    invalidWeekendAbsence = true;
+                } else {
+                    grantsTeken = !(shiftVal === 'מיל' && (baseDay === 6 || baseDay === 7));
+                    
+                    if (shiftVal === 'מח' || shiftVal === 'מבמ') {
+                        if (baseHolObj && baseHolObj.standardHours !== undefined) {
+                            tekenHours = baseHolObj.standardHours;
+                        } else if (baseDay === 6) {
+                            tekenHours = 6.5; 
+                        } else if (baseDay === 7) {
+                            tekenHours = 8.0; 
+                        } else {
+                            tekenHours = 8.0; 
+                        }
+                    } else {
+                        tekenHours = 8.0;
+                    }
+                }
+            }
+
+            if (totalHoursCell) { 
+                if(grantsTeken && tekenHours > 0) { 
+                    totalHoursCell.innerHTML = '<span style="color:#8e44ad; font-weight:bold;">' + tekenHours.toFixed(2) + '</span>'; 
+                    totalHoursCell.setAttribute('data-val', tekenHours); 
+                } 
+                else { totalHoursCell.innerText = ''; totalHoursCell.setAttribute('data-val', '0'); }
+            }
+            
+            if (shabbatHoursCell) {
+                if (shiftVal === 'חש') { shabbatHoursCell.innerHTML = '<span style="color:#e74c3c; display:block; text-align:left;" dir="ltr">-1.00</span>'; shabbatHoursCell.setAttribute('data-val', '-1'); } 
+                else { shabbatHoursCell.innerText = ''; shabbatHoursCell.setAttribute('data-val', '0'); }
+            }
+            
+            for(var c = 0; c < columnsData.length; c++) {
+                var cell1 = document.getElementById('val-' + columnsData[c].id + '-' + rowId);
+                if(cell1) { 
+                    if (columnsData[c].id === 'I' && grantsTeken && tekenHours > 0) { 
+                        cell1.innerHTML = '<span style="color:#8e44ad; font-weight:bold;">' + tekenHours.toFixed(2) + '</span>'; 
+                        cell1.setAttribute('data-val', tekenHours); 
+                    } 
+                    else { cell1.innerText = ''; cell1.setAttribute('data-val', '0'); }
+                }
+            }
+            if(costCell) { costCell.innerText = ''; costCell.setAttribute('data-is-shift', '0'); costCell.setAttribute('data-cost', '0'); costCell.setAttribute('data-gross', '0'); }
+            
+            var descCellAbs = document.getElementById('val-desc-' + rowId);
+            if (descCellAbs) {
+                var holTextAbs = descCellAbs.getAttribute('data-hol') || '', baseDescAbs = '';
+                if (isAbs) {
+                    baseDescAbs = {'ח':'חופש','חש':'חופש שבת','מח':'מחלה','הצ':'הצהרה','בח':'בחירה','מבמ':'מחלת בן משפחה','הס':'עפ"י הסכם','מיל':'מילואים'}[shiftVal];
+                }
+                var baseDescHTMLAbs = '';
+                if (baseDescAbs) baseDescHTMLAbs = '<span style="color:#1565c0">' + baseDescAbs + '</span>';
+                if (holTextAbs) baseDescHTMLAbs += (baseDescHTMLAbs ? ' (<span style="color:#e67e22">' + holTextAbs + '</span>)' : '<span style="color:#e67e22">' + holTextAbs + '</span>');
+                
+                if (invalidWeekendAbsence) {
+                    baseDescHTMLAbs += ' | <span style="color:#e74c3c; font-weight:bold;">לא מזכה בתקן בסופ\"ש</span>';
+                }
+                
+                descCellAbs.innerHTML = baseDescHTMLAbs;
+            }
+            
+            updateGrandTotal(); return;
+        }
+
+        var rate = parseFloat(document.getElementById('hourlyRate')?.value || 0);
+        var startH = parseInt(startInput.split(':')[0], 10), startM = parseInt(startInput.split(':')[1], 10), endH = parseInt(endInput.split(':')[0], 10), endM = parseInt(endInput.split(':')[1], 10);
+        var dStart = startH + startM / 60, dEnd = endH + endM / 60; if (dEnd <= dStart) dEnd += 24;
+        
+        var totalMinutes = Math.round((dEnd - dStart) * 60);
+
+        var shiftStartTS = new Date(shiftDate.getFullYear(), shiftDate.getMonth(), shiftDate.getDate(), startH, startM).getTime();
+        var shiftEndTS = shiftStartTS + totalMinutes * 60000;
+        var dstYear = shiftDate.getFullYear();
+        
+        var oct31 = new Date(dstYear, 9, 31);
+        var lastSundayOct = new Date(dstYear, 9, 31 - oct31.getDay());
+        var dstFallbackTS = new Date(dstYear, 9, lastSundayOct.getDate(), 2, 0).getTime();
+        
+        var mar31 = new Date(dstYear, 2, 31);
+        var lastSundayMar = new Date(dstYear, 2, 31 - mar31.getDay());
+        var dstSpringTS = new Date(dstYear, 2, lastSundayMar.getDate() - 2, 2, 0).getTime();
+
+        var isDstFallback = false;
+        var isDstSpring = false;
+        var minutesUntilTransition = 0;
+        var physicalMinutes = totalMinutes;
+
+        if (shiftStartTS < dstFallbackTS && shiftEndTS > dstFallbackTS) {
+            isDstFallback = true;
+            physicalMinutes += 60; 
+            minutesUntilTransition = (dstFallbackTS - shiftStartTS) / 60000;
+        } else if (shiftStartTS < dstSpringTS && shiftEndTS > dstSpringTS) {
+            isDstSpring = true;
+            physicalMinutes -= 60; 
+            minutesUntilTransition = (dstSpringTS - shiftStartTS) / 60000;
+        }
+        
+        var descCell = document.getElementById('val-desc-' + rowId);
+        if (descCell) {
+            var holText = descCell.getAttribute('data-hol') || '', baseDesc = 'נוכחות';
+            var dstText = isDstFallback ? 'שעון חורף' : (isDstSpring ? 'שעון קיץ' : '');
+            
+            var baseDescHTML = `<span style="color:#1565c0">${baseDesc}</span>`;
+            if (holText) baseDescHTML += ` (<span style="color:#e67e22">${holText}</span>)`;
+            if (dstText) baseDescHTML += ` | <span style="color:#8e44ad; font-weight:bold;">${dstText}</span>`;
+            
+            descCell.innerHTML = baseDescHTML;
+        }
+
+        if (totalHoursCell) {
+            if (physicalMinutes > 0) { totalHoursCell.innerText = (physicalMinutes/60).toFixed(2); totalHoursCell.setAttribute('data-val', physicalMinutes/60); } 
+            else { totalHoursCell.innerText = ''; totalHoursCell.setAttribute('data-val', '0'); }
+        }
+
+        var nightMinutesCount = 0, afternoonMinutesCount = 0; 
+        for (var i = 1; i <= physicalMinutes; i++) {
+            var virtualI = i;
+            if (isDstFallback && i > minutesUntilTransition) virtualI = i - 60;
+            else if (isDstSpring && i > minutesUntilTransition) virtualI = i + 60;
+            
+            var cHourDec = (dStart + (virtualI - 0.5) / 60) % 24;
+            if (cHourDec >= 22 || cHourDec < 6) nightMinutesCount++;
+            if (cHourDec >= 14 && cHourDec < 22) afternoonMinutesCount++; 
+        }
+        var isNightShift = nightMinutesCount >= 120, qualifiesForAfternoon = (startH + startM/60 >= 14 || afternoonMinutesCount >= 180), enteredBefore3 = (startH + startM/60 >= 12 || startH + startM/60 <= 3.0);
+
+        var m = { I:0, I2:0, J:0, K:0, L:0, M:0, N:0, O:0, P:0, Q:0, R:0, S:0, T:0, U:0, V:0, W:0 }, shabbatMinutesCount = 0;
+        var isBaseDayErevHag = (baseHolObj && baseHolObj.type === 'eve'), isBaseDayHoliday = (baseHolObj && baseHolObj.type === 'holiday');
+
+        if (baseDay === 6 && isBaseDayErevHag && !isNightShift) {
+            var stdMins = baseHolObj?.standardHours ? (baseHolObj.standardHours * 60) : 330; 
+            m.I = Math.min(physicalMinutes, stdMins); 
+            m.J = Math.max(0, Math.min(physicalMinutes - stdMins, 60)); 
+            m.K = Math.max(0, Math.min(physicalMinutes - (stdMins + 60), 120)); 
+            m.L = m.O = Math.max(0, physicalMinutes - (stdMins + 180));                                       
+        } else {
+            var ot1_Mins = 8 * 60, ot2_Mins = 10 * 60;
+            if (baseHolObj?.standardHours !== undefined && !isNightShift) { ot1_Mins = baseHolObj.standardHours * 60; ot2_Mins = ot1_Mins + 120; } 
+            else if (baseDay === 6) { ot1_Mins = 6.5 * 60; ot2_Mins = 8.5 * 60; } 
+            else if (isNightShift) { ot1_Mins = 7 * 60; ot2_Mins = 9 * 60; }
+
+            for (var j = 1; j <= physicalMinutes; j++) {
+                var virtualJ = j;
+                if (isDstFallback && j > minutesUntilTransition) virtualJ = j - 60;
+                else if (isDstSpring && j > minutesUntilTransition) virtualJ = j + 60;
+                
+                var absH = dStart + (virtualJ - 0.5) / 60; 
+                var cDayNum2 = ((baseDay - 1 + Math.floor(absH / 24)) % 7) + 1, cHourDec2 = absH % 24;
+                var minDate = new Date(shiftDate.getTime()); if (absH >= 24) minDate.setDate(minDate.getDate() + 1);
+                var holObj = window.HOLIDAYS_DB?window.HOLIDAYS_DB[minDate.getFullYear()+"-"+pad2(minDate.getMonth()+1)+"-"+pad2(minDate.getDate())]:null;
+                var prevDate = new Date(minDate.getTime()); prevDate.setDate(prevDate.getDate() - 1);
+                var prevHolObj = window.HOLIDAYS_DB?window.HOLIDAYS_DB[prevDate.getFullYear()+"-"+pad2(prevDate.getMonth()+1)+"-"+pad2(prevDate.getDate())]:null;
+
+                var isStrictShab = (cDayNum2 === 6 && cHourDec2 >= ((shiftMonth >= 4 && shiftMonth <= 9)?18:17)) || cDayNum2 === 7 || (cDayNum2 === 1 && cHourDec2 < 6) || holObj?.type === 'holiday' || (prevHolObj?.type === 'holiday' && cHourDec2 < 6);
+                var isShab = isStrictShab || (isBaseDayHoliday && isNightShift) || baseDay === 7;
+                if (isStrictShab && !(baseDay === 6 && isBaseDayErevHag && !isNightShift)) shabbatMinutesCount++;
+
+                var isNight = (cHourDec2 >= 22 || cHourDec2 < 6) || (isNightShift && enteredBefore3 && absH >= (startH<6?6:30)) || (isBaseDayHoliday && isNightShift && j > ot1_Mins); 
+                var payMult = isShab ? (isNight ? 2.0 : 1.75) : (isNight ? 1.5 : (cHourDec2 >= 14 && cHourDec2 < 22 && qualifiesForAfternoon ? 1.2 : 1.0));
+                var otMult = j > ot2_Mins ? 1.5 : (j > ot1_Mins ? 1.25 : 1.0);
+                var fMult = Math.round((isShab ? payMult + (otMult - 1) : payMult * otMult) * 1000) / 1000;
+                
+                if (otMult === 1.0) { if (isShab) { m.I++; if(payMult===1.75)m.U++; else if(payMult===2.0)m.W++; } else { m.I++; if(payMult===1.2)m.S++; else if(payMult===1.5)m.T++; } } 
+                else {
+                    if (fMult===1.25) m.K++; else if (fMult===1.5) m.L++; else if (fMult===1.75) m.M++; else if (fMult===1.8) m.O++; else if (fMult===1.875) m.P++; 
+                    else if (fMult===2.0) m.N++; else if (fMult===2.25) m.Q++; else if (fMult===2.5) m.R++; else { if(!isShab && otMult===1.25)m.K++; else m.J++; }
+                }
+            }
+        }
+        m.I2 = m.I;
+        
+        if (shabbatHoursCell) {
+            var displayShabDays = 0;
+            if (shiftVal === 'חש') {
+                displayShabDays = -1;
+            } else if (shabbatMinutesCount >= 120) {
+                displayShabDays = (shabbatMinutesCount / 60) / 8;
+            }
+            
+            if (displayShabDays !== 0) { 
+                shabbatHoursCell.innerHTML = displayShabDays < 0 ? `<span style="color:#e74c3c; display:block; text-align:left;" dir="ltr">${displayShabDays.toFixed(2)}</span>` : displayShabDays.toFixed(2);
+                shabbatHoursCell.setAttribute('data-val', displayShabDays); 
+            } else { 
+                shabbatHoursCell.innerText = ''; 
+                shabbatHoursCell.setAttribute('data-val', '0'); 
+            }
+        }
+
+        var dailyCost = 0;
+        columnsData.forEach(col2 => {
+            var cell2 = document.getElementById('val-' + col2.id + '-' + rowId);
+            if(cell2) {
+                if (m[col2.id] > 0) {
+                    var hours = m[col2.id] / 60; cell2.innerText = hours.toFixed(2); cell2.setAttribute('data-val', hours); dailyCost += (hours * col2.factor * rate);
+                } else { cell2.innerText = ''; cell2.setAttribute('data-val', '0'); }
+            }
+        });
+        if(costCell) { costCell.innerText = dailyCost > 0 ? dailyCost.toFixed(2) : ''; costCell.setAttribute('data-is-shift', '1'); costCell.setAttribute('data-cost', dailyCost); costCell.setAttribute('data-gross', physicalMinutes); }
+        window.updateGrandTotal();
+    } catch(e) { customAlert("שגיאה בחישוב השורה: " + e.message); }
+};
+
+window.updateGrandTotal = function() {
+    var rate = parseFloat(document.getElementById('hourlyRate')?.value || 0);
+    var totalDailyCostSum = 0, totalGrossMin = 0, totalShifts = 0, totalHoursOverall = 0, sumTotalShiftHours = 0, sumTotalShabbatDays = 0;
+    var usedReg = 0, usedSick = 0, usedDec = 0, usedCho = 0, usedFam = 0, usedMil = 0, colTotals = {};
+    columnsData.forEach(c => colTotals[c.id] = 0);
+
+    var ym = getSelectedMonthYear(), carryOverShifts = window.carryOverData[ym.y + "-" + pad2(ym.m)] ? parseInt(window.carryOverData[ym.y + "-" + pad2(ym.m)], 10) : 0;
+    var weekShiftsCount = {0: carryOverShifts}, weekIndex = 0;
+
+    // תצוגה קבועה (לא רק בתוך אזהרת החריגה) של מספר המשמרות הנגררות מהחודש הקודם - נתון שנשמר בענן (carryOverData).
+    var carryDisplayEl = document.getElementById('dashCarryOver');
+    if (carryDisplayEl) carryDisplayEl.innerText = carryOverShifts > 0 ? ('כולל ' + carryOverShifts + ' נגררות') : '';
+
+    for(var r=1; r<=31; r++) {
+        var cell = document.getElementById('val-cost-' + r); if(!cell) continue;
+        var dayOfW = new Date(ym.y, ym.m - 1, r).getDay();
+        if (dayOfW === 0 && r > 1) weekIndex++; 
+        
+        var cellTH = document.getElementById('val-total-hours-' + r); if (cellTH) sumTotalShiftHours += parseFloat(cellTH.getAttribute('data-val') || 0);
+        var cellSH = document.getElementById('val-shabbat-hours-' + r); if (cellSH) sumTotalShabbatDays += parseFloat(cellSH.getAttribute('data-val') || 0);
+
+        var sVal = (document.querySelector('tr:nth-child(' + r + ') .shift-type-input')?.value || '').trim().replace(/"/g, '').replace(/'/g, '');
+        if(sVal === 'ח') usedReg++; else if(sVal === 'מח') usedSick++; else if(sVal === 'הצ') usedDec++; else if(sVal === 'בח') usedCho++; else if(sVal === 'מבמ') usedFam++; else if(sVal === 'מיל') usedMil++;
+
+        if (cell.getAttribute('data-is-shift') === '1' || window.ABSENCE_CODES.includes(sVal)) {
+            if (!(sVal === 'מיל' && (dayOfW === 5 || dayOfW === 6))) {
+                weekShiftsCount[weekIndex] = (weekShiftsCount[weekIndex] || 0) + 1;
+            }
+            
+            if (cell.getAttribute('data-is-shift') === '1') {
+                totalShifts++; totalDailyCostSum += parseFloat(cell.getAttribute('data-cost') || 0); totalGrossMin += parseInt(cell.getAttribute('data-gross') || 0, 10);
+            }
+            columnsData.forEach(col => {
+                var cEl = document.getElementById('val-' + col.id + '-' + r); if(cEl) colTotals[col.id] += parseFloat(cEl.getAttribute('data-val') || 0);
+            });
+        }
+    }
+    
+    var warnDiv = document.getElementById('weeklyWarning');
+    if (warnDiv) {
+        if (Object.values(weekShiftsCount).some(v => v > 5)) { warnDiv.style.display = 'block'; warnDiv.innerHTML = "⚠️ שים לב! חרגת ממכסת 5 משמרות בשבוע <br><span style='font-size:13px; font-weight:normal;'>(כולל " + carryOverShifts + " משמרות נגררות)</span>"; } 
+        else warnDiv.style.display = 'none';
+    }
+    
+    let shtEl = document.getElementById('sum-hours-totalShift'); if (shtEl) shtEl.innerText = sumTotalShiftHours > 0 ? sumTotalShiftHours.toFixed(2) : ''; 
+    let shsEl = document.getElementById('sum-hours-shabbat'); if (shsEl) shsEl.innerHTML = sumTotalShabbatDays !== 0 ? (sumTotalShabbatDays < 0 ? `<span style="color:#e74c3c; display:block; text-align:left;" dir="ltr">${sumTotalShabbatDays.toFixed(2)}</span>` : sumTotalShabbatDays.toFixed(2)) : ''; 
+
+    var tlushCost = 0;
+    columnsData.forEach(colX => { 
+        var cHours = colTotals[colX.id], cCost = cHours * colX.factor * rate;
+        tlushCost += cCost; totalHoursOverall += cHours;
+        let shc = document.getElementById('sum-hours-' + colX.id); if (shc) shc.innerText = cHours > 0 ? cHours.toFixed(2) : ''; 
+        let scc = document.getElementById('sum-cost-' + colX.id); if (scc) scc.innerText = cCost > 0 ? cCost.toFixed(2) : ''; 
+    });
+    
+    let sht = document.getElementById('sum-hours-total'); if(sht) sht.innerText = totalHoursOverall > 0 ? totalHoursOverall.toFixed(2) : '0.00'; 
+    let sct = document.getElementById('sum-cost-total'); if(sct) sct.innerText = tlushCost > 0 ? tlushCost.toFixed(2) : '0.00'; 
+    var eshelCost = Math.floor((totalGrossMin / 60) / 8) * (parseFloat(document.getElementById('eshelRate')?.value) || 0);
+    
+    let ds = document.getElementById('dashShifts'); if(ds) ds.innerText = totalShifts; 
+    let dst = document.getElementById('dashStandard'); if(dst) dst.innerText = (colTotals['I'] || 0).toFixed(2);
+    let dg = document.getElementById('dashGross'); if(dg) dg.innerText = (totalGrossMin / 60).toFixed(2); 
+    let de = document.getElementById('dashEshel'); if(de) de.innerText = eshelCost.toFixed(2) + ' ₪';
+    let tc = document.getElementById('tlushCost'); if(tc) tc.innerText = tlushCost.toFixed(2) + ' ₪';
+    
+    ['reg','shab','sick','dec','cho'].forEach(key => {
+        let openEl = document.getElementById('bal_open_' + key);
+        let openVal = parseFloat(openEl?.value || 0), usedVal = {'reg':usedReg,'shab':sumTotalShabbatDays,'sick':usedSick,'dec':usedDec,'cho':usedCho}[key];
+        let displayUsed = (key==='shab' && usedVal>0 ? "+" : "") + (['dec','cho'].includes(key) ? usedVal : usedVal.toFixed(2));
+        let closeVal = (key==='shab' ? (openVal + usedVal) : (openVal - usedVal)).toFixed(2);
+        
+        let uEl = document.getElementById('bal_used_' + key);
+        if(uEl) { 
+            if(key==='shab' && usedVal < 0) uEl.innerHTML = `<span style="color:#e74c3c; display:inline-block;" dir="ltr">${usedVal.toFixed(2)}</span>`; else uEl.innerText = displayUsed;
+        }
+        let cEl = document.getElementById('bal_close_' + key); if(cEl) cEl.innerText = closeVal;
+        let tblOp = document.getElementById('tbl_bal_open_' + key); if(tblOp) tblOp.innerText = openVal.toFixed(2);
+        let tblUs = document.getElementById('tbl_bal_used_' + key);
+        if(tblUs) { 
+            if(key==='shab' && usedVal < 0) tblUs.innerHTML = `<span style="color:#e74c3c; display:inline-block;" dir="ltr">${usedVal.toFixed(2)}</span>`; else tblUs.innerText = displayUsed;
+        }
+        let tblCl = document.getElementById('tbl_bal_close_' + key); if(tblCl) tblCl.innerText = closeVal;
+    });
+
+    let uf1 = document.getElementById('bal_used_fam'); if (uf1) uf1.innerText = usedFam.toFixed(2);
+    let uf2 = document.getElementById('tbl_bal_used_fam'); if (uf2) uf2.innerText = usedFam.toFixed(2);
+    let um1 = document.getElementById('bal_used_mil'); if (um1) um1.innerText = usedMil;
+    let um2 = document.getElementById('tbl_bal_used_mil'); if (um2) um2.innerText = usedMil;
+
+    let pds = document.getElementById('printDashShifts'); if(pds) pds.innerText = totalShifts; 
+    let pdst = document.getElementById('printDashStandard'); if(pdst) pdst.innerText = (colTotals['I'] || 0).toFixed(2);
+    let pdg = document.getElementById('printDashGross'); if(pdg) pdg.innerText = (totalGrossMin / 60).toFixed(2); 
+    let pde = document.getElementById('printDashEshel'); if(pde) pde.innerText = eshelCost.toFixed(2) + ' ₪';
+    let tcp = document.getElementById('tlushCostPrint'); if(tcp) tcp.innerText = tlushCost.toFixed(2) + ' ₪';
+};
+
+// עטיפה ל-updateGrandTotal: מאפשרת לדחות את הסיכום בזמן טעינת קובץ. הנוסחאות עצמן לא שונו.
+(function() {
+    var origUpdateGrandTotal = window.updateGrandTotal;
+    window.__totalsBatchDepth = 0; window.__totalsPending = false;
+    window.updateGrandTotal = function() {
+        if (window.__totalsBatchDepth > 0) { window.__totalsPending = true; return; }
+        return origUpdateGrandTotal.apply(this, arguments);
+    };
+    window.runTotalsBatch = function(fn) {
+        window.__totalsBatchDepth++;
+        try { fn(); } finally { window.__totalsBatchDepth--; }
+        if (window.__totalsBatchDepth === 0 && window.__totalsPending) { window.__totalsPending = false; origUpdateGrandTotal(); }
+    };
+})();
+
