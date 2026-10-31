@@ -1,4 +1,4 @@
-/* COT System Version: V202610312313 */
+/* COT System Version: V202610312326 */
 /* === קובץ עיצוב: style.css === */
 /* עיצוב חדש (ניווי + ענבר), מבוסס על ההצעה שאושרה ב-Design canvas. כל שמות המחלקות/המזהים
    שה-JS תלוי בהם (ראו 01-shift-codes.js / calculator.js / components.js וכו') נשארו בדיוק כפי
@@ -99,6 +99,10 @@ th.thick-border-left { border-left: 3px solid rgba(255,255,255,0.55) !important;
 .view-toggle-btn { display: inline-flex; align-items: center; gap: 7px; background: #fff; color: var(--c-primary); border: 1.5px solid var(--c-primary); border-radius: 20px; padding: 7px 16px; font-size: 13px; font-weight: 700; cursor: pointer; transition: 0.15s; }
 .view-toggle-btn[aria-pressed="true"] { background: var(--c-primary); color: #fff; }
 .view-toggle-btn:hover { box-shadow: 0 2px 8px rgba(var(--c-primary-rgb), 0.25); }
+
+/* בזמן צילום הטבלה לייצוא PDF (html2canvas) - מנטרלים position:sticky כדי שהתמונה תצא נקייה,
+   בלי כפילויות של הכותרת/עמודת התאריך שעלולות לקרות עם אלמנטים דביקים בזמן צילום. */
+.pdf-capturing th, .pdf-capturing td, .pdf-capturing h2, .pdf-capturing .color-legend { position: static !important; }
 
 /* תצוגה פשוטה: מסתירה את 14 עמודות האחוזים (כותרת+גוף+סיכום), אבל רק על המסך - בהדפסה תמיד מוצג הכל */
 .table-container.simple-view .pct-col,

@@ -1,8 +1,8 @@
-<!-- COT System Version: V202610312313 -->
+<!-- COT System Version: V202610312326 -->
 
 # COT - Calculate Over Time: full source + tests + deployment guide
 
-Current version: **V202610312313** (see `version.json`)
+Current version: **V202610312326** (see `version.json`)
 
 ## File layout
 
@@ -117,6 +117,23 @@ flagging this from December 15 of each year.
 to get is fine). I'll build the final polished manual from them and export it as a separate zip
 named `MANUAL`, versioned to match the app version at that moment.
 
+## Bug fix: the PDF export produced completely garbled Hebrew
+
+He tested the "הורד PDF" button and sent back the resulting file - the Hebrew text was fully
+unreadable gibberish, confirmed by extracting its text layer. Root cause: jsPDF's built-in fonts
+(helvetica/times/courier) are Latin-only with no Hebrew glyphs at all, and jsPDF has no built-in
+RTL/bidi text shaping - the first implementation (jsPDF-AutoTable, drawing vector text directly)
+could never have produced correct Hebrew. Fixed by switching the approach entirely: `html2canvas`
+now captures the table exactly as the browser already renders it correctly on screen (the browser
+does the Hebrew/RTL text shaping, not jsPDF), and that image gets embedded in the PDF page. The
+trade-off is conscious, not accidental: the resulting PDF has no selectable/searchable text, since
+it's an image. The export always captures all 25 columns regardless of the simple/full view
+toggle's current state (same principle as printing), and temporarily disables `position: sticky`
+during the capture to avoid the header/date-column duplicating in the screenshot. Rewrote the test
+suite for this file accordingly (it can't verify the screenshot's visual content without a real
+browser, but does verify the view-toggle state is always restored correctly, including after an
+error, via a mocked `html2canvas`/`jsPDF`).
+
 ## Bug fix: maintenance screen was always visible, regardless of the Firestore flag
 
 The maintenance-overlay redesign a few versions back added `.maintenance-overlay { display: flex
@@ -147,10 +164,10 @@ Items 2, 3, 4, 5, and 7 - the remaining five from the list below - are now also 
   columns, both header and body, via attribute selectors on their existing ids) - calculator.js
   still computes every column exactly as before. Printing always shows all 25 columns regardless
   of the toggle. Defaults to simple on phones (<700px), full on desktop, each time the sheet opens.
-- **Item 5** - a new "הורד PDF" button next to the Excel one, using jsPDF + jsPDF-AutoTable (loaded
-  from cdnjs, pinned versions) to build a real vector PDF table directly from the same `data-val`
-  cells the Excel export already reads - not a screenshot, and not dependent on the browser's print
-  dialog/printer settings. Same filename convention as the Excel export.
+- **Item 5** - a new "הורד PDF" button next to the Excel one; not dependent on the browser's print
+  dialog/printer settings. (The first version used jsPDF-AutoTable to draw a real vector table, but
+  that produced garbled Hebrew - see the bug-fix note above for why, and what replaced it.) Same
+  filename convention as the Excel export.
 - **Item 7** - new rule: of the 5 presence+absence entries already allowed per calendar week, at
   most 4 may be presence (any entry with a start+end time, whether from a shift code or typed
   directly) - at least one must be an absence code. Enforced the same way as the existing
