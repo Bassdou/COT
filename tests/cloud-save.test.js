@@ -55,6 +55,13 @@ test('כשאין משמרות נגררות (0), התצוגה הנלווית רי
   assert.equal(app.doc.getElementById('dashCarryOver').innerText, '');
 });
 
+test('היתרה הסופית של הצהרה ובחירה מוצגת על המסך (bal_close_dec/cho), לא רק בהדפסה', () => {
+  const app = ready();
+  setShiftCode(app, 8, 'הצ');
+  assert.equal(app.doc.getElementById('bal_close_dec').innerText, '2.00');
+  assert.equal(app.doc.getElementById('bal_close_cho').innerText, '2.00');
+});
+
 test('saveData: כשל בענן → הקובץ יורד אך מוצגת אזהרה', async () => {
   const app = ready();
   setShiftCode(app, 5, 'ב');

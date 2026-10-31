@@ -94,6 +94,23 @@ test('שורת קוביות הסיכום (kpiRow) מופיעה לפני הטבל
   assert.ok(iPanel < iKpi && iKpi < iTable, 'הסדר הצפוי: רצועת בקרה -> קוביות סיכום -> טבלה');
 });
 
+test('פס סיכומי הטבלה (kpiRow) הוא רצועה אחת (flex), לא רשת קוביות', () => {
+  const css = fs.readFileSync(path.join(root, 'style.css'), 'utf8');
+  const m = css.match(/\.kpi-row\s*\{[^}]*\}/);
+  assert.ok(m, '.kpi-row לא נמצא');
+  assert.match(m[0], /display:\s*flex/);
+  const calc = fs.readFileSync(path.join(root, 'calculator.js'), 'utf8');
+  assert.ok(!/kpiRow['"]\s*\?\s*['"]grid['"]/.test(calc), 'ה-JS עדיין כופה display:grid על kpiRow ויעקוף את העיצוב');
+});
+
+test('טבלת היתרות על המסך (summaryPanel) קיימת וכוללת שבעה סוגי היעדרות, כולל יתרה סופית להצהרה/בחירה', () => {
+  assert.match(html, /class="balances-screen-table"/);
+  for (const id of ['bal_close_reg', 'bal_close_shab', 'bal_close_sick', 'bal_close_dec', 'bal_close_cho']) {
+    assert.ok(html.includes('id="' + id + '"'), id + ' חסר - היתרה הסופית צריכה להופיע גם להצהרה/בחירה');
+  }
+  assert.equal((html.match(/class="lock-btn"/g) || []).length, 5, 'חמישה כפתורי מנעול (בלי מחלת בן משפחה/מילואים)');
+});
+
 test('שורות הסיכום (tfoot) בטבלה אינן נדבקות (sticky) בגלילה אופקית, כדי שלא יכסו ערכים', () => {
   const css = fs.readFileSync(path.join(root, 'style.css'), 'utf8');
   assert.ok(!/#timesheet\s+tfoot\s+td:first-child\s*\{[^}]*position:\s*sticky/.test(css),

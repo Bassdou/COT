@@ -1,4 +1,4 @@
-<!-- COT System Version: V202610310155 -->
+<!-- COT System Version: V202610310345 -->
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
@@ -165,8 +165,8 @@
 
 <!-- המערכת הראשי -->
 <div id="debugBox">
-    <div style="display: flex; align-items: center; gap: 12px; position: relative;">
-        <img src="COT_LOGO.jpg" alt="לוגו COT" style="width: 45px; height: 45px; border-radius: 10px; object-fit: cover; box-shadow: 0 2px 8px rgba(0,0,0,0.2); margin-left: 5px;">
+    <div style="display: flex; flex-direction: column; align-items: center; gap: 2px;">
+        <img src="COT_LOGO.jpg" alt="לוגו COT" style="width: 45px; height: 45px; border-radius: 10px; object-fit: cover; box-shadow: 0 2px 8px rgba(0,0,0,0.2);">
         <span class="app-version-badge" id="appVersionBadge">טוען גרסה...</span>
     </div>
     <div style="display: flex; gap: 12px; align-items: center;">
@@ -179,8 +179,8 @@
 
 <div id="securityBanner" style="display:none; max-width: 1200px; margin: 0 auto;"></div>
 
-<div id="cloudBalancesPanel" style="display: none; background: #EAF0FA; color: #1D4E89; padding: 12px 20px; align-items: center; justify-content: center; gap: 18px; font-size: 15px; box-shadow: none; border: 1px solid #D6E2F2; border-radius: 12px; margin-bottom: 20px; flex-wrap: wrap;">
-    <span style="font-weight: 800; color: #1D4E89;" id="cloudLastMonthTitle">החודש האחרון:</span>
+<div id="cloudBalancesPanel" style="display: none; background: #DCE7F7; color: #163C6C; padding: 13px 22px; align-items: center; justify-content: center; gap: 18px; font-size: 15px; box-shadow: 0 3px 10px rgba(29,78,137,0.12); border: 1.5px solid #B9CDE8; border-radius: 12px; margin-bottom: 20px; flex-wrap: wrap;">
+    <span style="font-weight: 800; color: #1D4E89;" id="cloudLastMonthTitle">יתרות לאחר סגירה:</span>
     <div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;">
         <span title="חופש רגיל">🏖️ חופש: <strong id="cloudReg">0.00</strong></span>
         <span title="חופש שבת">🗓️ ח. שבת: <strong id="cloudShab">0.00</strong></span>
@@ -209,11 +209,11 @@
 </div>
 
     <div class="kpi-row" id="kpiRow" style="display:none;">
-    <div class="dash-card dash-card-muted"><div class="dash-icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></div><h4>סה"כ משמרות</h4><div id="dashShifts" class="val">0</div><div id="dashCarryOver" class="dash-sub" title="משמרות שנגררו מהחודש הקודם (מגובה בענן)"></div></div>
-    <div class="dash-card dash-card-muted"><div class="dash-icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></div><h4>שעות תקן</h4><div id="dashStandard" class="val">0.00</div></div>
-    <div class="dash-card dash-card-muted"><div class="dash-icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 3L4 14h7l-1 7 9-11h-7l1-7z"/></svg></div><h4>שעות בפועל</h4><div id="dashGross" class="val">0.00</div></div>
-    <div class="dash-card dash-card-highlight" style="border-top-color:#B06F1F;"><div class="dash-icon dash-icon-amber" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M16 12h2M3 10h18"/></svg></div><h4>אש"ל (₪)</h4><div id="dashEshel" class="val" style="color:#B06F1F;">0.00 ₪</div></div>
-    <div class="dash-card tlush-card dash-card-highlight"><div class="dash-icon dash-icon-primary" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19V5M4 19h16M8 15l3-4 3 2 4-6"/></svg></div><h4>ערך ש"נ</h4><div id="tlushCost" class="val">0.00 ₪</div></div>
+        <span class="kpi-item"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>סה"כ משמרות: <strong id="dashShifts">0</strong><span id="dashCarryOver" class="dash-sub" title="משמרות שנגררו מהחודש הקודם (מגובה בענן)"></span></span>
+        <span class="kpi-item"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>שעות תקן: <strong id="dashStandard">0.00</strong></span>
+        <span class="kpi-item"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M13 3L4 14h7l-1 7 9-11h-7l1-7z"/></svg>שעות בפועל: <strong id="dashGross">0.00</strong></span>
+        <span class="kpi-item kpi-item-highlight" style="color:#B06F1F;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M16 12h2M3 10h18"/></svg>אש"ל: <strong id="dashEshel">0.00 ₪</strong></span>
+        <span class="kpi-item kpi-item-highlight"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 19V5M4 19h16M8 15l3-4 3 2 4-6"/></svg>ערך ש"נ: <strong id="tlushCost">0.00 ₪</strong></span>
     </div>
 
 <div id="weeklyWarning"></div>
@@ -223,8 +223,8 @@
 </div>
 
 <div class="table-container" id="tableContainer" style="display:none; padding-bottom: 60px;">
-    <h2 id="sheetTitle" style="text-align: center; color: #2c3e50;">דוח שעות משמרות</h2>
-    <div id="colorLegend" class="color-legend hide-print" aria-hidden="true">
+    <h2 id="sheetTitle" style="text-align: center; color: #16233B; position: sticky; top: 0; z-index: 14; background: var(--surface); margin: 0; padding: 10px 0 4px; font-size: 21px; font-weight: 800;">דוח שעות משמרות</h2>
+    <div id="colorLegend" class="color-legend hide-print" style="position: sticky; top: 38px; z-index: 14; background: var(--surface); margin: 2px 0 6px; padding-bottom: 4px;" aria-hidden="true">
         <span class="legend-item"><span class="legend-swatch legend-absence"></span>היעדרות (תקן אוטומטי)</span>
         <span class="legend-item"><span class="legend-swatch legend-negative"></span>ניכוי / חריגה</span>
         <span class="legend-item"><span class="legend-swatch legend-holiday"></span>חג / ערב חג</span>
@@ -287,43 +287,56 @@
 </div>
 
 <div class="dashboard" id="summaryPanel" style="display:none; justify-content:center;">
-    <div class="dash-card balance-card">
-        <h4>חופש רגיל</h4>
-        <div class="balance-row"><span>פתיחה:</span><div class="balance-input-wrap"><input type="number" id="bal_open_reg" class="bal-input locked-input" value="0.00" step="0.01" readonly oninput="updateGrandTotal()"><button class="lock-btn" onclick="toggleLock('bal_open_reg', this)">🔒</button></div></div>
-        <div class="balance-row"><span>נוצל (-):</span><strong id="bal_used_reg" style="color:#c0392b;">0.00</strong></div>
-        <div class="balance-row" style="font-weight:bold; color:#2c3e50;"><span>יתרה סופית:</span><span id="bal_close_reg">0.00</span></div>
-    </div>
-    <div class="dash-card balance-card">
-        <h4>חופש שבת</h4>
-        <div class="balance-row"><span>פתיחה:</span><div class="balance-input-wrap"><input type="number" id="bal_open_shab" class="bal-input locked-input" value="0.00" step="0.01" readonly oninput="updateGrandTotal()"><button class="lock-btn" onclick="toggleLock('bal_open_shab', this)">🔒</button></div></div>
-        <div class="balance-row"><span>תנועה החודש:</span><strong id="bal_used_shab" dir="ltr" style="color:#27ae60;">0.00</strong></div>
-        <div class="balance-row" style="font-weight:bold; color:#2c3e50;"><span>יתרה סופית:</span><span id="bal_close_shab">0.00</span></div>
-    </div>
-    <div class="dash-card balance-card">
-        <h4>מחלה</h4>
-        <div class="balance-row"><span>פתיחה:</span><div class="balance-input-wrap"><input type="number" id="bal_open_sick" class="bal-input locked-input" value="0.00" step="0.01" readonly oninput="updateGrandTotal()"><button class="lock-btn" onclick="toggleLock('bal_open_sick', this)">🔒</button></div></div>
-        <div class="balance-row"><span>נוצל (-):</span><strong id="bal_used_sick" style="color:#c0392b;">0.00</strong></div>
-        <div class="balance-row" style="font-weight:bold; color:#2c3e50;"><span>יתרה סופית:</span><span id="bal_close_sick">0.00</span></div>
-    </div>
-    <div class="dash-card balance-card">
-        <h4>הצהרה</h4>
-        <div class="balance-row"><span>פתיחה:</span><div class="balance-input-wrap"><input type="number" id="bal_open_dec" class="bal-input locked-input" value="0.00" step="0.01" readonly oninput="updateGrandTotal()"><button class="lock-btn" onclick="toggleLock('bal_open_dec', this)">🔒</button></div></div>
-        <div class="balance-row"><span>נוצל (-):</span><strong id="bal_used_dec" style="color:#c0392b;">0</strong></div>
-    </div>
-    <div class="dash-card balance-card">
-        <h4>בחירה</h4>
-        <div class="balance-row"><span>פתיחה:</span><div class="balance-input-wrap"><input type="number" id="bal_open_cho" class="bal-input locked-input" value="0.00" step="0.01" readonly oninput="updateGrandTotal()"><button class="lock-btn" onclick="toggleLock('bal_open_cho', this)">🔒</button></div></div>
-        <div class="balance-row"><span>נוצל (-):</span><strong id="bal_used_cho" style="color:#c0392b;">0</strong></div>
-    </div>
-    <div class="dash-card balance-card" style="width:160px;">
-        <h4>מחלת בן משפחה</h4>
-        <div style="font-size:12px; color:#7f8c8d; margin-bottom:10px; text-align:center;">מעקב ניצול בחודש</div>
-        <div class="balance-row" style="font-size: 15px;"><span>דווח החודש:</span><strong id="bal_used_fam" style="color:#c0392b;">0.00</strong></div>
-    </div>
-    <div class="dash-card balance-card" style="width:160px; border-top-color:#0d47a1;">
-        <h4 style="color:#0d47a1;">מילואים</h4>
-        <div style="font-size:12px; color:#7f8c8d; margin-bottom:10px; text-align:center;">מעקב ימים בחודש</div>
-        <div class="balance-row" style="font-size: 15px;"><span>דווח החודש:</span><strong id="bal_used_mil" style="color:#0d47a1;">0</strong></div>
+    <div class="balances-table-card">
+        <table class="balances-screen-table">
+            <thead>
+                <tr><th>סוג היעדרות</th><th>יתרת פתיחה</th><th>ניצול החודש</th><th>יתרה חדשה</th></tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>חופש רגיל</td>
+                    <td><span class="balance-input-wrap"><input type="number" id="bal_open_reg" class="bal-input locked-input" value="0.00" step="0.01" readonly oninput="updateGrandTotal()"><button class="lock-btn" onclick="toggleLock('bal_open_reg', this)">🔒</button></span></td>
+                    <td><strong id="bal_used_reg" style="color:#c0392b;">0.00</strong></td>
+                    <td><strong id="bal_close_reg" style="color:#1D4E89;">0.00</strong></td>
+                </tr>
+                <tr>
+                    <td>חופש שבת</td>
+                    <td><span class="balance-input-wrap"><input type="number" id="bal_open_shab" class="bal-input locked-input" value="0.00" step="0.01" readonly oninput="updateGrandTotal()"><button class="lock-btn" onclick="toggleLock('bal_open_shab', this)">🔒</button></span></td>
+                    <td><strong id="bal_used_shab" dir="ltr" style="color:#27ae60;">0.00</strong></td>
+                    <td><strong id="bal_close_shab" style="color:#1D4E89;">0.00</strong></td>
+                </tr>
+                <tr>
+                    <td>מחלה</td>
+                    <td><span class="balance-input-wrap"><input type="number" id="bal_open_sick" class="bal-input locked-input" value="0.00" step="0.01" readonly oninput="updateGrandTotal()"><button class="lock-btn" onclick="toggleLock('bal_open_sick', this)">🔒</button></span></td>
+                    <td><strong id="bal_used_sick" style="color:#c0392b;">0.00</strong></td>
+                    <td><strong id="bal_close_sick" style="color:#1D4E89;">0.00</strong></td>
+                </tr>
+                <tr>
+                    <td>הצהרה</td>
+                    <td><span class="balance-input-wrap"><input type="number" id="bal_open_dec" class="bal-input locked-input" value="0.00" step="0.01" readonly oninput="updateGrandTotal()"><button class="lock-btn" onclick="toggleLock('bal_open_dec', this)">🔒</button></span></td>
+                    <td><strong id="bal_used_dec" style="color:#c0392b;">0</strong></td>
+                    <td><strong id="bal_close_dec" style="color:#1D4E89;">0.00</strong></td>
+                </tr>
+                <tr>
+                    <td>בחירה</td>
+                    <td><span class="balance-input-wrap"><input type="number" id="bal_open_cho" class="bal-input locked-input" value="0.00" step="0.01" readonly oninput="updateGrandTotal()"><button class="lock-btn" onclick="toggleLock('bal_open_cho', this)">🔒</button></span></td>
+                    <td><strong id="bal_used_cho" style="color:#c0392b;">0</strong></td>
+                    <td><strong id="bal_close_cho" style="color:#1D4E89;">0.00</strong></td>
+                </tr>
+                <tr>
+                    <td>מחלת בן משפחה</td>
+                    <td>-</td>
+                    <td><strong id="bal_used_fam" style="color:#c0392b;">0.00</strong></td>
+                    <td>-</td>
+                </tr>
+                <tr>
+                    <td>מילואים</td>
+                    <td>-</td>
+                    <td><strong id="bal_used_mil" style="color:#1D4E89;">0</strong></td>
+                    <td>-</td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 </div>
 

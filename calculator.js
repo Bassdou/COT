@@ -1,4 +1,4 @@
-/* COT System Version: V202610310155 */
+/* COT System Version: V202610310345 */
 // קובץ: calculator.js (מנוע החישוב)
 // המוח של המערכת: בניית הטבלה, זיהוי משמרת/היעדרות, וכל נוסחאות השעות הנוספות, השבת, הלילה ומעבר השעון. זהו הקובץ היחיד שיש לערפל (obfuscator.io) - הוא היחיד שצריך להישאר קבוע בשם calculator.js.
 
@@ -149,7 +149,7 @@ window.generateTable = function() {
     ['tableContainer','summaryPanel','kpiRow','printBtn','exportExcelBtn','closeMonthBtn'].forEach(id => {
         let el = document.getElementById(id);
         if(!el) return;
-        el.style.display = id==='summaryPanel' ? 'flex' : (id==='kpiRow' ? 'grid' : 'inline-block');
+        el.style.display = (id==='summaryPanel' || id==='kpiRow') ? 'flex' : 'inline-block';
     });
     if(document.getElementById('tableContainer')) document.getElementById('tableContainer').style.display = 'block'; 
     updateGrandTotal();

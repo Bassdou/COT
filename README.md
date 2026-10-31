@@ -1,8 +1,8 @@
-<!-- COT System Version: V202610310155 -->
+<!-- COT System Version: V202610310345 -->
 
 # COT - Calculate Over Time: full source + tests + deployment guide
 
-Current version: **V202610310155** (see `version.json`)
+Current version: **V202610310345** (see `version.json`)
 
 ## File layout
 
@@ -116,6 +116,39 @@ flagging this from December 15 of each year.
 **Next steps:** take the screenshots per the list and send them to me (skipping any that are hard
 to get is fine). I'll build the final polished manual from them and export it as a separate zip
 named `MANUAL`, versioned to match the app version at that moment.
+
+## Top-panel polish (second round)
+
+- The 5 top summary cubes (shifts/standard/gross/eshel/overtime value) became one ribbon, matching
+  the cloud-balances ribbon's style, instead of a card grid.
+- Fixed a bug this introduced: the show/hide toggle in `calculator.js` was still forcing
+  `display:grid` on the ribbon via inline style, which would have silently overridden the new CSS
+  and broken the layout - caught by a new regression test before it shipped.
+- Table title made clearly bigger than the color legend below it (was smaller, which read oddly).
+- The on-screen balances table's rows were tightened (less vertical padding).
+
+## Top-panel polish (first round)
+
+- Version badge moved under the logo, no background (just muted text).
+- Logout (white background) and Info (amber background) buttons both made more prominent.
+- Cloud-balances ribbon given a bit more visual weight (deeper blue tint, soft shadow, border), plus
+  an emoji per item and a shorter label ("יתרות לאחר סגירה:").
+- Header-panel (employee/month/rates + load/save/generate/reset) spacing tightened.
+- KPI cards (shifts/standard/gross/eshel/overtime value) made shorter, less padded.
+- Table title and color legend compressed and made sticky during vertical table scroll, staying
+  locked above the table's own sticky header.
+- Table header background lightened from near-black to the brand blue, on the main timesheet and
+  the two smaller tables (balances, shift-info popup).
+- Veteran users with an old weak password now get a proactive banner (with the 15.11.2026 deadline
+  date and a voluntary, cancellable password-update link) instead of silently finding out on the
+  deadline itself.
+
+The bottom balance cards (7 separate cubes) were replaced with a single table, matching the
+existing print-only `balances-table`'s columns and styling (`סוג היעדרות / יתרת פתיחה / ניצול החודש /
+יתרה חדשה`). As a bonus, the closing balance for הצהרה and בחירה - already computed by
+`calculator.js`, previously shown only when printing - is now also shown on screen
+(`bal_close_dec` / `bal_close_cho`, new ids; zero calculation logic changed). Every existing id
+and the lock-button/input adjacency `toggleLock` depends on were preserved exactly.
 
 ## New design (first approved as a mockup in the Design canvas, now implemented in the real app)
 
