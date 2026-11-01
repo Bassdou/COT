@@ -22,6 +22,7 @@ const STAMPED_FILES = [
   'index.html', 'style.css', 'holidays_db.js', 'components.js', 'content-loader.js',
   '00-core.js', '01-shift-codes.js', 'calculator.js', '02-ui-dialogs.js', '03-auth.js',
   '05-session-data.js', '06-excel-export.js', '07-version-manager.js', '08-pdf-export.js', 'DEPLOY.md', 'README.md',
+  'whats-new.html', path.join('tools', 'system-update-composer.html'),
   path.join('content', 'shift-info.he.html'), path.join('content', 'mini-shift-info.he.html'),
   path.join('content', 'system-updates.he.html'),
 ];
@@ -36,6 +37,12 @@ for (const f of STAMPED_FILES) {
   const src = fs.readFileSync(fp, 'utf8');
   let out = src.replace(/COT System Version: V\d{12}/g, 'COT System Version: ' + version);
   if (f === 'README.md') out = out.replace(/Current version: \*\*V\d{12}\*\*/, 'Current version: **' + version + '**');
+  // index.html בלבד: מוסיפים/מעדכנים ?v=VERSION על כל src/href מקומי (js/css, לא קישורי CDN חיצוניים)
+  // כדי שלחיצה על "רענן עכשיו" (applyUpdate) תביא קבצים טריים באמת, לא רק את index.html עצמו -
+  // בלי זה, הדפדפן עלול להגיש calculator.js/style.css וכו' מהמטמון המקומי שלו למרות הרענון.
+  if (f === 'index.html') {
+    out = out.replace(/(src|href)="((?!https?:\/\/)[\w./-]+\.(?:js|css))(?:\?v=V\d{12})?"/g, '$1="$2?v=' + version + '"');
+  }
   if (!/COT System Version: V\d{12}/.test(src)) { console.warn('אזהרה: לא נמצאה חותמת גרסה קיימת ב-' + f + ' - לא עודכן'); continue; }
   if (out !== src) { fs.writeFileSync(fp, out); changed.push(f); }
 }

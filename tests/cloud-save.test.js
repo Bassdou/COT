@@ -212,3 +212,128 @@ test('בלי טיוטה שמורה, restoreDraftSnapshot לא עושה כלום 
   app.ctx.restoreDraftSnapshot();
   assert.equal(app.alerts.length, 0);
 });
+
+test('handleFileLoad: טעינת קובץ עם carryOver בפורמט החדש ({total,presence}) לא נדרסת ל-NaN/מספר גולמי', async () => {
+  const app = ready();
+  const key = '2026-10';
+  app.ctx.carryOverData[key] = { total: 5, presence: 3 }; // כבר יש בענן, זהה למה שבקובץ
+  const file = JSON.stringify({
+    year: 2026, month: 10, employeeName: 'בודק', hourlyRate: 50, eshelRate: 50,
+    carryOver: { [key]: { total: 5, presence: 3 } },
+    shifts: [],
+  });
+  app.ctx.handleFileLoad(fileEvent(file));
+  await tick();
+  const entry = app.ctx.carryOverData[key];
+  assert.equal(typeof entry, 'object', 'carryOverData לא אמור לחזור להיות מספר גולמי אחרי טעינת קובץ');
+  assert.equal(entry.total, 5);
+  assert.equal(entry.presence, 3, 'הנוכחות לא אמורה להיעלם/להידרס');
+});
+
+test('handleFileLoad: סתירה בין קובץ לענן מזוהה לפי total בלבד, ולא קורסת על אובייקט', async () => {
+  const app = ready();
+  const key = '2026-10';
+  app.ctx.carryOverData[key] = { total: 5, presence: 3 };
+  app.confirms.answer = false; // לא לפתוח את חלון התיקון עכשיו
+  const file = JSON.stringify({
+    year: 2026, month: 10, employeeName: 'בודק', hourlyRate: 50, eshelRate: 50,
+    carryOver: { [key]: { total: 2, presence: 1 } }, // שונה מהענן -> סתירה
+    shifts: [],
+  });
+  app.ctx.handleFileLoad(fileEvent(file));
+  await tick();
+  assert.equal(app.confirms.asked.length, 1);
+  assert.match(app.confirms.asked[0], /סתירה/);
+  // ברירת המחדל אחרי סתירה היא נתוני הענן (5/3), לא נתוני הקובץ ולא NaN
+  assert.deepEqual(app.ctx.carryOverData[key], { total: 5, presence: 3 });
+});
+
+test('handleFileLoad: תאימות לאחור - קובץ ישן עם monthCarryOver כמספר בודד עדיין נטען תקין (בלי ערך סותר בענן)', async () => {
+  const app = loadApp();
+  setupMonth(app, { year: 2026, month: 10, rate: 50 });
+  delete app.ctx.carryOverData['2026-10']; // בלי ערך קודם בענן, כדי לבדוק טעינה נקייה בלי "סתירה" עם ברירת המחדל 0 של setupMonth
+  const file = JSON.stringify({
+    year: 2026, month: 10, employeeName: 'בודק', hourlyRate: 50, eshelRate: 50,
+    monthCarryOver: 3, shifts: [],
+  });
+  app.ctx.handleFileLoad(fileEvent(file));
+  await tick();
+  const counts = app.ctx.getCarryOverCounts('2026-10');
+  assert.equal(counts.total, 3);
+  assert.equal(counts.presence, 3, 'פורמט ישן מתפרש כאילו כולו נוכחות - התנהגות קודמת, ללא שינוי');
+});
+
+test('registerUser: בלי לסמן את תיבת האישור (תקנון/פרטיות/נגישות), ההרשמה נחסמת ולא נוצר חשבון', () => {
+  const app = loadApp();
+  app.doc.getElementById('regEmail').value = 'new@example.com';
+  app.doc.getElementById('regPassword').value = 'Abcdef1!';
+  app.doc.getElementById('regPasswordConfirm').value = 'Abcdef1!';
+  app.doc.getElementById('regTermsAccepted').checked = false;
+  let created = false;
+  app.ctx.firebase.auth().createUserWithEmailAndPassword = () => { created = true; return Promise.resolve(); };
+  app.ctx.registerUser();
+  assert.equal(created, false, 'אין ליצור חשבון בלי אישור התקנון');
+  assert.match(app.doc.getElementById('regError').innerText, /תקנון/);
+});
+
+test('registerUser: עם תיבת האישור מסומנת, ההרשמה מצליחה ו-termsAccepted נשמר ל-Firestore', async () => {
+  const app = loadApp();
+  app.doc.getElementById('regEmail').value = 'new@example.com';
+  app.doc.getElementById('regPassword').value = 'Abcdef1!';
+  app.doc.getElementById('regPasswordConfirm').value = 'Abcdef1!';
+  app.doc.getElementById('regTermsAccepted').checked = true;
+  app.ctx.registerUser();
+  await tick();
+  const write = app.state.sets.find((s) => s.data.termsAccepted !== undefined);
+  assert.ok(write, 'לא נמצאה כתיבה עם termsAccepted');
+  assert.equal(write.data.termsAccepted, true);
+  assert.ok(write.data.termsAcceptedAt, 'חסר חותמת זמן לאישור');
+  assert.equal(write.data.hasStrongPassword, true, 'לא אמור להישבר - עדיין נשמר גם זה');
+});
+
+test('onAuthStateChanged: משתמש קיים בלי termsAccepted נחסם במסך האישור, ולא נכנס למערכת', async () => {
+  const app = loadApp();
+  app.state.getImpl = async () => ({ exists: true, data: () => ({ hasStrongPassword: true, employeeName: 'ותיק' }) });
+  const user = { uid: 'veteran-1', email: 'v@example.com', emailVerified: true };
+  const listener = app.state.authListeners[0];
+  listener(user);
+  await tick();
+  assert.equal(app.doc.getElementById('termsGateScreen').style.display, 'flex');
+  assert.equal(app.doc.getElementById('authScreen').style.display, 'none');
+  assert.equal(app.ctx.__pendingGateUser, user);
+});
+
+test('confirmTermsGate: בלי לסמן, נחסם ולא נכתב כלום ל-Firestore', async () => {
+  const app = loadApp();
+  app.ctx.__pendingGateUser = { uid: 'veteran-1' };
+  app.doc.getElementById('gateTermsAccepted').checked = false;
+  app.ctx.confirmTermsGate();
+  assert.equal(app.state.sets.length, 0);
+  assert.match(app.doc.getElementById('termsGateError').innerText, /תקנון/);
+});
+
+test('confirmTermsGate: עם סימון, נשמר ל-Firestore, המסך נסגר, וממשיכים לכניסה למערכת', async () => {
+  const app = loadApp();
+  const user = { uid: 'veteran-1', email: 'v@example.com', emailVerified: true };
+  app.ctx.__pendingGateUser = user;
+  app.ctx.__pendingGateDoc = { exists: true, data: () => ({ employeeName: 'ותיק' }) };
+  app.doc.getElementById('gateTermsAccepted').checked = true;
+  app.ctx.confirmTermsGate();
+  await tick();
+  const write = app.state.sets.find((s) => s.data.termsAccepted !== undefined);
+  assert.ok(write);
+  assert.equal(write.data.termsAccepted, true);
+  assert.ok(write.data.termsAcceptedAt);
+  assert.equal(app.doc.getElementById('termsGateScreen').style.display, 'none');
+  assert.equal(app.ctx.__pendingGateUser, null, 'משתני ה-pending אמורים להתאפס');
+});
+
+test('onAuthStateChanged: משתמש עם termsAccepted=true לא נחסם - נכנס ישר למערכת כרגיל', async () => {
+  const app = loadApp();
+  app.state.getImpl = async () => ({ exists: true, data: () => ({ hasStrongPassword: true, termsAccepted: true, employeeName: 'מאושר' }) });
+  const user = { uid: 'ok-1', email: 'ok@example.com', emailVerified: true };
+  const listener = app.state.authListeners[0];
+  listener(user);
+  await tick();
+  assert.notEqual(app.doc.getElementById('termsGateScreen').style.display, 'flex', 'השער לא אמור להיפתח כשכבר יש termsAccepted');
+});

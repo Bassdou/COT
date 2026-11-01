@@ -1,4 +1,4 @@
-/* COT System Version: V202611010647 */
+/* COT System Version: V202611011609 */
 // קובץ: 03-auth.js
 // הרשמה, כניסה, איפוס סיסמה, מצב הבדיקות הסמוי (secretBypass), נעילת מסך בחוסר פעילות, והתנתקות.
 
@@ -94,10 +94,16 @@ window.registerUser = function() {
         else customAlert("הסיסמאות אינן תואמות. הקלד שוב.");
         return; 
     }
-    
+    let termsEl = document.getElementById('regTermsAccepted');
+    if (termsEl && !termsEl.checked) {
+        if(errEl) { errEl.innerText = "יש לאשר שקראת את התקנון, מדיניות הפרטיות והצהרת הנגישות כדי להמשיך."; errEl.style.display = "block"; }
+        else customAlert("יש לאשר שקראת את התקנון, מדיניות הפרטיות והצהרת הנגישות כדי להמשיך.");
+        return;
+    }
+
     window.isRegisteringNewUser = true; showLoading(true);
     firebase.auth().createUserWithEmailAndPassword(email, pass).then((cred) => {
-        return db.collection("users").doc(cred.user.uid).set({ hasStrongPassword: true }, { merge: true }).then(() => cred);
+        return db.collection("users").doc(cred.user.uid).set({ hasStrongPassword: true, termsAccepted: true, termsAcceptedAt: new Date().toISOString() }, { merge: true }).then(() => cred);
     }).then((cred) => {
         cred.user.sendEmailVerification(); showLoading(false);
         customAlert("החשבון נוצר בהצלחה! שלחנו לך מייל אימות.");
@@ -258,6 +264,30 @@ window.updateOldPassword = function() {
     });
 };
 
+window.confirmTermsGate = function() {
+    let termsEl = document.getElementById('gateTermsAccepted');
+    let errEl = document.getElementById('termsGateError');
+    if (!termsEl || !termsEl.checked) {
+        if(errEl) { errEl.innerText = "יש לאשר שקראת את התקנון, מדיניות הפרטיות והצהרת הנגישות כדי להמשיך."; errEl.style.display = "block"; }
+        else customAlert("יש לאשר שקראת את התקנון, מדיניות הפרטיות והצהרת הנגישות כדי להמשיך.");
+        return;
+    }
+    let user = window.__pendingGateUser;
+    if (!user) return;
+    showLoading(true);
+    db.collection("users").doc(user.uid).set({ termsAccepted: true, termsAcceptedAt: new Date().toISOString() }, { merge: true }).then(() => {
+        showLoading(false);
+        if(document.getElementById('termsGateScreen')) document.getElementById('termsGateScreen').style.display = 'none';
+        let pendingDoc = window.__pendingGateDoc;
+        window.__pendingGateUser = null; window.__pendingGateDoc = null;
+        window.enterMainApp(user, pendingDoc);
+    }).catch(e => {
+        showLoading(false);
+        if(errEl) { errEl.innerText = "שגיאה בשמירת האישור: " + e.message; errEl.style.display = "block"; }
+        else customAlert("שגיאה בשמירת האישור: " + e.message);
+    });
+};
+
 firebase.auth().onAuthStateChanged(function(user) {
     if (window.isBypassed) return; 
     
@@ -265,6 +295,17 @@ firebase.auth().onAuthStateChanged(function(user) {
         if (window.isRegisteringNewUser) { showLoading(false); window.enterMainApp(user); return; }
         
         db.collection("users").doc(user.uid).get().then(doc => {
+            // משתמשים קיימים שנרשמו לפני שנוסף אישור התקנון/פרטיות/נגישות - חייבים לאשר עכשיו, מיד,
+            // בלי תאריך יעד (לא כמו עדכון הסיסמה, שיש לו חלון התראה). חוסם כניסה עד לאישור.
+            let termsOk = doc.exists && doc.data().termsAccepted === true;
+            if (!termsOk) {
+                showLoading(false);
+                window.__pendingGateUser = user; window.__pendingGateDoc = doc;
+                if(document.getElementById('authScreen')) document.getElementById('authScreen').style.display = 'none';
+                if(document.getElementById('termsGateScreen')) document.getElementById('termsGateScreen').style.display = 'flex';
+                return;
+            }
+
             let hasStrongPwd = doc.exists && doc.data().hasStrongPassword === true;
             
             if (ENFORCE_STRICT_SECURITY && !hasStrongPwd) {

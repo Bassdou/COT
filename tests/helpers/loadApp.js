@@ -46,6 +46,12 @@ function loadApp(opts = {}) {
     get currentUser() { return state.currentUser; },
     onAuthStateChanged(fn) { state.authListeners.push(fn); },
     signOut() { return Promise.resolve(); },
+    signInWithEmailAndPassword() { return Promise.resolve(); },
+    createUserWithEmailAndPassword(email, pass) {
+      if (state.createUserImpl) return state.createUserImpl(email, pass);
+      const uid = 'new-user-uid';
+      return Promise.resolve({ user: { uid, email, sendEmailVerification: () => Promise.resolve() } });
+    },
   };
   const firebase = { apps: [1], initializeApp() {}, firestore: () => db, auth: () => authObj };
 

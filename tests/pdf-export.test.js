@@ -75,6 +75,6 @@ test('index.html טוען jsPDF ו-html2canvas מ-CDN, וגם את 08-pdf-export
   const html = fs.readFileSync(path.join(__dirname, '..', 'index.html'), 'utf8');
   assert.match(html, /cdnjs\.cloudflare\.com\/ajax\/libs\/jspdf\/2\.5\.1\/jspdf\.umd\.min\.js/);
   assert.match(html, /cdnjs\.cloudflare\.com\/ajax\/libs\/html2canvas\/1\.4\.1\/html2canvas\.min\.js/);
-  assert.match(html, /<script src="08-pdf-export\.js">/);
+  assert.match(html, /<script src="08-pdf-export\.js(\?[^"]*)?">/);
   assert.ok(!html.includes('jspdf-autotable'), 'autoTable לא יודע לצייר עברית - לא אמור להישאר בשימוש');
 });

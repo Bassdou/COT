@@ -1,4 +1,4 @@
-<!-- COT System Version: V202611010647 -->
+<!-- COT System Version: V202611011609 -->
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
@@ -7,7 +7,7 @@
     <title>COT - Calculate Over Time</title>
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%2316233B'/%3E%3Ctext x='50' y='68' font-size='55' text-anchor='middle' fill='white' font-family='Arial, sans-serif' font-weight='bold'%3EC%3C/text%3E%3C/svg%3E">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;800&amp;display=swap">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=V202611011609">
 </head>
 <body>
 
@@ -41,7 +41,7 @@
                 </div>
 
                 <div class="updates-section">
-                    <h3 class="section-title">עדכוני מערכת</h3>
+                    <h3 class="section-title">עדכוני מערכת <a href="whats-new.html" target="_blank" rel="noopener" style="color: rgba(255,255,255,0.6); font-size: 10.5px; font-weight: 600; text-transform: none; letter-spacing: normal; text-decoration: underline;">היסטוריה מלאה</a></h3>
                     <div class="updates-container" id="updatesContainer">טוען...</div>
                 </div>
             </div>
@@ -95,6 +95,10 @@
                             <li id="reg-req-num" class="invalid">מספר</li>
                             <li id="reg-req-spc" class="invalid">תו מיוחד</li>
                         </ul>
+                        <div class="terms-check-row">
+                            <input type="checkbox" id="regTermsAccepted">
+                            <label for="regTermsAccepted">קראתי ואני מסכים/ה ל<a href="terms.pdf" target="_blank" rel="noopener">תקנון ותנאי השימוש</a>, ל<a href="privacy.pdf" target="_blank" rel="noopener">מדיניות הפרטיות</a> ול<a href="accessibility.pdf" target="_blank" rel="noopener">הצהרת הנגישות</a></label>
+                        </div>
                         <button class="btn-submit" onclick="registerUser()">צור חשבון</button>
                         <div id="regError" class="msg-box error-msg"></div>
                     </div>
@@ -140,6 +144,30 @@
                     <a href="#" onclick="cancelPasswordUpdate(); return false;" class="forgot-pwd-link">ביטול - אמשיך עם הסיסמה הנוכחית בינתיים</a>
                 </div>
                 <div id="forceError" class="msg-box error-msg"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- מסך חובה למשתמשים קיימים שעדיין לא אישרו את התקנון/מדיניות הפרטיות/הצהרת הנגישות (נוספו אחרי
+     שהם נרשמו, ולכן לא עברו את תיבת האישור שבטופס ההרשמה). חוסם כניסה למערכת עד לאישור. -->
+<div id="termsGateScreen" class="full-screen-overlay" style="display:none; flex-direction: column;">
+    <div class="auth-container-wrapper">
+        <div class="system-header">
+            <img src="COT_LOGO.jpg" alt="לוגו COT" class="main-logo-img" style="width: 120px; height: 120px; cursor: pointer;" onclick="secretBypass(event)">
+        </div>
+        <div class="wide-box-3d" style="max-width: 700px;">
+            <div class="auth-section">
+                <div class="security-notice" style="background: #F3E8DA; border-color: #e3c99a; color: #7a4e10;">
+                    <h4 style="color:#7a4e10; margin-bottom: 8px;">עדכון מדיניות - נדרש אישור</h4>
+                    פרסמנו תקנון שימוש, מדיניות פרטיות והצהרת נגישות מעודכנים. יש לאשר שקראת אותם כדי להמשיך להשתמש במערכת.
+                </div>
+                <div class="terms-check-row" style="margin-top:10px;">
+                    <input type="checkbox" id="gateTermsAccepted">
+                    <label for="gateTermsAccepted">קראתי ואני מסכים/ה ל<a href="terms.pdf" target="_blank" rel="noopener">תקנון ותנאי השימוש</a>, ל<a href="privacy.pdf" target="_blank" rel="noopener">מדיניות הפרטיות</a> ול<a href="accessibility.pdf" target="_blank" rel="noopener">הצהרת הנגישות</a></label>
+                </div>
+                <button class="btn-submit" onclick="confirmTermsGate()">אני מסכים/ה, המשך</button>
+                <div id="termsGateError" class="msg-box error-msg"></div>
             </div>
         </div>
     </div>
@@ -366,17 +394,17 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script>if (window.jspdf && window.jspdf.jsPDF && !window.jsPDF) { window.jsPDF = window.jspdf.jsPDF; }</script>
 <!-- קבצי COT: הסדר חשוב. calculator.js (מנוע החישוב) הוא הקובץ היחיד שיש לערפל לפני העלאה. שאר הקבצים נשארים גלויים. -->
-<script src="components.js"></script>
-<script src="content-loader.js"></script>
-<script src="holidays_db.js"></script>
-<script src="00-core.js"></script>
-<script src="01-shift-codes.js"></script>
-<script src="calculator.js"></script>
-<script src="02-ui-dialogs.js"></script>
-<script src="03-auth.js"></script>
-<script src="05-session-data.js"></script>
-<script src="06-excel-export.js"></script>
-<script src="07-version-manager.js"></script>
-<script src="08-pdf-export.js"></script>
+<script src="components.js?v=V202611011609"></script>
+<script src="content-loader.js?v=V202611011609"></script>
+<script src="holidays_db.js?v=V202611011609"></script>
+<script src="00-core.js?v=V202611011609"></script>
+<script src="01-shift-codes.js?v=V202611011609"></script>
+<script src="calculator.js?v=V202611011609"></script>
+<script src="02-ui-dialogs.js?v=V202611011609"></script>
+<script src="03-auth.js?v=V202611011609"></script>
+<script src="05-session-data.js?v=V202611011609"></script>
+<script src="06-excel-export.js?v=V202611011609"></script>
+<script src="07-version-manager.js?v=V202611011609"></script>
+<script src="08-pdf-export.js?v=V202611011609"></script>
 </body>
 </html>

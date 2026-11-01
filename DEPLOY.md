@@ -1,4 +1,4 @@
-<!-- COT System Version: V202611010647 -->
+<!-- COT System Version: V202611011609 -->
 # נוהל עליה לפרודקשן - COT (Calculate Over Time)
 
 נוהל זה מיועד לביצוע עצמאי, ללא Git, ללא npm וללא שורת פקודה. עקוב לפי הסדר, בכל פעם שיש
@@ -35,10 +35,12 @@ components.js                        02-ui-dialogs.js
 content-loader.js                    03-auth.js
 content/shift-info.he.html           05-session-data.js
 content/mini-shift-info.he.html      06-excel-export.js
-version.json                         07-version-manager.js
+content/system-updates.he.html       07-version-manager.js
+version.json                         08-pdf-export.js
 COT_LOGO.jpg                         cot_user_manual.pdf
+whats-new.html
 ```
-**לא מעלים:** `README.md`, `DEPLOY.md`, `package.json`, `scripts/`, `tests/`, `reference/`, `manual-template/`.
+**לא מעלים:** `README.md`, `DEPLOY.md`, `package.json`, `scripts/`, `tests/`, `reference/`, `manual-template/`, `tools/`.
 
 ## שלב 4 - העלאה בפועל ל-GitHub Pages
 

@@ -1,8 +1,8 @@
-<!-- COT System Version: V202611010647 -->
+<!-- COT System Version: V202611011609 -->
 
 # COT - Calculate Over Time: full source + tests + deployment guide
 
-Current version: **V202611010647** (see `version.json`)
+Current version: **V202611011609** (see `version.json`)
 
 ## File layout
 
@@ -116,6 +116,47 @@ flagging this from December 15 of each year.
 **Next steps:** take the screenshots per the list and send them to me (skipping any that are hard
 to get is fine). I'll build the final polished manual from them and export it as a separate zip
 named `MANUAL`, versioned to match the app version at that moment.
+
+## This round: 2 real bug fixes + registration/consent compliance + 3 system-updates workflow tools
+
+Several rounds happened under the same version number (V202611010647) while deliberately not
+bumping the version per instruction - this entry covers everything since that number was first
+shipped, now finally bumped into a new version.
+
+**Bug fix - carried-over shifts corrupted by file load.** `handleFileLoad`'s conflict-resolution
+logic predated the `{total, presence}` split and did `parseInt()` directly on what could now be an
+object, silently corrupting it to `NaN`/a bare number and overwriting the correct value even when
+there was no real conflict - explaining both "comes up in the old approach after a file load" and
+"all carried-over shifts count as presence" in one root cause. Rewrote it to extract `.total` via a
+safe helper for comparison, preserve the real entry when there's no conflict, and correctly restore
+the cloud's original entry (not a corrupted derivative) when there is one - offering the real
+two-field correction modal instead of the old single-number prompt. 3 new tests.
+
+**Bug fix - "deep refresh" didn't actually refresh everything.** `applyUpdate()` cache-busted
+`index.html` itself via a `?v=` query, but the `<script src>`/`<link>` tags it loads had no
+cache-busting at all - the browser could keep serving `calculator.js`, `style.css`, etc. from its
+own cache even after a "fresh" reload. `scripts/bump-version.js` now automatically appends/updates
+`?v=VERSION` on every local script/stylesheet tag in `index.html` (never touches external CDN URLs),
+idempotently. New regression test runs the real script against a scratch copy of the repo.
+
+**New: mandatory terms/privacy/accessibility consent.** Registration now has a required checkbox
+("קראתי ואני מסכים/ה ל...") linking to the real `terms.pdf`/`privacy.pdf`/`accessibility.pdf` - the
+form is blocked (no Firebase account created) until it's checked. Existing users who registered
+before this existed are gated too: a new `termsGateScreen` blocks entry immediately (no grace
+period, unlike the password-strength rule) on their next login/refresh until they accept, tracked
+via `termsAccepted`/`termsAcceptedAt` in Firestore the same way for both paths. 6 new tests across
+both flows.
+
+**New: "סה"כ היעדרות" moved to the carry-over fix; three small tools for the system-updates feed.**
+`tools/system-update-composer.html` - a form that generates a ready-to-paste `<article>` block, so
+adding an update never requires hand-editing HTML/dates. 3 new automated tests on
+`content/system-updates.he.html` catch bad content before it ships: no two pinned items active at
+once, expiry never before the posting date, and balanced `<article>` tags. `whats-new.html` - a
+standalone page showing every update ever published (ignoring expiry), linked via a small
+"היסטוריה מלאה" link next to "עדכוני מערכת" on the login screen.
+
+**Also in this round:** the in-app guide's "הורד ספרון הדרכה" link moved from the bottom to a
+prominent banner at the top of the "מדריך למשתמש" popup.
 
 ## Finally done: "מידע חשוב" → "מדריך למשתמש" (agreed a while back, flagged as not actually done)
 

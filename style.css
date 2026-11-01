@@ -1,4 +1,4 @@
-/* COT System Version: V202611010647 */
+/* COT System Version: V202611011609 */
 /* === קובץ עיצוב: style.css === */
 /* עיצוב חדש (ניווי + ענבר), מבוסס על ההצעה שאושרה ב-Design canvas. כל שמות המחלקות/המזהים
    שה-JS תלוי בהם (ראו 01-shift-codes.js / calculator.js / components.js וכו') נשארו בדיוק כפי
@@ -308,6 +308,12 @@ th.thick-border-left { border-left: 3px solid rgba(255,255,255,0.55) !important;
 .login-trust-msg { font-size: 12px; font-weight: 600; color: var(--muted); text-align: center; margin-top: 18px; margin-bottom: auto; line-height: 1.5; }
 
 .req-list { list-style: none; padding: 0; margin: 2px 0 16px 0; font-size: 11.5px; font-weight: 600; display: grid; grid-template-columns: 1fr 1fr; gap: 5px;}
+
+.terms-check-row { display: flex; align-items: flex-start; gap: 8px; margin: 4px 0 16px; font-size: 12px; color: var(--muted); line-height: 1.5; }
+.terms-check-row input[type="checkbox"] { width: 16px; height: 16px; margin-top: 2px; flex-shrink: 0; accent-color: var(--c-primary); cursor: pointer; }
+.terms-check-row label { cursor: pointer; }
+.terms-check-row a { color: var(--c-primary); font-weight: 600; }
+.terms-check-row a:hover { text-decoration: underline; }
 .req-list li { margin-bottom: 2px; display: flex; align-items: center; gap: 6px; transition: 0.2s; }
 .req-list li.invalid { color: #94A3B8; }
 .req-list li.invalid::before { content: '○'; font-size: 10px; }

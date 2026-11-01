@@ -1,4 +1,4 @@
-/* COT System Version: V202611010647 */
+/* COT System Version: V202611011609 */
 // קובץ: 05-session-data.js
 // שמירה/טעינה מהענן ומקובץ, סגירת חודש, איפוס גליון (clearData), ופאנל היתרות העליון.
 
@@ -57,21 +57,38 @@ window.handleFileLoad = function(event) {
                 customAlert("הקובץ אינו גליון תקין של COT (חסר מערך משמרות). ודא שבחרת קובץ שנשמר מהמערכת.");
                 return;
             }
-            var fileKey = (data.year && data.month) ? data.year + "-" + pad2(data.month) : null;
-            var fileCarryVal = data.monthCarryOver !== undefined ? parseInt(data.monthCarryOver, 10) : (data.carryOver && fileKey && data.carryOver[fileKey] !== undefined ? parseInt(data.carryOver[fileKey], 10) : undefined);
-            var cloudCarryVal = (fileKey && window.carryOverData[fileKey] !== undefined) ? parseInt(window.carryOverData[fileKey], 10) : undefined;
-            var resolvedCarryVal = undefined, hasConflict = false, hasBalanceConflict = false;
-
-            if (fileKey && cloudCarryVal !== undefined && fileCarryVal !== undefined && cloudCarryVal !== fileCarryVal && !isNaN(cloudCarryVal) && !isNaN(fileCarryVal)) {
-                hasConflict = true;
-                let newVal = await customPrompt(`זיהינו סתירה! 🚨<br>בענן רשומות <b>${cloudCarryVal}</b> משמרות מחודש קודם, ובקובץ <b>${fileCarryVal}</b>.<br><br><b>תבדוק שוב את המשמרות והזן כאן את הערך הנכון:</b>`);
-                let parsedVal = parseInt(newVal, 10);
-                if (!isNaN(parsedVal) && parsedVal >= 0) resolvedCarryVal = parsedVal;
-                else { resolvedCarryVal = cloudCarryVal; customAlert("הוזן ערך לא תקין. המערכת תשתמש בנתוני הענן כברירת מחדל."); }
+            // שולף רק את ה-total לצורך השוואה/זיהוי סתירה - תומך גם בפורמט הישן (מספר בודד) וגם
+            // בחדש ({total, presence}), בלי parseInt ישיר על ערך שעלול להיות אובייקט (זה בדיוק מה
+            // שגרם לבאג: parseInt על אובייקט מחזיר NaN ודרס בשקט את הערך הנכון).
+            function extractCarryTotal(entry) {
+                if (entry === undefined || entry === null) return undefined;
+                if (typeof entry === 'number') return entry;
+                var t = parseInt(entry.total, 10);
+                return isNaN(t) ? undefined : t;
             }
-            if (data.carryOver) Object.assign(window.carryOverData, data.carryOver);
-            if (fileCarryVal !== undefined && fileKey) window.carryOverData[fileKey] = fileCarryVal;
-            if (resolvedCarryVal !== undefined && fileKey) window.carryOverData[fileKey] = resolvedCarryVal;
+            var fileKey = (data.year && data.month) ? data.year + "-" + pad2(data.month) : null;
+            var cloudCarryEntryOriginal = fileKey ? window.carryOverData[fileKey] : undefined; // המצב בענן, לפני כל שינוי
+            var fileCarryEntry = data.monthCarryOver !== undefined ? data.monthCarryOver : (data.carryOver && fileKey ? data.carryOver[fileKey] : undefined);
+            var fileCarryVal = extractCarryTotal(fileCarryEntry);
+            var cloudCarryVal = extractCarryTotal(cloudCarryEntryOriginal);
+            var hasConflict = false, hasBalanceConflict = false;
+
+            // מעתיקים carryOver של חודשים אחרים מהקובץ כרגיל - למפתח של fileKey עצמו יש טיפול
+            // ייעודי למטה (צריך את הערך המקורי מהענן שמור כדי לזהות/לפתור סתירה נכון).
+            if (data.carryOver) {
+                for (var cKey in data.carryOver) { if (cKey !== fileKey) window.carryOverData[cKey] = data.carryOver[cKey]; }
+            }
+
+            if (fileKey && fileCarryEntry !== undefined) {
+                if (cloudCarryVal !== undefined && fileCarryVal !== undefined && cloudCarryVal !== fileCarryVal) {
+                    hasConflict = true;
+                    let fixNow = await customConfirm(`זיהינו סתירה! 🚨<br>בענן רשומות <b>${cloudCarryVal}</b> משמרות (סה"כ) מחודש קודם, ובקובץ <b>${fileCarryVal}</b>.<br><br>המערכת תשתמש בנתוני הענן כברירת מחדל, הנחשבים מהימנים יותר. ללחוץ "אישור" כדי לפתוח ולתקן את הערך הנכון כעת.`);
+                    window.carryOverData[fileKey] = cloudCarryEntryOriginal; // משחזרים בדיוק את מה שהיה בענן, בפורמט המקורי שלו
+                    if (fixNow && window.openCarryModal) window.openCarryModal(window.getCarryOverCounts(fileKey));
+                } else {
+                    window.carryOverData[fileKey] = fileCarryEntry; // אין סתירה - משתמשים בערך מהקובץ (ישן או חדש כאחד)
+                }
+            }
 
             if (fileKey) {
                 let fBals = { reg: data.monthBalances?.reg ?? parseFloat(data.bal_open_reg||0), shab: data.monthBalances?.shab ?? parseFloat(data.bal_open_shab||0), sick: data.monthBalances?.sick ?? parseFloat(data.bal_open_sick||0), dec: data.monthBalances?.dec ?? parseFloat(data.bal_open_dec||0), cho: data.monthBalances?.cho ?? parseFloat(data.bal_open_cho||0) };

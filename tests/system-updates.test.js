@@ -50,3 +50,44 @@ test('content-loader.js מפנה גם לקובץ עדכוני המערכת', () 
   assert.ok(loader.includes('content/system-updates.he.html'));
   assert.ok(fs.existsSync(path.join(ROOT, 'content', 'system-updates.he.html')));
 });
+
+test('תקינות content/system-updates.he.html: אין יותר מהודעה מוצמדת (pinned) אחת פעילה (לא פגת תוקף) בו-זמנית', () => {
+  const html = fs.readFileSync(path.join(ROOT, 'content', 'system-updates.he.html'), 'utf8');
+  const today = new Date().toISOString().slice(0, 10);
+  const articles = html.match(/<article\s[^>]*>/g) || [];
+  const activePinned = articles.filter((a) => {
+    const pinned = /data-pinned="true"/.test(a);
+    const expMatch = a.match(/data-expires="(\d{4}-\d{2}-\d{2})"/);
+    const notExpired = !expMatch || expMatch[1] >= today;
+    return pinned && notExpired;
+  });
+  assert.ok(activePinned.length <= 1, 'יותר מהודעה מוצמדת אחת פעילה בו-זמנית - עלול להיראות מבולגן בראש הרשימה');
+});
+
+test('תקינות content/system-updates.he.html: data-expires תמיד >= data-date (לא הודעה שפג תוקפה לפני שפורסמה)', () => {
+  const html = fs.readFileSync(path.join(ROOT, 'content', 'system-updates.he.html'), 'utf8');
+  const articles = html.match(/<article\s[^>]*>/g) || [];
+  for (const a of articles) {
+    const date = a.match(/data-date="(\d{4}-\d{2}-\d{2})"/);
+    const exp = a.match(/data-expires="(\d{4}-\d{2}-\d{2})"/);
+    assert.ok(date && exp, 'חסר data-date או data-expires: ' + a);
+    assert.ok(exp[1] >= date[1], 'data-expires קודם ל-data-date: ' + a);
+  }
+});
+
+test('תקינות content/system-updates.he.html: מספר תגיות <article> פתיחה תואם לסגירה (אין HTML שבור)', () => {
+  const html = fs.readFileSync(path.join(ROOT, 'content', 'system-updates.he.html'), 'utf8');
+  const opens = (html.match(/<article\s/g) || []).length;
+  const closes = (html.match(/<\/article>/g) || []).length;
+  assert.equal(opens, closes, 'מספר ה-<article> הפתוחות לא תואם לסגורות');
+});
+
+test('whats-new.html (ארכיון היסטוריית עדכונים) קיים, מקושר מראש מסך הכניסה', () => {
+  assert.ok(fs.existsSync(path.join(ROOT, 'whats-new.html')));
+  const html = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
+  assert.ok(html.includes('href="whats-new.html"'));
+});
+
+test('tools/system-update-composer.html (כלי הרכבת עדכונים) קיים', () => {
+  assert.ok(fs.existsSync(path.join(ROOT, 'tools', 'system-update-composer.html')));
+});

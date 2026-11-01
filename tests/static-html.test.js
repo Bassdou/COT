@@ -30,14 +30,14 @@ test('שדות תעריף לא מקבלים ערך שלילי', () => {
 });
 
 test('כל קובצי ה-<script src> המקומיים שה-HTML טוען קיימים בפועל', () => {
-  const refs = [...html.matchAll(/<script src="([^"#:]+\.js)">/g)].map((m) => m[1]);
+  const refs = [...html.matchAll(/<script src="([^"#:?]+\.js)(?:\?[^"]*)?">/g)].map((m) => m[1]);
   assert.ok(refs.includes('calculator.js') && refs.includes('00-core.js') && refs.includes('content-loader.js'));
   const missing = refs.filter((f) => !fs.existsSync(path.join(root, f)));
   assert.deepEqual(missing, []);
 });
 
 test('calculator.js (מנוע החישוב) טעון לפני כל קובץ שמשתמש בו', () => {
-  const order = [...html.matchAll(/<script src="([^"]+\.js)">/g)].map((m) => m[1]).filter((f) => !f.startsWith('http'));
+  const order = [...html.matchAll(/<script src="([^"?]+\.js)(?:\?[^"]*)?">/g)].map((m) => m[1]).filter((f) => !f.startsWith('http'));
   const iCalc = order.indexOf('calculator.js');
   const iCodes = order.indexOf('01-shift-codes.js');
   const iCore = order.indexOf('00-core.js');
@@ -158,9 +158,37 @@ test('תוכן "מדריך למשתמש" (content/shift-info.he.html) מעודכ
   assert.ok(content.includes('4 נוכחות'), 'כלל 4 הנוכחות מתוך 5 לא מתועד במדריך');
 });
 
+test('כל 16 צילומי המסך הנדרשים קיימים בפועל ב-manual-template/images/', () => {
+  const names = ['01-login-screen','02-register-tab','03-main-header','04-balances-ribbon','05-input-panel',
+    '06-kpi-ribbon','07-timesheet-empty','08-timesheet-filled','09-shift-code-popup','10-weekly-warning',
+    '11-balances-table','12-close-month-confirm','13-excel-export-modal','14-shift-info-modal','15-update-toast','16-maintenance-screen'];
+  for (const n of names) {
+    assert.ok(fs.existsSync(path.join(root, 'manual-template', 'images', n + '.png')), n + '.png חסר');
+  }
+});
+
+test('cot_user_manual.pdf קיים וגדול מספיק שיש בו באמת תמונות (לא רק הגרסה הישנה/טקסטואלית)', () => {
+  // בדיקה זו לא יכולה לוודא את התוכן הטקסטואלי של ה-PDF (אין כלי חילוץ טקסט מ-PDF בתלויות הבדיקות),
+  // רק שהקובץ קיים ושגודלו תואם קובץ עם 16 צילומי מסך אמיתיים משובצים (לא טקסט בלבד).
+  const pdfPath = path.join(root, 'cot_user_manual.pdf');
+  assert.ok(fs.existsSync(pdfPath));
+  const sizeKb = fs.statSync(pdfPath).size / 1024;
+  assert.ok(sizeKb > 500, 'הקובץ קטן מדי - כנראה לא כולל את התמונות האמיתיות (היה כ-2.5MB עם 16 הצילומים)');
+});
+
 test('מסך התחזוקה (.maintenance-overlay) לא כופה display דרך CSS - ה-JS חייב לשלוט בהצגה/הסתרה שלו', () => {
   const css = fs.readFileSync(path.join(root, 'style.css'), 'utf8');
   const m = css.match(/\.maintenance-overlay\s*\{[^}]*\}/);
   assert.ok(m, '.maintenance-overlay לא נמצא');
   assert.ok(!/display\s*:/.test(m[0]), 'קביעת display כאן (בפרט עם !important) תדרוס את style.display שה-JS קובע לפי מצב maintenanceMode, ותשאיר את המסך גלוי תמיד');
+});
+
+test('DEPLOY.md: רשימת הקבצים להעלאה כוללת את כל קובצי ה-JS וה-content המקומיים הנטענים בפועל', () => {
+  const deploy = fs.readFileSync(path.join(root, 'DEPLOY.md'), 'utf8');
+  const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
+  const localJs = [...html.matchAll(/<script src="([^"#:?]+\.js)(?:\?[^"]*)?">/g)].map((m) => m[1]);
+  for (const f of localJs) assert.ok(deploy.includes(f), f + ' חסר ברשימת ההעלאה ב-DEPLOY.md');
+  for (const f of ['content/shift-info.he.html', 'content/mini-shift-info.he.html', 'content/system-updates.he.html', 'whats-new.html']) {
+    assert.ok(deploy.includes(f), f + ' חסר ברשימת ההעלאה ב-DEPLOY.md');
+  }
 });
