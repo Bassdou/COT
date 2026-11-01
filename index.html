@@ -1,4 +1,4 @@
-<!-- COT System Version: V202611010557 -->
+<!-- COT System Version: V202611010625 -->
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
@@ -191,8 +191,12 @@
 </div>
 
     <div class="kpi-row" id="kpiRow" style="display:none;">
-        <span class="kpi-item"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>סה"כ משמרות: <strong id="dashShifts">0</strong><span id="dashCarryOver" class="dash-sub dash-sub-link" role="button" tabindex="0" title="לחץ לתיקון מספר המשמרות הנגררות" onclick="openCarryModal(window.getCarryOverCounts(getSelectedMonthYear().y+'-'+pad2(getSelectedMonthYear().m)))" onkeydown="if(event.key==='Enter'||event.key===' '){this.click();}"></span></span>
-        <span class="kpi-item" title="כל ימי ההיעדרות החודש (חופש/מחלה/הצהרה/בחירה/מחלת בן משפחה/מילואים) - לא כולל מילואים בסופ&quot;ש"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4M9 14l6 6M15 14l-6 6"/></svg>סה"כ היעדרות: <strong id="dashAbsence">0</strong></span>
+        <span class="kpi-item kpi-item-presence" title="משמרות נוכחות בלבד (לא כולל היעדרות)"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>נוכחות: <strong id="dashShifts">0</strong></span>
+        <span class="kpi-item kpi-item-absence" title="כל ימי ההיעדרות החודש (חופש/מחלה/הצהרה/בחירה/מחלת בן משפחה/מילואים) - לא כולל מילואים בסופ&quot;ש"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4M9 14l6 6M15 14l-6 6"/></svg>היעדרות: <strong id="dashAbsence">0</strong></span>
+        <button type="button" id="carryOverChip" class="kpi-item kpi-chip-btn" title="לחץ לתיקון מספר המשמרות הנגררות מסוף החודש הקודם - חשוב לתכנון השבוע הראשון של החודש" onclick="openCarryModal(window.getCarryOverCounts(getSelectedMonthYear().y+'-'+pad2(getSelectedMonthYear().m)))">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4 12.5-12.5z"/></svg>
+            נגררות מחודש קודם: <strong id="dashCarryOver">0</strong>
+        </button>
         <span class="kpi-item"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>שעות תקן: <strong id="dashStandard">0.00</strong></span>
         <span class="kpi-item"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M13 3L4 14h7l-1 7 9-11h-7l1-7z"/></svg>שעות בפועל: <strong id="dashGross">0.00</strong></span>
         <span class="kpi-item kpi-item-highlight" style="color:#B06F1F;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M16 12h2M3 10h18"/></svg>אש"ל: <strong id="dashEshel">0.00 ₪</strong></span>

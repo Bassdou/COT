@@ -1,4 +1,4 @@
-/* COT System Version: V202611010557 */
+/* COT System Version: V202611010625 */
 /* === קובץ עיצוב: style.css === */
 /* עיצוב חדש (ניווי + ענבר), מבוסס על ההצעה שאושרה ב-Design canvas. כל שמות המחלקות/המזהים
    שה-JS תלוי בהם (ראו 01-shift-codes.js / calculator.js / components.js וכו') נשארו בדיוק כפי
@@ -136,9 +136,19 @@ th.thick-border-left { border-left: 3px solid rgba(255,255,255,0.55) !important;
 .kpi-item { display: inline-flex; align-items: center; gap: 7px; font-size: 15px; font-weight: 600; color: #163C6C; white-space: nowrap; }
 .kpi-item strong { font-size: 16.5px; font-weight: 800; }
 .kpi-item-highlight strong { font-size: 18px; }
-.dash-sub { font-size: 11px; color: var(--muted); margin-right: 2px; }
-.dash-sub-link { cursor: pointer; text-decoration: underline; text-decoration-style: dotted; }
-.dash-sub-link:hover, .dash-sub-link:focus-visible { color: var(--c-primary); }
+
+/* נוכחות/היעדרות - צבע נבדל לכל אחד, כדי שהעין תבחין ביניהם מיד */
+.kpi-item-presence strong { color: #1D4E89; }
+.kpi-item-absence strong { color: #7C3AED; }
+
+/* כפתור "משמרות נגררות" - עיצוב של כפתור אמיתי (לא כיתוב קטן תחת פריט אחר), כדי שיהיה ברור
+   וקריא שזה נתון חשוב (לתכנון השבוע הראשון של החודש הבא) וגם שאפשר/צריך ללחוץ עליו לתיקון. */
+.kpi-chip-btn {
+    font: inherit; border: 1.5px solid #B9CDE8; background: #fff; border-radius: 10px;
+    padding: 7px 14px; cursor: pointer; color: #163C6C; transition: 0.15s;
+}
+.kpi-chip-btn:hover, .kpi-chip-btn:focus-visible { background: #EAF0FA; border-color: var(--c-primary); }
+.kpi-chip-btn strong { color: var(--amber); }
 
 .balance-input-wrap { display: inline-flex; align-items: center; gap: 4px; }
 .bal-input { width: 68px; text-align: center; font-weight: 700; font-size: 14.5px; padding: 4px; border-radius: 6px; border: 1.5px solid var(--line); outline: none; transition: 0.2s; color: var(--navy-900);}

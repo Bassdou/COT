@@ -1,8 +1,8 @@
-<!-- COT System Version: V202611010557 -->
+<!-- COT System Version: V202611010625 -->
 
 # COT - Calculate Over Time: full source + tests + deployment guide
 
-Current version: **V202611010557** (see `version.json`)
+Current version: **V202611010625** (see `version.json`)
 
 ## File layout
 
@@ -116,6 +116,17 @@ flagging this from December 15 of each year.
 **Next steps:** take the screenshots per the list and send them to me (skipping any that are hard
 to get is fine). I'll build the final polished manual from them and export it as a separate zip
 named `MANUAL`, versioned to match the app version at that moment.
+
+## Redesign: the top KPI ribbon's shift/absence/carry-over wording and layout
+
+He said the "carried-over shifts" control was unreadable and unclear, and that it's important data
+for planning next month's first week. It had been a tiny 11px sub-caption squeezed under "סה"כ
+משמרות", with increasingly long text ("כולל X נגררות (Y נוכחות, לתיקון)") that never fit its role.
+Rebuilt it as a real, properly-sized `<button>` of its own in the ribbon ("נגררות מחודש קודם: X (Y
+נוכחות)") with a pencil icon and real button styling (border, hover state) - no longer a disguised
+link. Also relabeled "סה"כ משמרות"/"סה"כ היעדרות" to the shorter "נוכחות"/"היעדרות" and gave each a
+distinct color (blue for presence, purple for absence) so the two are easy to tell apart at a
+glance. Removed the now-unused `.dash-sub`/`.dash-sub-link` CSS this replaced.
 
 ## Fix: carried-over shifts now track presence and absence separately
 

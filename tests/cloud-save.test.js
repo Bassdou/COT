@@ -45,21 +45,21 @@ test('משמרות נגררות מהחודש הקודם (carryOverData, מגוב
   app.ctx.carryOverData[key] = { total: 5, presence: 3 }; // פורמט חדש: סה"כ ונוכחות נפרדים
   app.ctx.generateTable();
   const el = app.doc.getElementById('dashCarryOver');
-  assert.equal(el.innerText, 'כולל 5 נגררות (3 נוכחות, לתיקון)');
+  assert.equal(el.innerText, '5 (3 נוכחות)');
 });
 
 test('תאימות לאחור: carryOverData בפורמט ישן (מספר בודד) מוצג כאילו כולו נוכחות', () => {
   const app = ready();
   app.ctx.carryOverData['2026-10'] = 3; // פורמט ישן
   app.ctx.generateTable();
-  assert.equal(app.doc.getElementById('dashCarryOver').innerText, 'כולל 3 נגררות (3 נוכחות, לתיקון)');
+  assert.equal(app.doc.getElementById('dashCarryOver').innerText, '3 (3 נוכחות)');
 });
 
 test('כשאין משמרות נגררות (0), התצוגה עדיין גלויה (לא ריקה) - אחרת אין שום דבר ללחוץ עליו לתיקון', () => {
   const app = ready();
   app.ctx.carryOverData['2026-10'] = { total: 0, presence: 0 };
   app.ctx.generateTable();
-  assert.equal(app.doc.getElementById('dashCarryOver').innerText, 'כולל 0 נגררות (0 נוכחות, לתיקון)');
+  assert.equal(app.doc.getElementById('dashCarryOver').innerText, '0 (0 נוכחות)');
 });
 
 test('היתרה הסופית של הצהרה ובחירה מוצגת על המסך (bal_close_dec/cho), לא רק בהדפסה', () => {

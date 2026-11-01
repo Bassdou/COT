@@ -1,4 +1,4 @@
-/* COT System Version: V202611010557 */
+/* COT System Version: V202611010625 */
 // קובץ: 06-excel-export.js
 // ייצוא הגליון לקובץ Excel - חדש או הוספה לקובץ קיים.
 
