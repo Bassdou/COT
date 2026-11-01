@@ -1,8 +1,8 @@
-<!-- COT System Version: V202610312326 -->
+<!-- COT System Version: V202611010557 -->
 
 # COT - Calculate Over Time: full source + tests + deployment guide
 
-Current version: **V202610312326** (see `version.json`)
+Current version: **V202611010557** (see `version.json`)
 
 ## File layout
 
@@ -116,6 +116,38 @@ flagging this from December 15 of each year.
 **Next steps:** take the screenshots per the list and send them to me (skipping any that are hard
 to get is fine). I'll build the final polished manual from them and export it as a separate zip
 named `MANUAL`, versioned to match the app version at that moment.
+
+## Fix: carried-over shifts now track presence and absence separately
+
+He pointed out a real gap in the 4-presence-cap rule: `carryOverData` stored a single combined
+number (total shifts in the previous month's tail week), and the new rule treated that whole
+number as if it were all presence - so a carried-over week that was actually, say, 3 presence + 2
+absence would wrongly count as 5 presence, over-blocking the next month. `closeMonth()` already
+computed this tail count automatically (it wasn't a manual-only value, contrary to what Claude
+first (incorrectly) said) - the fix was to have it split the count into `{total, presence}` instead
+of one number, and read `.presence` specifically wherever the 4-cap rule needs it, while `.total`
+still feeds the existing 5-per-week warning. A shared `getCarryOverCounts(key)` helper handles both
+the new object format and the old bare-number format (treating an old number as all-presence, i.e.
+unchanged from previous behavior) so existing saved data in Firestore keeps working without a
+migration. The manual correction modal (`openCarryModal`) now asks for both numbers, with the
+presence field capped to the total field's value. The "כולל X נגררות" caption now shows the
+breakdown too.
+
+## New: "סה"כ היעדרות" alongside "סה"כ משמרות"
+
+He asked how to see the presence/absence split for the month - "סה"כ משמרות" only ever counted
+presence shifts, with no indication it excluded absences, and there was no single combined count of
+absence days anywhere (only broken out per absence type in the balances table). Added a new KPI
+item, "סה"כ היעדרות", counted with the exact same definition the new weekly 4-presence-cap rule
+uses (any day that counts toward the weekly quota but isn't presence) - so the two numbers on
+screen now match what the cap is actually checking against.
+
+## Bug fix: the carried-over-shifts correction link was invisible when the count was 0
+
+He asked how to correct the carried-over shift count - the click-to-reopen link (added a few
+versions back, under "סה"כ משמרות") only ever showed text when the count was above zero; at 0 its
+own text was empty, so there was literally nothing visible to click even though the link itself
+still worked. Now it always shows ("כולל 0 נגררות (לתיקון)" etc.), regardless of the value.
 
 ## Bug fix: the PDF export produced completely garbled Hebrew
 

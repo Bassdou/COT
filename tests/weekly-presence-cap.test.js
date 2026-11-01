@@ -59,3 +59,35 @@ test('ההקלדה הישירה של שעות כניסה/יציאה (בלי קו
   assert.equal(startEl.value, '', 'הקשה ידנית של שעות ללא קוד אמורה להיחסם באותו אופן בדיוק');
   assert.ok(app.alerts.includes('אין להזין יותר מ-4 משמרות בסידור'));
 });
+
+test('"סה"כ היעדרות" (dashAbsence) סופר ימי היעדרות, נפרד מ"סה"כ משמרות" (נוכחות בלבד)', () => {
+  const app = loadApp();
+  setupMonth(app, { year: 2026, month: 10, rate: 50 });
+  setShiftCode(app, 4, 'ב06'); setShiftCode(app, 5, 'ב06'); setShiftCode(app, 6, 'ב06'); setShiftCode(app, 7, 'ב06');
+  setShiftCode(app, 8, 'ח');
+  assert.equal(app.doc.getElementById('dashShifts').innerText, '4');
+  assert.equal(app.doc.getElementById('dashAbsence').innerText, '1');
+});
+
+test('closeMonth מפצל את המשמרות הנגררות לחודש הבא ל-{total, presence} נפרדים, לפי מה שבאמת היה בשבוע האחרון', async () => {
+  const app = loadApp();
+  setupMonth(app, { year: 2026, month: 9, rate: 50, openBalances: { reg: 10, shab: 1, sick: 5, dec: 3, cho: 2 } });
+  // 30/9/2026 הוא יום רביעי; השבוע האחרון (חלקי) הוא 27-30/9 (א'-ד'), 4 ימים. נמלא 2 נוכחות + 2 היעדרות.
+  setShiftCode(app, 27, 'ב06'); setShiftCode(app, 28, 'ב06');
+  setShiftCode(app, 29, 'ח'); setShiftCode(app, 30, 'מח');
+  app.confirms.answer = true;
+  await app.ctx.closeMonth();
+  const oct = app.ctx.carryOverData['2026-10'];
+  assert.equal(oct.total, 4, 'סה"כ: 2 נוכחות + 2 היעדרות');
+  assert.equal(oct.presence, 2, 'רק הנוכחות נספרת כ-presence');
+});
+
+test('כלל 4 הנוכחות משתמש רק ב-presence מהחודש הקודם, לא ב-total (שעלול לכלול גם היעדרות)', () => {
+  const app = loadApp();
+  // total=5 אבל presence=2 בלבד - אמורות להיות מותרות עוד 2 נוכחות בשבוע הראשון (עד תקרת 4)
+  setupMonth(app, { year: 2026, month: 10, rate: 50, carry: { total: 5, presence: 2 } });
+  setShiftCode(app, 1, 'ב06'); setShiftCode(app, 2, 'ב06');
+  assert.equal(row(app, 2).querySelector('.shift-type-input').value, 'ב06', 'עם presence=2, עוד 2 נוכחות אמורות להתקבל (2+2=4)');
+  setShiftCode(app, 3, 'ב06');
+  assert.equal(row(app, 3).querySelector('.shift-type-input').value, '', 'הנוכחות החמישית (2 נגרר + 3 חדשות) אמורה להיחסם');
+});

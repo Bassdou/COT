@@ -1,4 +1,4 @@
-/* COT System Version: V202610312326 */
+/* COT System Version: V202611010557 */
 // קובץ: 08-pdf-export.js
 // ייצוא ישיר לקובץ PDF - לא תלוי בדפדפן/מדפסת של המשתמש, בניגוד להדפסה (Ctrl+P).
 //

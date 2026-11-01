@@ -1,4 +1,4 @@
-/* COT System Version: V202610312326 */
+/* COT System Version: V202611010557 */
 // קובץ: calculator.js (מנוע החישוב)
 // המוח של המערכת: בניית הטבלה, זיהוי משמרת/היעדרות, וכל נוסחאות השעות הנוספות, השבת, הלילה ומעבר השעון. זהו הקובץ היחיד שיש לערפל (obfuscator.io) - הוא היחיד שצריך להישאר קבוע בשם calculator.js.
 
@@ -11,6 +11,16 @@ var columnsData = [
 ];
 
 function pad2(n) { return (n < 10 ? '0' : '') + n; }
+
+// קורא ערך יחיד מ-carryOverData בצורה שתומכת גם בפורמט הישן (מספר בודד) וגם בחדש ({total, presence}).
+// נתון ישן (מספר בודד) מתפרש כאילו כולו נוכחות - בדיוק ההתנהגות שהייתה לפני הפיצול, כדי שלא לשבור
+// משתמשים קיימים עם נתונים שנשמרו בפורמט הקודם.
+window.getCarryOverCounts = function(key) {
+    var entry = window.carryOverData ? window.carryOverData[key] : undefined;
+    if (entry === undefined || entry === null) return { total: 0, presence: 0 };
+    if (typeof entry === 'number') return { total: entry, presence: entry };
+    return { total: parseInt(entry.total, 10) || 0, presence: parseInt(entry.presence, 10) || 0 };
+};
 
 function initMonthYearSelect() {
     var sel = document.getElementById('monthYearSelect'); if(!sel || sel.options.length > 0) return;
@@ -73,7 +83,7 @@ window.generateTable = function() {
 
     if (window.carryOverData[curKey] === undefined) {
         var prevMonthLastDay = new Date(ym.y, ym.m - 1, 0); 
-        if (prevMonthLastDay.getDay() === 6) window.carryOverData[curKey] = 0;
+        if (prevMonthLastDay.getDay() === 6) window.carryOverData[curKey] = { total: 0, presence: 0 };
         else if (window.openCarryModal) window.openCarryModal(0);
     }
 
@@ -265,7 +275,7 @@ window.calculateRow = function(inputElem) {
         {
             var ymCap = getSelectedMonthYear();
             var curKeyCap = ymCap.y + "-" + pad2(ymCap.m);
-            var carryOverShiftsCap = window.carryOverData[curKeyCap] ? parseInt(window.carryOverData[curKeyCap], 10) : 0;
+            var carryOverShiftsCap = window.getCarryOverCounts(curKeyCap).presence;
             var weekOfCap = {}, wIdxCap = 0;
             for (var rrCap = 1; rrCap <= 31; rrCap++) {
                 var dOfWCap = new Date(ymCap.y, ymCap.m - 1, rrCap).getDay();
@@ -436,16 +446,19 @@ window.calculateRow = function(inputElem) {
 
 window.updateGrandTotal = function() {
     var rate = parseFloat(document.getElementById('hourlyRate')?.value || 0);
-    var totalDailyCostSum = 0, totalGrossMin = 0, totalShifts = 0, totalHoursOverall = 0, sumTotalShiftHours = 0, sumTotalShabbatDays = 0;
+    var totalDailyCostSum = 0, totalGrossMin = 0, totalShifts = 0, totalAbsenceDays = 0, totalHoursOverall = 0, sumTotalShiftHours = 0, sumTotalShabbatDays = 0;
     var usedReg = 0, usedSick = 0, usedDec = 0, usedCho = 0, usedFam = 0, usedMil = 0, colTotals = {};
     columnsData.forEach(c => colTotals[c.id] = 0);
 
-    var ym = getSelectedMonthYear(), carryOverShifts = window.carryOverData[ym.y + "-" + pad2(ym.m)] ? parseInt(window.carryOverData[ym.y + "-" + pad2(ym.m)], 10) : 0;
+    var ym = getSelectedMonthYear(), carryOverCounts = window.getCarryOverCounts(ym.y + "-" + pad2(ym.m)), carryOverShifts = carryOverCounts.total;
     var weekShiftsCount = {0: carryOverShifts}, weekIndex = 0;
 
-    // תצוגה קבועה (לא רק בתוך אזהרת החריגה) של מספר המשמרות הנגררות מהחודש הקודם - נתון שנשמר בענן (carryOverData).
+    // תצוגה קבועה (לא רק בתוך אזהרת החריגה) של מספר המשמרות הנגררות מהחודש הקודם - נתון שנשמר בענן
+    // (carryOverData). מוצג תמיד (גם כש-0), כי זה גם הלינק היחיד לפתיחת חלון התיקון - אם הטקסט
+    // היה נעלם ב-0 (כמו קודם), לא היה שום דבר גלוי ללחוץ עליו כדי לתקן. מציג את שני המספרים
+    // (סה"כ ומתוכן נוכחות) כי זה בדיוק מה שנשמר ומה שכלל ה-4 הנוכחות משתמש בו.
     var carryDisplayEl = document.getElementById('dashCarryOver');
-    if (carryDisplayEl) carryDisplayEl.innerText = carryOverShifts > 0 ? ('כולל ' + carryOverShifts + ' נגררות') : '';
+    if (carryDisplayEl) carryDisplayEl.innerText = 'כולל ' + carryOverCounts.total + ' נגררות (' + carryOverCounts.presence + ' נוכחות, לתיקון)';
 
     for(var r=1; r<=31; r++) {
         var cell = document.getElementById('val-cost-' + r); if(!cell) continue;
@@ -465,6 +478,8 @@ window.updateGrandTotal = function() {
             
             if (cell.getAttribute('data-is-shift') === '1') {
                 totalShifts++; totalDailyCostSum += parseFloat(cell.getAttribute('data-cost') || 0); totalGrossMin += parseInt(cell.getAttribute('data-gross') || 0, 10);
+            } else {
+                totalAbsenceDays++; // כל יום שנספר לכלל ה-5/4 השבועי אבל אינו נוכחות - אותה הגדרה בדיוק כמו כלל "4 נוכחות מתוך 5"
             }
             columnsData.forEach(col => {
                 var cEl = document.getElementById('val-' + col.id + '-' + r); if(cEl) colTotals[col.id] += parseFloat(cEl.getAttribute('data-val') || 0);
@@ -494,6 +509,7 @@ window.updateGrandTotal = function() {
     var eshelCost = Math.floor((totalGrossMin / 60) / 8) * (parseFloat(document.getElementById('eshelRate')?.value) || 0);
     
     let ds = document.getElementById('dashShifts'); if(ds) ds.innerText = totalShifts; 
+    let da = document.getElementById('dashAbsence'); if(da) da.innerText = totalAbsenceDays; 
     let dst = document.getElementById('dashStandard'); if(dst) dst.innerText = (colTotals['I'] || 0).toFixed(2);
     let dg = document.getElementById('dashGross'); if(dg) dg.innerText = (totalGrossMin / 60).toFixed(2); 
     let de = document.getElementById('dashEshel'); if(de) de.innerText = eshelCost.toFixed(2) + ' ₪';

@@ -39,20 +39,27 @@ test('closeMonth: הצלחה → יתרות החודש הבא נכתבות לע�
   assert.equal(readDay(app, 6).shiftInput, '', 'הגליון נוקה אחרי הסגירה');
 });
 
-test('משמרות נגררות מהחודש הקודם (carryOverData, מגובה בענן) מוצגות תמיד מתחת ל"סה"כ משמרות"', () => {
+test('משמרות נגררות מהחודש הקודם (carryOverData, מגובה בענן) מוצגות תמיד מתחת ל"סה"כ משמרות", כולל פירוט נוכחות', () => {
   const app = ready();
   const key = '2026-10';
-  app.ctx.carryOverData[key] = 3;
+  app.ctx.carryOverData[key] = { total: 5, presence: 3 }; // פורמט חדש: סה"כ ונוכחות נפרדים
   app.ctx.generateTable();
   const el = app.doc.getElementById('dashCarryOver');
-  assert.equal(el.innerText, 'כולל 3 נגררות');
+  assert.equal(el.innerText, 'כולל 5 נגררות (3 נוכחות, לתיקון)');
 });
 
-test('כשאין משמרות נגררות (0), התצוגה הנלווית ריקה', () => {
+test('תאימות לאחור: carryOverData בפורמט ישן (מספר בודד) מוצג כאילו כולו נוכחות', () => {
   const app = ready();
-  app.ctx.carryOverData['2026-10'] = 0;
+  app.ctx.carryOverData['2026-10'] = 3; // פורמט ישן
   app.ctx.generateTable();
-  assert.equal(app.doc.getElementById('dashCarryOver').innerText, '');
+  assert.equal(app.doc.getElementById('dashCarryOver').innerText, 'כולל 3 נגררות (3 נוכחות, לתיקון)');
+});
+
+test('כשאין משמרות נגררות (0), התצוגה עדיין גלויה (לא ריקה) - אחרת אין שום דבר ללחוץ עליו לתיקון', () => {
+  const app = ready();
+  app.ctx.carryOverData['2026-10'] = { total: 0, presence: 0 };
+  app.ctx.generateTable();
+  assert.equal(app.doc.getElementById('dashCarryOver').innerText, 'כולל 0 נגררות (0 נוכחות, לתיקון)');
 });
 
 test('היתרה הסופית של הצהרה ובחירה מוצגת על המסך (bal_close_dec/cho), לא רק בהדפסה', () => {

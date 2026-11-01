@@ -1,4 +1,4 @@
-/* COT System Version: V202610312326 */
+/* COT System Version: V202611010557 */
 // קובץ: 05-session-data.js
 // שמירה/טעינה מהענן ומקובץ, סגירת חודש, איפוס גליון (clearData), ופאנל היתרות העליון.
 
@@ -311,15 +311,20 @@ window.closeMonth = async function() {
         cho: (parseFloat(document.getElementById('bal_open_cho')?.value)||0) - (parseFloat(document.getElementById('bal_used_cho')?.innerText)||0)
     };
 
-    var daysInMonth = new Date(ym.y, ym.m, 0).getDate(), lastSunday = 1, tailShifts = 0;
+    // סופרים בנפרד נוכחות והיעדרות בשבוע האחרון (החלקי) של החודש הנסגר, כדי שגם כלל "5 בשבוע"
+    // (total) וגם כלל "4 נוכחות מתוך 5" (presence) יוכלו להסתמך על משמרות נגררות מדויקות -
+    // לא רק "total" שמניח בטעות שהכל נוכחות.
+    var daysInMonth = new Date(ym.y, ym.m, 0).getDate(), lastSunday = 1, tailTotal = 0, tailPresence = 0;
     if (new Date(ym.y, ym.m - 1, daysInMonth).getDay() !== 6) {
         for (var i = daysInMonth; i >= 1; i--) { if (new Date(ym.y, ym.m - 1, i).getDay() === 0) { lastSunday = i; break; } }
         for (var r = lastSunday; r <= daysInMonth; r++) {
             var valC = document.getElementById('val-cost-' + r), shiftInput = document.querySelector('#tbody tr:nth-child(' + r + ') .shift-type-input');
-            if (valC && (window.ABSENCE_CODES.includes(shiftInput?shiftInput.value.trim():'') || valC.getAttribute('data-is-shift') === '1')) tailShifts++;
+            var isPresenceTail = valC && valC.getAttribute('data-is-shift') === '1';
+            var isAbsenceTail = valC && window.ABSENCE_CODES.includes(shiftInput ? shiftInput.value.trim() : '');
+            if (isPresenceTail || isAbsenceTail) { tailTotal++; if (isPresenceTail) tailPresence++; }
         }
     }
-    window.carryOverData[nextKey] = tailShifts;
+    window.carryOverData[nextKey] = { total: tailTotal, presence: tailPresence };
 
     if (firebase.auth().currentUser && !window.isBypassed) {
         try {
@@ -371,12 +376,16 @@ window.clearData = async function(mode) {
 
 // פותח את חלון "משמרות מסוף חודש שעבר", הן אוטומטית (ym, prefill=0) והן מרצון לתיקון מאוחר יותר
 // (prefill = הערך הקיים כרגע עבור החודש הנבחר).
+// prefill: מספר בודד (תאימות לאחור, לקריאות ישנות) או אובייקט {total, presence}
 window.openCarryModal = function(prefill) {
+    var pre = (typeof prefill === 'number') ? { total: prefill, presence: prefill } : (prefill || { total: 0, presence: 0 });
     var ym = getSelectedMonthYear();
     var prevMonthLastDay = new Date(ym.y, ym.m - 1, 0);
     var maxAllowed = prevMonthLastDay.getDay() + 1;
-    let mInp = document.getElementById('manualCarryInput');
-    if (mInp) { mInp.max = maxAllowed; mInp.value = String(prefill); }
+    let mInp = document.getElementById('manualCarryInput'), mpInp = document.getElementById('manualCarryPresenceInput');
+    if (mInp) { mInp.max = maxAllowed; mInp.value = String(pre.total); }
+    if (mpInp) { mpInp.max = pre.total; mpInp.value = String(pre.presence); }
+    let warnEl = document.getElementById('carryPresenceWarning'); if (warnEl) warnEl.style.display = 'none';
     let cmInfo = document.getElementById('carryMaxInfo');
     if (cmInfo) cmInfo.innerText = "(מקסימום אפשרי לחודש זה: " + maxAllowed + ")";
     let fMod = document.getElementById('firstMonthCarryModal');
@@ -384,14 +393,33 @@ window.openCarryModal = function(prefill) {
     if (mInp) setTimeout(() => mInp.focus(), 100);
 };
 
+// מצמצם את המקסימום של שדה "נוכחות בלבד" לפי מה שהוקלד כרגע בשדה "סה"כ" - אי אפשר שיהיו יותר
+// משמרות נוכחות מאשר סה"כ משמרות.
+window.syncCarryPresenceMax = function() {
+    var totalEl = document.getElementById('manualCarryInput'), presEl = document.getElementById('manualCarryPresenceInput');
+    if (!totalEl || !presEl) return;
+    var totalVal = parseInt(totalEl.value, 10) || 0;
+    presEl.max = totalVal;
+    if ((parseInt(presEl.value, 10) || 0) > totalVal) presEl.value = totalVal;
+};
+
 window.saveFirstMonthCarry = function() {
-    let mcEl = document.getElementById('manualCarryInput');
+    let mcEl = document.getElementById('manualCarryInput'), mpEl = document.getElementById('manualCarryPresenceInput');
     if(!mcEl) return;
     var val = parseInt(mcEl.value, 10), maxAllowed = parseInt(mcEl.max, 10) || 6;
     if(isNaN(val) || val < 0) val = 0;
     if (val > maxAllowed) return customAlert("שים לב: הכמות המקסימלית האפשרית של משמרות בשבוע האחרון של החודש שעבר היא " + maxAllowed + ".");
-    
-    window.carryOverData[getSelectedMonthYear().y + "-" + pad2(getSelectedMonthYear().m)] = val;
+
+    var presenceVal = mpEl ? parseInt(mpEl.value, 10) : val;
+    if (isNaN(presenceVal) || presenceVal < 0) presenceVal = 0;
+    var warnEl = document.getElementById('carryPresenceWarning');
+    if (presenceVal > val) {
+        if (warnEl) warnEl.style.display = 'block';
+        return;
+    }
+    if (warnEl) warnEl.style.display = 'none';
+
+    window.carryOverData[getSelectedMonthYear().y + "-" + pad2(getSelectedMonthYear().m)] = { total: val, presence: presenceVal };
     window.saveData(true); 
     let mod = document.getElementById('firstMonthCarryModal');
     if(mod) mod.style.display = 'none'; 

@@ -1,4 +1,4 @@
-/* COT System Version: V202610312326 */
+/* COT System Version: V202611010557 */
 // קובץ: components.js
 // חלונות קופצים קבועים (shell). התוכן הטקסטואלי של "מידע חשוב" ו"קודי משמרות" עבר לקבצי content/*.he.html,
 // שנטענים אוטומטית ע"י content-loader.js - כדי שעדכון טקסט לא ידרוש נגיעה בקובץ הזה או בגרסת האפליקציה.
@@ -59,11 +59,22 @@ const cotStaticComponents = `
 <div id="firstMonthCarryModal" class="modal" role="dialog" aria-modal="true" style="z-index: 25000;">
     <div class="modal-content" style="max-width: 400px; text-align: center; padding: 30px;">
         <h3 style="color: #d35400; margin-top: 0; font-size: 20px;">הזנת משמרות מסוף חודש שעבר</h3>
-        <p style="font-size: 14px; color: #34495e; line-height: 1.6; margin-bottom: 20px;">
-            למעקב 5 משמרות בשבוע, אנא הקלד כמות המשמרות שנקלטו השבוע בדו"ח של החודש הקודם
+        <p style="font-size: 14px; color: #34495e; line-height: 1.6; margin-bottom: 16px;">
+            למעקב התקרות השבועיות (5 בסה"כ, מתוכן עד 4 נוכחות), אנא הקלד את מה שנקלט בשבוע האחרון
+            (החלקי) בדו"ח של החודש הקודם
             <br><span id="carryMaxInfo" style="font-weight:bold; color:#e74c3c;"></span>
         </p>
-        <input type="number" id="manualCarryInput" value="0" min="0" max="6" onkeydown="if(event.key==='Enter'){event.preventDefault();saveFirstMonthCarry();}" style="width: 80px; padding: 10px; font-size: 20px; font-weight: bold; text-align: center; border: 2px solid #e3f2fd; border-radius: 8px; margin-bottom: 20px; outline: none;">
+        <div style="display:flex; gap:16px; justify-content:center; margin-bottom:8px;">
+            <div>
+                <label for="manualCarryInput" style="display:block; font-size:12.5px; color:#64748B; margin-bottom:4px;">סה"כ משמרות (נוכחות+היעדרות)</label>
+                <input type="number" id="manualCarryInput" value="0" min="0" max="6" oninput="syncCarryPresenceMax()" onkeydown="if(event.key==='Enter'){event.preventDefault();saveFirstMonthCarry();}" style="width: 80px; padding: 10px; font-size: 20px; font-weight: bold; text-align: center; border: 2px solid #e3f2fd; border-radius: 8px; outline: none;">
+            </div>
+            <div>
+                <label for="manualCarryPresenceInput" style="display:block; font-size:12.5px; color:#64748B; margin-bottom:4px;">מתוכן - נוכחות בלבד</label>
+                <input type="number" id="manualCarryPresenceInput" value="0" min="0" max="6" onkeydown="if(event.key==='Enter'){event.preventDefault();saveFirstMonthCarry();}" style="width: 80px; padding: 10px; font-size: 20px; font-weight: bold; text-align: center; border: 2px solid #e3f2fd; border-radius: 8px; outline: none;">
+            </div>
+        </div>
+        <p id="carryPresenceWarning" style="display:none; color:#B3261E; font-size:12.5px; font-weight:700; margin:0 0 14px;">מספר הנוכחות לא יכול להיות גדול מהסה"כ</p>
         <br>
         <button class="btn-3d" onclick="saveFirstMonthCarry()" style="background-color: #d35400; color: white; padding: 12px 25px; border-radius: 8px; font-size: 16px; box-shadow: 0 4px #a04000;">שמור והתחל לעבוד</button>
     </div>
