@@ -1,8 +1,8 @@
-<!-- COT System Version: V202611010625 -->
+<!-- COT System Version: V202611010647 -->
 
 # COT - Calculate Over Time: full source + tests + deployment guide
 
-Current version: **V202611010625** (see `version.json`)
+Current version: **V202611010647** (see `version.json`)
 
 ## File layout
 
@@ -116,6 +116,18 @@ flagging this from December 15 of each year.
 **Next steps:** take the screenshots per the list and send them to me (skipping any that are hard
 to get is fine). I'll build the final polished manual from them and export it as a separate zip
 named `MANUAL`, versioned to match the app version at that moment.
+
+## Finally done: "מידע חשוב" → "מדריך למשתמש" (agreed a while back, flagged as not actually done)
+
+Renamed the button and modal title. While in there, also refreshed `content/shift-info.he.html`
+itself - it still used the pre-redesign color palette throughout, and had gone factually stale in
+two real ways: it described the balance cards as "כרטיסיות" (cards) when they're a single table
+now, and it placed the summary row "בתחתית המסך" (at the bottom of the screen) when it's been at
+the top for several versions. Added coverage for features that didn't exist when this was last
+written: the 4-presence-cap rule, the carry-over correction button, the simple/full view toggle,
+and direct PDF export. The full illustrated manual (`cot_user_manual.pdf`, with real screenshots)
+is still intentionally not merged in here - that's still waiting on him to take the photos, per the
+earlier decision - this only touched the in-app text popup.
 
 ## Redesign: the top KPI ribbon's shift/absence/carry-over wording and layout
 

@@ -145,6 +145,19 @@ test('מתג התצוגה תמיד מציג הכל בהדפסה, בלי קשר �
   assert.match(printBlock, /\.table-container\.simple-view \.pct-col[\s\S]*?display:\s*table-cell\s*!important/);
 });
 
+test('כפתור "מידע חשוב" הוחלף ל"מדריך למשתמש" (כותרת הכפתור וכותרת החלון כאחד)', () => {
+  assert.ok(html.includes('>מדריך למשתמש<'), 'טקסט הכפתור לא שונה');
+  const comp = fs.readFileSync(path.join(root, 'components.js'), 'utf8');
+  assert.ok(comp.includes('מדריך למשתמש'));
+  assert.ok(!comp.includes('מידע חשוב ומדריך למשתמש'), 'הכותרת הישנה (המשולבת) עדיין קיימת');
+});
+
+test('תוכן "מדריך למשתמש" (content/shift-info.he.html) מעודכן למבנה הנוכחי - לא מזכיר "כרטיסיות יתרות" שכבר הפכו לטבלה', () => {
+  const content = fs.readFileSync(path.join(root, 'content', 'shift-info.he.html'), 'utf8');
+  assert.ok(!content.includes('כרטיסיות היתרות'), 'עדיין מתאר את היתרות כ"כרטיסיות" - הן כבר טבלה אחת');
+  assert.ok(content.includes('4 נוכחות'), 'כלל 4 הנוכחות מתוך 5 לא מתועד במדריך');
+});
+
 test('מסך התחזוקה (.maintenance-overlay) לא כופה display דרך CSS - ה-JS חייב לשלוט בהצגה/הסתרה שלו', () => {
   const css = fs.readFileSync(path.join(root, 'style.css'), 'utf8');
   const m = css.match(/\.maintenance-overlay\s*\{[^}]*\}/);

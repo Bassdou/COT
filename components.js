@@ -1,6 +1,6 @@
-/* COT System Version: V202611010625 */
+/* COT System Version: V202611010647 */
 // קובץ: components.js
-// חלונות קופצים קבועים (shell). התוכן הטקסטואלי של "מידע חשוב" ו"קודי משמרות" עבר לקבצי content/*.he.html,
+// חלונות קופצים קבועים (shell). התוכן הטקסטואלי של "מדריך למשתמש" ו"קודי משמרות" עבר לקבצי content/*.he.html,
 // שנטענים אוטומטית ע"י content-loader.js - כדי שעדכון טקסט לא ידרוש נגיעה בקובץ הזה או בגרסת האפליקציה.
 
 const cotStaticComponents = `
@@ -39,7 +39,7 @@ const cotStaticComponents = `
         <div class="modal-header">
             <h2 style="font-size: 22px; color: #16233B; font-weight: 800; display: flex; align-items: center; gap: 10px;">
                 <span style="width: 32px; height: 32px; border-radius: 9px; background: #E3ECF8; color: #1D4E89; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;" aria-hidden="true"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 16v-5M12 8h.01"/></svg></span>
-                מידע חשוב ומדריך למשתמש
+                מדריך למשתמש
             </h2>
         </div>
         <div id="shiftInfoContent" style="max-height: 65vh; overflow-y: auto; padding-left: 15px; font-size: 14.5px; line-height: 1.6; color: #34495e;">טוען...</div>
