@@ -337,3 +337,35 @@ test('onAuthStateChanged: משתמש עם termsAccepted=true לא נחסם - נ�
   await tick();
   assert.notEqual(app.doc.getElementById('termsGateScreen').style.display, 'flex', 'השער לא אמור להיפתח כשכבר יש termsAccepted');
 });
+
+test('תיקון תחרות: תיקון משמרות נגררות ואז התנתקות מיידית - התיקון עדיין נשמר לפני ההתנתקות בפועל', async () => {
+  const app = ready();
+  app.doc.getElementById('employeeName').value = 'בודק'; // נדרש כדי ש-logoutUser לא יחסום
+  app.ctx.openCarryModal({ total: 0, presence: 0 });
+  app.doc.getElementById('manualCarryInput').value = '2';
+  app.doc.getElementById('manualCarryPresenceInput').value = '1';
+
+  app.ctx.saveFirstMonthCarry(); // בכוונה בלי await - מדמה קליק עכבר אמיתי
+  await app.ctx.logoutUser(); // logoutUser עצמו אמור לחכות לשמירה שעדיין "באוויר"
+
+  const write = app.state.sets.filter((s) => s.data.carryOver).pop();
+  assert.ok(write, 'התיקון לא נשמר כלל לפני ההתנתקות');
+  assert.deepEqual(write.data.carryOver['2026-10'], { total: 2, presence: 1 });
+});
+
+test('saveFirstMonthCarry ממתין לסיום השמירה בפועל (await) לפני סגירת החלון', async () => {
+  const app = ready();
+  app.ctx.openCarryModal({ total: 0, presence: 0 });
+  app.doc.getElementById('manualCarryInput').value = '2';
+  app.doc.getElementById('manualCarryPresenceInput').value = '1';
+  await app.ctx.saveFirstMonthCarry();
+  const write = app.state.sets.find((s) => s.data.carryOver);
+  assert.ok(write, 'השמירה הייתה אמורה להסתיים עד שה-await חוזר');
+  assert.equal(app.doc.getElementById('firstMonthCarryModal').style.display, 'none');
+});
+
+test('sum-hours-total (התא תחת עמודת "ערך" בשורת סיכום השעות) נשאר ריק בכוונה - לא סכימה מטעה של עמודות חופפות', () => {
+  const app = ready();
+  setShiftCode(app, 5, 'ב'); setShiftCode(app, 6, 'ל'); // 7.10.2026 = יום רביעי
+  assert.equal(app.doc.getElementById('sum-hours-total').innerText, '', 'התא הזה לא אמור להציג שום דבר - ראו ההסבר בקוד');
+});

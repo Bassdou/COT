@@ -1,4 +1,4 @@
-/* COT System Version: V202611011609 */
+/* COT System Version: V202611021012 */
 // קובץ: 05-session-data.js
 // שמירה/טעינה מהענן ומקובץ, סגירת חודש, איפוס גליון (clearData), ופאנל היתרות העליון.
 
@@ -374,7 +374,7 @@ window.clearData = async function(mode) {
                 if (el) { el.value = '0.00'; el.readOnly = true; el.classList.add('locked-input'); if (el.nextElementSibling) el.nextElementSibling.innerText = '🔒'; }
             });
             var tb = document.getElementById('tbody'); if (tb) tb.innerHTML = '';
-            ['tableContainer','summaryPanel','kpiRow','printBtn','exportExcelBtn','exportPdfBtn','closeMonthBtn','weeklyWarning','cloudBalancesPanel','securityBanner'].forEach(function(id) {
+            ['tableContainer','summaryPanel','kpiRow','printBtn','exportExcelBtn','exportPdfBtn','exportPayrollRequestBtn','importPayrollBtn','closeMonthBtn','weeklyWarning','cloudBalancesPanel','securityBanner'].forEach(function(id) {
                 var el = document.getElementById(id); if (el) el.style.display = 'none';
             });
             updateTitles(); updateGrandTotal();
@@ -420,7 +420,7 @@ window.syncCarryPresenceMax = function() {
     if ((parseInt(presEl.value, 10) || 0) > totalVal) presEl.value = totalVal;
 };
 
-window.saveFirstMonthCarry = function() {
+window.saveFirstMonthCarry = async function() {
     let mcEl = document.getElementById('manualCarryInput'), mpEl = document.getElementById('manualCarryPresenceInput');
     if(!mcEl) return;
     var val = parseInt(mcEl.value, 10), maxAllowed = parseInt(mcEl.max, 10) || 6;
@@ -437,7 +437,7 @@ window.saveFirstMonthCarry = function() {
     if (warnEl) warnEl.style.display = 'none';
 
     window.carryOverData[getSelectedMonthYear().y + "-" + pad2(getSelectedMonthYear().m)] = { total: val, presence: presenceVal };
-    window.saveData(true); 
+    await window.saveData(true); // ממתינים לסיום השמירה בפועל - כדי שפעולה מיידית אחריה (כמו התנתקות) לא "תקדים" אותה
     let mod = document.getElementById('firstMonthCarryModal');
     if(mod) mod.style.display = 'none'; 
     updateGrandTotal(); 

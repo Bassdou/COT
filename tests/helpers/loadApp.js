@@ -11,7 +11,7 @@ const ROOT = path.resolve(__dirname, '..', '..');
 
 // סדר הטעינה האמיתי של האפליקציה המפוצלת (כפי שמופיע ב-index.html), לא כולל holidays_db.js (נטען תמיד בנפרד).
 const SPLIT_FILES = [
-  '00-core.js', '01-shift-codes.js', 'calculator.js', '02-ui-dialogs.js', '03-auth.js', '05-session-data.js', '06-excel-export.js', '07-version-manager.js', '08-pdf-export.js',
+  '00-core.js', '01-shift-codes.js', 'calculator.js', '02-ui-dialogs.js', '03-auth.js', '05-session-data.js', '06-excel-export.js', '07-version-manager.js', '08-pdf-export.js', '09-payroll-import.js',
 ];
 // קובץ המקור המקורי (חד-קבצי, לפני הפיצול) - משמש רק להשוואה/רגרסיה.
 const ORIGINAL_FILE = ['reference/calculator.original.js'];

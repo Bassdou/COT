@@ -1,4 +1,4 @@
-/* COT System Version: V202611011609 */
+/* COT System Version: V202611021012 */
 // קובץ: 03-auth.js
 // הרשמה, כניסה, איפוס סיסמה, מצב הבדיקות הסמוי (secretBypass), נעילת מסך בחוסר פעילות, והתנתקות.
 
@@ -26,6 +26,7 @@ window.secretBypass = async function(e) {
             if(document.getElementById('authScreen')) document.getElementById('authScreen').style.display = 'none';
             if(document.getElementById('forcePasswordScreen')) document.getElementById('forcePasswordScreen').style.display = 'none';
             if(document.getElementById('logoutBtn')) document.getElementById('logoutBtn').style.display = 'inline-block';
+            if(document.getElementById('lockScreenBtn')) document.getElementById('lockScreenBtn').style.display = 'inline-flex';
             if(document.getElementById('loginPassword')) document.getElementById('loginPassword').value = ''; 
             if (window.isScreenLocked) { window.isScreenLocked = false; window.lockedEmail = null; return; }
             
@@ -134,6 +135,7 @@ window.enterMainApp = function(user, userDoc = null) {
     if(document.getElementById('authScreen')) document.getElementById('authScreen').style.display = 'none';
     if(document.getElementById('forcePasswordScreen')) document.getElementById('forcePasswordScreen').style.display = 'none';
     if(document.getElementById('logoutBtn')) document.getElementById('logoutBtn').style.display = 'inline-block';
+    if(document.getElementById('lockScreenBtn')) document.getElementById('lockScreenBtn').style.display = 'inline-flex';
     if(document.getElementById('loginPassword')) document.getElementById('loginPassword').value = '';
 
     if (window.isScreenLocked) {
@@ -326,35 +328,62 @@ firebase.auth().onAuthStateChanged(function(user) {
             if(document.getElementById('forcePasswordScreen')) document.getElementById('forcePasswordScreen').style.display = 'none';
         }
         if(document.getElementById('logoutBtn')) document.getElementById('logoutBtn').style.display = 'none';
+        if(document.getElementById('lockScreenBtn')) document.getElementById('lockScreenBtn').style.display = 'none';
     }
 });
 
 window.logoutUser = async function() {
     if (document.getElementById('employeeName') && !document.getElementById('employeeName').value.trim() && !window.isBypassed) { customAlert("חובה להזין שם עובד לפני ההתנתקות."); return; }
+    // שומרים ומחכים לסיום השמירה (כולל תיקון משמרות נגררות, שעלול לרוץ כ-saveData(true) אסינכרוני
+    // ולא ממתין, אם המשתמש מתנתק מיד אחרי תיקון) - לפני שמתנתקים, כדי שלא לאבד שינויים אחרונים.
+    if (!window.isBypassed && window.saveData) {
+        showLoading(true);
+        try { await window.saveData(true); } catch (e) { console.error("Save before logout failed:", e); }
+    }
     window.isBypassed = false; window.isScreenLocked = false; window.lockedEmail = null; window.isTesterMode = false;
     if(document.getElementById('authScreen')) document.getElementById('authScreen').style.display = 'flex'; 
     if(document.getElementById('logoutBtn')) document.getElementById('logoutBtn').style.display = 'none';
+    if(document.getElementById('lockScreenBtn')) document.getElementById('lockScreenBtn').style.display = 'none';
+    showLoading(false);
     firebase.auth().signOut().then(() => { if(window.clearData) window.clearData(true); }).catch(() => { if(window.clearData) window.clearData(true); });
 };
 
 window.idleTime = 0; window.isScreenLocked = false; window.lockedEmail = null;
 function resetIdleTime() { window.idleTime = 0; }
+// נועלת את המסך מיידית - אותה פעולה בדיוק שהייתה קורית אוטומטית אחרי 15 דקות חוסר פעילות, רק
+// שעכשיו גם ניתנת להפעלה ידנית (כפתור "נעל מסך") וגם מהטיימר האוטומטי, משם אחד כדי שלא יהיו שני
+// מימושים נפרדים שעלולים להתבדר. "הודעה" ניתן לדלג עליה (למשל אם כבר הוצגה הודעה ייעודית אחרת).
+window.lockScreenNow = function(reasonMessage) {
+    var user = firebase.auth().currentUser;
+    if (!user && !window.isBypassed) return; // כבר במסך התחברות - אין מה לנעול (ראו גם התיקון למטה)
+    window.isScreenLocked = true;
+    if (user) { window.lockedEmail = user.email; firebase.auth().signOut().catch(e => {}); }
+    else if (window.isBypassed) { window.lockedEmail = "bypass"; window.isBypassed = false; }
+    let aScreen = document.getElementById('authScreen');
+    if (aScreen) aScreen.style.display = 'flex';
+    let lBtn = document.getElementById('logoutBtn');
+    if (lBtn) lBtn.style.display = 'none';
+    let lsBtn = document.getElementById('lockScreenBtn');
+    if (lsBtn) lsBtn.style.display = 'none';
+    if (reasonMessage) customAlert(reasonMessage);
+    resetIdleTime();
+};
+
 function initIdleTimer() {
     ['mousemove', 'keydown', 'click', 'scroll', 'touchstart'].forEach(evt => document.addEventListener(evt, resetIdleTime));
     setInterval(function() {
         var user = firebase.auth().currentUser;
-        if ((user || window.isBypassed) && !window.isScreenLocked) {
+        // אם כבר נמצאים במסך ההתחברות (לא מחוברים ולא ב-bypass) - אין שום דבר לנעול, ואין טעם
+        // להציג את הודעת "המסך ננעל עקב חוסר פעילות" במצב הזה בכלל.
+        let atLoginScreen = !user && !window.isBypassed;
+        if (atLoginScreen) { if (!window.isScreenLocked) window.idleTime = 0; return; }
+
+        if (!window.isScreenLocked) {
             window.idleTime++;
             if (window.idleTime >= 15) {
-                window.isScreenLocked = true;
-                if (user) { window.lockedEmail = user.email; firebase.auth().signOut().catch(e=>{}); } else if (window.isBypassed) { window.lockedEmail = "bypass"; window.isBypassed = false; }
-                let aScreen = document.getElementById('authScreen');
-                if(aScreen) aScreen.style.display = 'flex'; 
-                let lBtn = document.getElementById('logoutBtn');
-                if(lBtn) lBtn.style.display = 'none';
-                customAlert("המסך ננעל אוטומטית עקב 15 דקות ללא פעילות.<br><b>הנתונים נשמרו על המסך!</b><br><br>הזן סיסמה כדי להמשיך."); resetIdleTime();
+                window.lockScreenNow("המסך ננעל אוטומטית עקב 15 דקות ללא פעילות.<br><b>הנתונים נשמרו על המסך!</b><br><br>הזן סיסמה כדי להמשיך.");
             }
-        } else if (!user && !window.isBypassed && !window.isScreenLocked) window.idleTime = 0;
+        }
     }, 60000); 
 }
 window.onload = function() { try { if(window.clearData && !firebase.auth().currentUser && !window.isBypassed) window.clearData(true); } catch(e) {} initIdleTimer(); };

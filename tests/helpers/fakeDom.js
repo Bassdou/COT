@@ -118,37 +118,42 @@ function createFakeDocument() {
     dispatch(type, ev) { (listeners[type] || []).forEach((fn) => fn(ev)); },
   };
 
-  // innerHTML של tbody: ממיר את המחרוזת ש-generateTable בונה לשורות ותאים
-  const tbody = new FakeEl('tbody', 'TBODY');
-  let tbodyHtml = '';
-  Object.defineProperty(tbody, 'innerHTML', {
-    get() { return tbodyHtml; },
-    set(html) {
-      tbodyHtml = String(html);
-      tbody.children = [];
-      // מחיקת תאים ישנים מהרישום
-      for (const k of Array.from(registry.keys())) if (k.startsWith('val-')) registry.delete(k);
-      const rowRe = /<tr\b([^>]*)>([\s\S]*?)<\/tr>/g;
-      let rm;
-      while ((rm = rowRe.exec(tbodyHtml))) {
-        const tr = new FakeEl('', 'TR');
-        tr.attrs = parseAttrs(rm[1]);
-        tr.parent = tbody;
-        const cellRe = /<(td|input)\b([^>]*)>/g;
-        let cm;
-        while ((cm = cellRe.exec(rm[2]))) {
-          const el = new FakeEl('', cm[1]);
-          el.attrs = parseAttrs(cm[2]);
-          el.id = el.attrs.id || '';
-          el.parent = tr;
-          if (cm[1].toLowerCase() === 'input') { el._value = el.attrs.value || ''; tr.children.push(el); }
-          if (el.id) registry.set(el.id, el);
+  // innerHTML של tbody (ושל כל מכולה אחרת שרושמים כך, כמו payrollCompareBody): ממיר מחרוזת
+  // <tr><td|input id="..." value="...">...</tr> לשורות ותאים אמיתיים שאפשר למצוא עם getElementById -
+  // ה-fake DOM הזה לא פרסר HTML כללי, רק התבנית הספציפית הזו ששני המקומות האלה מייצרים בפועל.
+  function makeRowParsingContainer(tagName) {
+    const container = new FakeEl('', tagName);
+    let rawHtml = '';
+    Object.defineProperty(container, 'innerHTML', {
+      get() { return rawHtml; },
+      set(html) {
+        rawHtml = String(html);
+        container.children = [];
+        for (const k of Array.from(registry.keys())) if (k.startsWith('val-') || k.startsWith('payroll-')) registry.delete(k);
+        const rowRe = /<tr\b([^>]*)>([\s\S]*?)<\/tr>/g;
+        let rm;
+        while ((rm = rowRe.exec(rawHtml))) {
+          const tr = new FakeEl('', 'TR');
+          tr.attrs = parseAttrs(rm[1]);
+          tr.parent = container;
+          const cellRe = /<(td|input)\b([^>]*)>/g;
+          let cm;
+          while ((cm = cellRe.exec(rm[2]))) {
+            const el = new FakeEl('', cm[1]);
+            el.attrs = parseAttrs(cm[2]);
+            el.id = el.attrs.id || '';
+            el.parent = tr;
+            if (cm[1].toLowerCase() === 'input') { el._value = el.attrs.value || ''; tr.children.push(el); }
+            if (el.id) registry.set(el.id, el);
+          }
+          container.children.push(tr);
         }
-        tbody.children.push(tr);
-      }
-    },
-  });
-  registry.set('tbody', tbody);
+      },
+    });
+    return container;
+  }
+  registry.set('tbody', makeRowParsingContainer('TBODY'));
+  registry.set('payrollCompareBody', makeRowParsingContainer('DIV'));
   return doc;
 }
 

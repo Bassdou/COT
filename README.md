@@ -1,8 +1,8 @@
-<!-- COT System Version: V202611011609 -->
+<!-- COT System Version: V202611021012 -->
 
 # COT - Calculate Over Time: full source + tests + deployment guide
 
-Current version: **V202611011609** (see `version.json`)
+Current version: **V202611021012** (see `version.json`)
 
 ## File layout
 
@@ -116,6 +116,96 @@ flagging this from December 15 of each year.
 **Next steps:** take the screenshots per the list and send them to me (skipping any that are hard
 to get is fine). I'll build the final polished manual from them and export it as a separate zip
 named `MANUAL`, versioned to match the app version at that moment.
+
+## This round: 4 payroll-import refinements + a misleading summary cell removed + "הורד PDF" rebuilt
+
+**Payroll-import refinements:** moved the import button out of the top bar and back into the
+action-grid (between "טען גליון" and "שמור גליון"), shortened its label to "יבא דו"ח פיצול". Fixed
+the comparison table's time cells to align right (not center) while keeping `dir="ltr"` for correct
+entrance-then-exit order. The admin-only discrepancy analysis no longer renders after an import at
+all (the detection function itself stays in the file, unused for now, likely for the still-unspec'd
+"בירור דוח פיצול"). The "בקשת עדכון" PDF is now compact and marks two things: a day whose hours
+differ from what was last scanned this session (amber), and absence days (light purple, matching the
+color the main table already uses for absences) - gracefully does neither if nothing was scanned.
+
+**Removed a genuinely misleading cell:** the main table's summary row had a cell, under the "ערך"
+column, that summed all 16 hour-category columns together - since those columns are overlapping
+breakdowns of the same worked hours (not independent additive quantities), that sum double/triple-
+counted and never represented anything real. It's gone now, not just hidden; one golden test fixture
+that had captured the old number was deliberately regenerated.
+
+**"הורד PDF" rebuilt to resemble the real payroll report's structure.** It no longer screenshots
+COT's own colored table - it builds a dedicated black-and-white, dense template (same approach as
+the "בקשת עדכון" PDF) with a "שם עובד / לתקופה: MM/YYYY / תאריך הפקה" header and all 16 hour columns
+in the same order COT already computes them, plus a two-line summary footer reading the existing
+table-footer totals - matching the real report's own layout conventions. This replaces the previous
+version outright, not a second option alongside it.
+
+## Two lock-screen fixes
+
+**Bug 1 - the inactivity alert could show even at the login screen, where nothing needs locking.**
+`initIdleTimer()` now explicitly checks whether the app is already at the login screen before doing
+anything else - if there's no logged-in user and no bypass session active, it just resets the idle
+counter and returns immediately, never reaching the alert/lock logic at all.
+
+**Bug 2 (his wording called both of these "bugs"; this one reads more like a gap than a defect, so
+flagging the interpretation rather than guessing silently) - added a manual lock control.** Until
+now the only way to lock the screen was the automatic 15-minute idle timer; there was no way to lock
+it on demand (e.g. right before stepping away). A new button next to "התנתק" in the top bar
+(`lockScreenNow()`) triggers the exact same lock flow the idle timer already used - factored both
+into one shared function so there's a single implementation, not two that could drift apart.
+
+## This round: rebuilt the payroll-import parser around the real report format
+
+The PDF used to validate the original payroll-import approach turned out not to be representative
+- a real payroll-department "דוח פיצול" (`דוח_פיצול_202609.PDF`) has correct, properly-encoded Hebrew
+text, not the broken jsPDF font issue the first sample had. Its only quirk is RTL display order:
+each extracted line has its word order reversed, and each Hebrew word's own characters reversed
+(numbers and times are unaffected, since they're always left-to-right). Validated the fix in Python
+against the complete real file before porting it - reversing token order, then reversing only the
+non-numeric tokens' characters, reconstructs every line perfectly, including the report's own
+"לתקופה: 2026 / 09" header and its "סה"כ שעות לפני הקיזוז" summary row.
+
+`09-payroll-import.js` was rewritten entirely around this (replacing the old position-based
+approach, not running both): `extractPayrollPdf()` now also returns the report's period and its
+stated total; `checkPayrollPeriodMatch()` warns (non-blocking) if the report's month doesn't match
+whatever month is currently open in COT; `verifyExtractionTotal()` sums the extracted total-hours
+and compares it against the report's own declared total, catching a dropped/misread row before it
+reaches anything else. The admin-only formula-discrepancy check keeps its earlier sequence-alignment
+logic, now fed by the cleaner extraction. Employee-identity extraction (name/ID number, also present
+in the real report) was discussed and intentionally left out for now.
+
+A separate feature for analyzing *other* employees' reports ("בירור דוח פיצול") was discussed and
+deliberately shipped separately rather than held for - it's a different audience and purpose, with
+no spec yet, and there's real value in finding out now whether PDF.js behaves as expected in an
+actual browser (it's never been run in one), rather than after more features get built on top of it.
+
+## This round: payroll-report import (time-saving) + an admin-only formula-accuracy check
+
+**New: "ייבוא דוח שכר להשוואה".** The payroll department's "דוח פיצול" PDFs turn out to be generated
+by jsPDF 2.5.1 too - the exact library (and exact missing-Hebrew-font bug) COT's own PDF export used
+before it was replaced. A new `09-payroll-import.js`, using PDF.js 3.4.120 entirely client-side (the
+file never leaves the browser), extracts each day's start/end times by reading the PDF's text items
+and their positions - no OCR, no reading the (broken) Hebrew labels at all. After scanning: an exact-
+wording confirmation message, then a review table where the extracted times are editable (to fix a
+scan misread before anything is applied), and one "עדכן שעות" button that writes every reviewed time
+into the real table and recalculates. The goal is purely saving retyping - COT's own calculated
+columns (totals, premiums, etc.) are completely unaffected by any of this until that button is
+pressed, same as typing the hours by hand would be.
+
+**New, visible only to the account owner: a formula-accuracy check.** Gated by the same admin email
+already used for the cloud-version auto-updater (`bassam@bsbc.co.il` - duplicated locally in this
+file since each `<script>` tag gets its own top-level `const` scope). Investigating the real PDF
+further surfaced two real quirks of the source report: it omits every zero-value column entirely,
+and a value (often total hours) sometimes lands glued directly onto the end of the description text
+with no separating space. Rather than fragile pixel-position column mapping, the comparison aligns
+the PDF's non-zero values, in sequence, against COT's own non-zero columns in COT's own fixed order
+- validated against a real day in the uploaded file, where every non-zero value matched exactly.
+Cost/value is deliberately excluded (depends on the hourly rate entered, not the formula). This
+analysis only compares; it's informational and never writes anything.
+
+A separate, not-yet-built feature called "בירור דוח פיצול" was discussed for analyzing *other*
+employees' reports - intentionally kept out of COT entirely, pending a fuller spec.
 
 ## This round: 2 real bug fixes + registration/consent compliance + 3 system-updates workflow tools
 

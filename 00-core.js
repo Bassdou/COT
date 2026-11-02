@@ -1,4 +1,4 @@
-/* COT System Version: V202611011609 */
+/* COT System Version: V202611021012 */
 // קובץ: 00-core.js
 // הגדרות גלובליות, חיבור Firebase ומצב משותף. נטען ראשון, לפני כל שאר קבצי COT.
 

@@ -21,7 +21,7 @@ if (!/^V\d{12}$/.test(version)) { console.error('פורמט גרסה לא תקי
 const STAMPED_FILES = [
   'index.html', 'style.css', 'holidays_db.js', 'components.js', 'content-loader.js',
   '00-core.js', '01-shift-codes.js', 'calculator.js', '02-ui-dialogs.js', '03-auth.js',
-  '05-session-data.js', '06-excel-export.js', '07-version-manager.js', '08-pdf-export.js', 'DEPLOY.md', 'README.md',
+  '05-session-data.js', '06-excel-export.js', '07-version-manager.js', '08-pdf-export.js', '09-payroll-import.js', 'DEPLOY.md', 'README.md',
   'whats-new.html', path.join('tools', 'system-update-composer.html'),
   path.join('content', 'shift-info.he.html'), path.join('content', 'mini-shift-info.he.html'),
   path.join('content', 'system-updates.he.html'),
