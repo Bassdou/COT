@@ -267,14 +267,17 @@ test('importPayrollForComparison: אחרי ייבוא, דוח הסתירות ל�
   assert.ok(!app.doc.getElementById('payrollCompareBody').innerHTML.includes('ניתוח סתירות'), 'דוח הסתירות לא אמור להופיע יותר אחרי ייבוא, גם למנהל');
 });
 
-test('שעות בחלון ההשוואה מיושרות לימין (לא למרכז)', () => {
+test('שעות בחלון ההשוואה: כפיית LTR חזקה (direction+unicode-bidi:bidi-override), לא רק dir="ltr"', () => {
   const app = loadApp();
   setupMonth(app, { year: 2026, month: 9, rate: 50 });
   app.ctx.renderPayrollComparison([{ day: 2, cotStart: '07:58', cotEnd: '19:00', pdfStart: '07:58', pdfEnd: '19:00', timesMatch: true }]);
   const html = app.doc.getElementById('payrollCompareBody').innerHTML;
   const ltrCells = html.match(/<td[^>]*dir="ltr"[^>]*>/g) || [];
   assert.ok(ltrCells.length >= 2, 'אמורים להיות לפחות 2 תאי שעות עם dir="ltr"');
-  for (const cell of ltrCells) assert.ok(cell.includes('text-align:right'), cell);
+  for (const cell of ltrCells) {
+    assert.ok(cell.includes('unicode-bidi:bidi-override'), cell);
+    assert.ok(cell.includes('direction:ltr'), cell);
+  }
 });
 
 test('generatePayrollUpdateRequest: שורה שהשתנתה מהדוח שנסרק מסומנת (רקע שונה)', async () => {

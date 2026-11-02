@@ -62,3 +62,39 @@ test('index.html טוען jsPDF ו-html2canvas מ-CDN, וגם את 08-pdf-export
   assert.match(html, /<script src="08-pdf-export\.js(\?[^"]*)?">/);
   assert.ok(!html.includes('jspdf-autotable'));
 });
+
+test('exportToPDF: קונטיינר רחב מספיק לכל 23 העמודות, וקווי תיחום מלאים בכל תא (לא רק קו תחתון)', async () => {
+  const app = loadApp();
+  setupMonth(app, { year: 2026, month: 10, rate: 50 });
+  setTimes(app, 2, '0758', '1900');
+  let capturedEl = null, captureOpts = null;
+  app.ctx.html2canvas = async (el, opts) => { capturedEl = el; captureOpts = opts; return { width: 100, height: 50, toDataURL: () => 'data:image/jpeg;base64,X' }; };
+  app.ctx.jsPDF = function () { this.addImage = () => {}; this.save = () => {}; };
+  await app.ctx.exportToPDF();
+  assert.ok(capturedEl.style.cssText.includes('1600px'), 'הקונטיינר אמור להיות רחב מספיק (לא 1000px הישן שגרם לחיתוך)');
+  assert.ok(capturedEl.innerHTML.includes('border:1px solid #333'), 'כל תא אמור לקבל קו תיחום מלא, לא רק border-bottom');
+  // scrollWidth לא קיים ב-fake DOM שלנו (רק בדפדפן אמיתי), אז רק מוודאים שהמפתחות עצמם מועברים
+  assert.ok(captureOpts && 'width' in captureOpts && 'windowWidth' in captureOpts, 'html2canvas אמור לקבל width/windowWidth מפורשים כדי לא לחתוך תוכן שחורג מהמסך');
+});
+
+test('exportToPDF: jsPDF נקרא עם orientation landscape', async () => {
+  const app = loadApp();
+  setupMonth(app, { year: 2026, month: 10, rate: 50 });
+  setTimes(app, 2, '0758', '1900');
+  let jsPdfArgs = null;
+  app.ctx.html2canvas = async () => ({ width: 100, height: 50, toDataURL: () => 'data:x' });
+  app.ctx.jsPDF = function (opts) { jsPdfArgs = opts; this.addImage = () => {}; this.save = () => {}; };
+  await app.ctx.exportToPDF();
+  assert.equal(jsPdfArgs.orientation, 'landscape');
+});
+
+test('exportToPDF: שעות עם כפיית LTR חזקה (unicode-bidi:bidi-override), לא רק dir="ltr"', async () => {
+  const app = loadApp();
+  setupMonth(app, { year: 2026, month: 10, rate: 50 });
+  setTimes(app, 2, '0758', '1900');
+  let capturedEl = null;
+  app.ctx.html2canvas = async (el) => { capturedEl = el; return { width: 10, height: 10, toDataURL: () => 'data:x' }; };
+  app.ctx.jsPDF = function () { this.addImage = () => {}; this.save = () => {}; };
+  await app.ctx.exportToPDF();
+  assert.ok(capturedEl.innerHTML.includes('unicode-bidi:bidi-override'));
+});

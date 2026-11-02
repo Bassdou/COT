@@ -33,3 +33,20 @@ test('סיכומי חודש: לוח סיכומים, אש"ל, יתרות והתר
     assert.equal(bad.length, 0, name + ':\n' + bad.slice(0, 10).join('\n'));
   }
 });
+
+test('מעבר שעון (24-25/10/2026, חורף): COT לא מוסיף/מחסיר שעה בעצמו - בדיוק כמו מחלקת השכר, מחשב נומינלית ממה שהוזן, רק מוסיף הערה', () => {
+  const { loadApp, setupMonth, setTimes } = require('./helpers/loadApp');
+  const app = loadApp();
+  setupMonth(app, { year: 2026, month: 10, rate: 41.75 });
+  // ההחתמה הפיזית האמיתית הייתה 07:00, אבל מחלקת השכר (ו-COT, מעכשיו) רושמים/מחשבים ממה שמוזן
+  // ממש - אם המשתמש מזין 07:00 (כמו ההחתמה האמיתית), מקבלים 12 שעות נומינליות, לא 13.
+  setTimes(app, 24, '1900', '0700');
+  assert.strictEqual(parseFloat(app.doc.getElementById('val-total-hours-24').getAttribute('data-val')), 12, 'ללא כל התאמת DST - נומינלי בלבד, בדיוק כמו שהוזן');
+  assert.match(app.doc.getElementById('val-desc-24').innerHTML, /שעון חורף/, 'הערת מעבר השעון עדיין אמורה להופיע, גם בלי שינוי בחישוב');
+
+  // אם המשתמש מזין את הזמן כפי שמחלקת השכר מציגה אותו (08:00, כבר "מוזז") - מקבלים 13, תואם לשכר בדיוק
+  const app2 = loadApp();
+  setupMonth(app2, { year: 2026, month: 10, rate: 41.75 });
+  setTimes(app2, 24, '1900', '0800');
+  assert.strictEqual(parseFloat(app2.doc.getElementById('val-total-hours-24').getAttribute('data-val')), 13, 'הזנת שעת היציאה כפי שמחלקת השכר מציגה אותה אמורה לתת את אותו הסכום בדיוק, בלי שום התאמה נוספת של COT');
+});

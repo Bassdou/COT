@@ -1,4 +1,4 @@
-/* COT System Version: V202611021012 */
+/* COT System Version: V202611021415 */
 // קובץ: 09-payroll-import.js
 // ייבוא דוח פיצול (PDF) ממחלקת השכר, לעדכון שעות הכניסה/יציאה בטבלת COT - חוסך הקלדה חוזרת.
 //
@@ -181,8 +181,8 @@ window.generatePayrollUpdateRequest = async function() {
         return '<tr style="border-bottom:1px solid #DCE3EC;' + (bg ? 'background:' + bg + ';' : '') + '">' +
             '<td style="padding:2px 6px;text-align:center;">' + pad2(d.day) + '/' + pad2(ym.m) + '</td>' +
             '<td style="padding:2px 6px;text-align:center;">' + (d.shift || '-') + '</td>' +
-            '<td style="padding:2px 6px;text-align:center;" dir="ltr">' + (d.start || '-') + '</td>' +
-            '<td style="padding:2px 6px;text-align:center;" dir="ltr">' + (d.end || '-') + '</td>' +
+            '<td style="padding:2px 6px;direction:ltr;unicode-bidi:bidi-override;text-align:left;" dir="ltr">' + (d.start || '-') + '</td>' +
+            '<td style="padding:2px 6px;direction:ltr;unicode-bidi:bidi-override;text-align:left;" dir="ltr">' + (d.end || '-') + '</td>' +
             '<td style="padding:2px 6px;text-align:right;">' + (d.desc || '-') + '</td></tr>';
     }).join('');
     var legend = '<div style="font-size:9.5px;color:#64748B;margin-bottom:8px;display:flex;gap:14px;">' +
@@ -325,6 +325,11 @@ function renderPayrollComparison(results, discrepancies) {
         analysisHtml += '</div>';
     }
 
+    // כפיית LTR חזקה (direction+unicode-bidi:bidi-override, לא רק attribute dir) + יישור שמאל -
+    // בלי זה, בתוך עמוד RTL, גם עם dir="ltr" בלבד, העין שסורקת מימין-לשמאל עדיין "פוגשת" קודם
+    // את הקצה הימני של הבלוק (שהוא סוף שעת היציאה, לא תחילת הכניסה) - נראה הפוך גם כש"טכנית"
+    // סדר התווים נכון. יישור לשמאל + bidi-override פותר את זה לגמרי, לא רק dir לבדו.
+    var LTR_TIME = 'direction:ltr;unicode-bidi:bidi-override;text-align:left;';
     // dir="ltr" בשתי עמודות השעות - בלי זה, כיווניות ה-RTL של הדף יכולה להציג את שתי העמודות
     // (מחרוזת טקסט מול שני תאי קלט) בסדר ויזואלי לא עקבי ביניהן. עם dir="ltr" מפורש, שתיהן תמיד
     // יציגו כניסה (שמאל) ואז יציאה (ימין), באותו סדר בדיוק בשתי העמודות.
@@ -338,8 +343,8 @@ function renderPayrollComparison(results, discrepancies) {
             : '<span style="color:#94A3B8;">-</span>';
         html += `<tr style="${rowColor}border-bottom:1px solid #DCE3EC;">` +
             `<td style="padding:2px 6px;text-align:center;font-weight:700;">${r.day}</td>` +
-            `<td style="padding:2px 6px;text-align:right;" dir="ltr">${r.cotStart}-${r.cotEnd}</td>` +
-            `<td style="padding:2px 6px;text-align:right;white-space:nowrap;" dir="ltr">${editableTimes}</td></tr>`;
+            `<td style="padding:2px 6px;${LTR_TIME}" dir="ltr">${r.cotStart}-${r.cotEnd}</td>` +
+            `<td style="padding:2px 6px;white-space:nowrap;${LTR_TIME}" dir="ltr">${editableTimes}</td></tr>`;
     }
     html += '</table>';
     const summary = mismatches.length === 0

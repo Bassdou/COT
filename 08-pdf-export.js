@@ -1,4 +1,4 @@
-/* COT System Version: V202611021012 */
+/* COT System Version: V202611021415 */
 // קובץ: 08-pdf-export.js
 // ייצוא ישיר לקובץ PDF - לא תלוי בדפדפן/מדפסת של המשתמש, בניגוד להדפסה (Ctrl+P).
 //
@@ -31,6 +31,9 @@ window.exportToPDF = async function() {
 
     var pctCols = columnsData.map(function(c) { return c.id; }); // I,I2,J,K,L,M,N,O,P,Q,R,S,T,U,V,W - אותו סדר שכבר קיים בחישוב של COT
     var pctLabels = { I: 'תקן', I2: 'רגילות', J: '100%', K: '125%', L: '150%', M: '175%', N: '200%', O: '180%', P: '187.5%', Q: '225%', R: '250%', S: '20%', T: '50%', U: '75%', V: '87.5%', W: '100%' };
+    // קווי תיחום מלאים בכל תא (לא רק קו תחתון) - בדיוק כמו עיצוב הטבלה הראשית של COT עצמה.
+    var CELL = 'border:1px solid #333;padding:2px 3px;text-align:center;white-space:nowrap;';
+    var LTR_CELL = 'direction:ltr;unicode-bidi:bidi-override;text-align:center;';
 
     var rowsHtml = '';
     for (var r = 1; r <= 31; r++) {
@@ -43,45 +46,48 @@ window.exportToPDF = async function() {
         if (!shift && !start && !end && !desc) continue; // יום ריק לגמרי - לא נכלל, כמו בדוח האמיתי
         var dayNum = new Date(ym.y, ym.m - 1, r).getDay();
         rowsHtml += '<tr>' +
-            '<td style="padding:1px 4px;">' + pad2(r) + '</td>' +
-            '<td style="padding:1px 4px;">' + daysHebrew[dayNum] + '</td>' +
-            '<td style="padding:1px 4px;" dir="ltr">' + (start || '') + '</td>' +
-            '<td style="padding:1px 4px;" dir="ltr">' + (end || '') + '</td>' +
-            '<td style="padding:1px 4px;max-width:90px;overflow:hidden;">' + desc + '</td>' +
-            '<td style="padding:1px 4px;">' + getVal('val-total-hours-' + r) + '</td>' +
-            '<td style="padding:1px 4px;">' + getVal('val-shabbat-hours-' + r) + '</td>' +
-            pctCols.map(function(c) { return '<td style="padding:1px 4px;">' + getVal('val-' + c + '-' + r) + '</td>'; }).join('') +
+            '<td style="' + CELL + '">' + pad2(r) + '</td>' +
+            '<td style="' + CELL + '">' + daysHebrew[dayNum] + '</td>' +
+            '<td style="' + CELL + LTR_CELL + '" dir="ltr">' + (start || '') + '</td>' +
+            '<td style="' + CELL + LTR_CELL + '" dir="ltr">' + (end || '') + '</td>' +
+            '<td style="' + CELL + 'white-space:nowrap;">' + desc + '</td>' +
+            '<td style="' + CELL + '">' + getVal('val-total-hours-' + r) + '</td>' +
+            '<td style="' + CELL + '">' + getVal('val-shabbat-hours-' + r) + '</td>' +
+            pctCols.map(function(c) { return '<td style="' + CELL + '">' + getVal('val-' + c + '-' + r) + '</td>'; }).join('') +
             '</tr>';
     }
     if (rowsHtml === '') return customAlert("אין נתונים בגליון הנוכחי לייצוא.");
 
-    var summaryHtml = '<tr style="font-weight:700;border-top:1.5px solid #000;">' +
-        '<td colspan="5" style="padding:2px 4px;">סה"כ שעות:</td>' +
-        '<td style="padding:2px 4px;">' + (document.getElementById('sum-hours-totalShift')?.innerText || '') + '</td>' +
-        '<td style="padding:2px 4px;">' + (document.getElementById('sum-hours-shabbat')?.innerText || '') + '</td>' +
-        pctCols.map(function(c) { return '<td style="padding:2px 4px;">' + (document.getElementById('sum-hours-' + c)?.innerText || '') + '</td>'; }).join('') +
+    var summaryHtml = '<tr style="font-weight:700;">' +
+        '<td colspan="5" style="' + CELL + '">סה"כ שעות:</td>' +
+        '<td style="' + CELL + '">' + (document.getElementById('sum-hours-totalShift')?.innerText || '') + '</td>' +
+        '<td style="' + CELL + '">' + (document.getElementById('sum-hours-shabbat')?.innerText || '') + '</td>' +
+        pctCols.map(function(c) { return '<td style="' + CELL + '">' + (document.getElementById('sum-hours-' + c)?.innerText || '') + '</td>'; }).join('') +
         '</tr>' +
         '<tr style="font-weight:700;">' +
-        '<td colspan="5" style="padding:2px 4px;">ערך עמודה:</td>' +
-        '<td></td><td></td>' +
-        pctCols.map(function(c) { return '<td style="padding:2px 4px;">' + (document.getElementById('sum-cost-' + c)?.innerText || '') + '</td>'; }).join('') +
+        '<td colspan="5" style="' + CELL + '">ערך עמודה:</td>' +
+        '<td style="' + CELL + '"></td><td style="' + CELL + '"></td>' +
+        pctCols.map(function(c) { return '<td style="' + CELL + '">' + (document.getElementById('sum-cost-' + c)?.innerText || '') + '</td>'; }).join('') +
         '</tr>';
 
+    // רוחב רחב מספיק ל-23 עמודות בלי גלישה/חיתוך (7 עמודות קבועות + 16 עמודות אחוזים).
     var container = document.createElement('div');
-    container.style.cssText = 'position:fixed;top:-9999px;right:-9999px;background:#fff;color:#000;padding:16px;width:1000px;direction:rtl;font-family:Arial,Heebo,sans-serif;font-size:9.5px;';
+    container.style.cssText = 'position:fixed;top:-9999px;right:-9999px;background:#fff;color:#000;padding:16px;width:1600px;direction:rtl;font-family:Arial,Heebo,sans-serif;font-size:10px;';
     container.innerHTML =
-        '<div style="display:flex;justify-content:space-between;border-bottom:2px solid #000;padding-bottom:6px;margin-bottom:8px;font-size:11px;">' +
+        '<div style="display:flex;justify-content:space-between;border-bottom:2px solid #000;padding-bottom:6px;margin-bottom:8px;font-size:12px;">' +
         '<span>שם עובד: ' + empName + '</span><span>לתקופה: ' + pad2(ym.m) + ' / ' + ym.y + '</span><span>תאריך הפקה: ' + new Date().toLocaleDateString('he-IL') + '</span></div>' +
         '<table style="width:100%;border-collapse:collapse;">' +
-        '<tr style="border-bottom:1.5px solid #000;font-weight:700;">' +
-        '<th style="padding:2px 4px;">יום</th><th style="padding:2px 4px;"></th><th style="padding:2px 4px;">כניסה</th><th style="padding:2px 4px;">יציאה</th>' +
-        '<th style="padding:2px 4px;">תאור</th><th style="padding:2px 4px;">סך שעות</th><th style="padding:2px 4px;">י.שבת</th>' +
-        pctCols.map(function(c) { return '<th style="padding:2px 4px;">' + pctLabels[c] + '</th>'; }).join('') +
+        '<tr style="font-weight:700;">' +
+        '<th style="' + CELL + '">יום</th><th style="' + CELL + '"></th><th style="' + CELL + '">כניסה</th><th style="' + CELL + '">יציאה</th>' +
+        '<th style="' + CELL + '">תאור</th><th style="' + CELL + '">סך שעות</th><th style="' + CELL + '">י.שבת</th>' +
+        pctCols.map(function(c) { return '<th style="' + CELL + '">' + pctLabels[c] + '</th>'; }).join('') +
         '</tr>' + rowsHtml + summaryHtml + '</table>';
     document.body.appendChild(container);
 
     try {
-        var canvas = await window.html2canvas(container, { scale: 2, backgroundColor: '#ffffff' });
+        // width/windowWidth מפורשים (תואמים לרוחב הקונטיינר בפועל) - בלי זה html2canvas עלול
+        // לחתוך עמודות שחורגות מרוחב חלון הדפדפן הרגיל, כי הקונטיינר ממוקם מחוץ למסך (top:-9999px).
+        var canvas = await window.html2canvas(container, { scale: 2, backgroundColor: '#ffffff', width: container.scrollWidth, windowWidth: container.scrollWidth });
         var imgData = canvas.toDataURL('image/jpeg', 0.92);
 
         var pageW = 842, pageH = 595; // A4 landscape, pt (72dpi)

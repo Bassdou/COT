@@ -1,8 +1,8 @@
-<!-- COT System Version: V202611021012 -->
+<!-- COT System Version: V202611021415 -->
 
 # COT - Calculate Over Time: full source + tests + deployment guide
 
-Current version: **V202611021012** (see `version.json`)
+Current version: **V202611021415** (see `version.json`)
 
 ## File layout
 
@@ -116,6 +116,42 @@ flagging this from December 15 of each year.
 **Next steps:** take the screenshots per the list and send them to me (skipping any that are hard
 to get is fine). I'll build the final polished manual from them and export it as a separate zip
 named `MANUAL`, versioned to match the app version at that moment.
+
+## Payroll fix, corrected: COT shouldn't auto-adjust DST-transition shifts at all
+
+A follow-up correction to the fix above, same day. His first report (27/11, then corrected to
+24/10) turned out to point at a deeper design mismatch, not just the per-minute classification bug
+already fixed: payroll's actual method isn't "nominal + automatic DST adjustment" - it's "no
+adjustment at all, just record whatever exit time reflects reality (including the clock shift) and
+compute normally," with only a note added. Confirmed by direct testing: entering the real physical
+clock-out (07:00) vs. the payroll-style already-shifted time (08:00) into COT's then-still-auto-
+adjusting logic gave different totals (13 vs 14) - COT was adding its own hour on top of whichever
+convention the person used, which is exactly backwards from what payroll does.
+
+Removed the `physicalMinutes += 60` / `-= 60` DST adjustment entirely - `isDstFallback`/
+`isDstSpring` are now purely informational, driving only the "שעון חורף"/"שעון קיץ" note in the
+description, never affecting any calculation. Entering 07:00 now correctly gives 12 nominal hours;
+entering 08:00 (matching how payroll itself displays it) gives 13, exactly matching payroll with no
+hidden adjustment layer in between. This superseded the per-minute natural-progression fix from
+earlier today (which is now moot, since there's no adjustment left to misclassify) and changed 18
+golden day-scenarios plus the March-DST month-summary fixture.
+
+## Payroll fix (superseded by the one above, same day): DST-fallback night shifts double-counted the repeated hour as "night"
+
+Comparing against the real October payroll report surfaced this: for a shift spanning the clock-
+change night (24-25/10/2026), payroll's convention is to shift the nominal exit time forward by an
+hour and compute everything normally from there (19:00→08:00, even though the actual clock-out was
+07:00) - not add a separate floating hour on top. COT's `isDstFallback`/`isDstSpring` logic already
+correctly extended the *total* hours (±60 minutes), but the per-minute night/Shabbat/overtime-
+bracket classification loop used a "virtual minute" shift that made the repeated 01:00-02:00 hour
+get revisited and counted as night twice. Verified this numerically in a standalone comparison
+before touching the real code (confirmed a genuine 1-hour discrepancy, not a cosmetic difference),
+then removed the virtual-shift entirely in both loops - the per-minute clock hour now just
+progresses naturally over the already-correctly-extended range, matching payroll's simpler
+convention exactly. This changed 9 golden day-scenarios, all specifically on the Oct 24-25 2026
+dates and nothing else; total hours for the validated real example stayed at 13, only the internal
+bucketing changed. Only verified against the total figure he confirmed (13=13) - the full per-column
+breakdown against the real payroll report is still unverified, flagged to him explicitly.
 
 ## This round: 4 payroll-import refinements + a misleading summary cell removed + "הורד PDF" rebuilt
 

@@ -1,4 +1,4 @@
-/* COT System Version: V202611021012 */
+/* COT System Version: V202611021415 */
 // קובץ: 05-session-data.js
 // שמירה/טעינה מהענן ומקובץ, סגירת חודש, איפוס גליון (clearData), ופאנל היתרות העליון.
 
