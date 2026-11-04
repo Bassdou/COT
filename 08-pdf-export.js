@@ -1,4 +1,4 @@
-/* COT System Version: V202611021415 */
+/* COT System Version: V202611041915 */
 // קובץ: 08-pdf-export.js
 // ייצוא ישיר לקובץ PDF - לא תלוי בדפדפן/מדפסת של המשתמש, בניגוד להדפסה (Ctrl+P).
 //
@@ -33,7 +33,9 @@ window.exportToPDF = async function() {
     var pctLabels = { I: 'תקן', I2: 'רגילות', J: '100%', K: '125%', L: '150%', M: '175%', N: '200%', O: '180%', P: '187.5%', Q: '225%', R: '250%', S: '20%', T: '50%', U: '75%', V: '87.5%', W: '100%' };
     // קווי תיחום מלאים בכל תא (לא רק קו תחתון) - בדיוק כמו עיצוב הטבלה הראשית של COT עצמה.
     var CELL = 'border:1px solid #333;padding:2px 3px;text-align:center;white-space:nowrap;';
-    var LTR_CELL = 'direction:ltr;unicode-bidi:bidi-override;text-align:center;';
+    // בלי כפיית כיווניות - אותו תיקון כמו ב-09-payroll-import.js: bidi-override היה כופה סדר
+    // שמאל-לימין מוחלט ומייצר בדיוק את ההיפוך שהמשתמש דיווח עליו. הכיווניות הטבעית (RTL) כבר
+    // מציגה כניסה מימין ויציאה משמאל נכון, בלי שום override.
 
     var rowsHtml = '';
     for (var r = 1; r <= 31; r++) {
@@ -48,8 +50,8 @@ window.exportToPDF = async function() {
         rowsHtml += '<tr>' +
             '<td style="' + CELL + '">' + pad2(r) + '</td>' +
             '<td style="' + CELL + '">' + daysHebrew[dayNum] + '</td>' +
-            '<td style="' + CELL + LTR_CELL + '" dir="ltr">' + (start || '') + '</td>' +
-            '<td style="' + CELL + LTR_CELL + '" dir="ltr">' + (end || '') + '</td>' +
+            '<td style="' + CELL + '">' + (start || '') + '</td>' +
+            '<td style="' + CELL + '">' + (end || '') + '</td>' +
             '<td style="' + CELL + 'white-space:nowrap;">' + desc + '</td>' +
             '<td style="' + CELL + '">' + getVal('val-total-hours-' + r) + '</td>' +
             '<td style="' + CELL + '">' + getVal('val-shabbat-hours-' + r) + '</td>' +

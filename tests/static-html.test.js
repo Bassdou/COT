@@ -158,10 +158,11 @@ test('תוכן "מדריך למשתמש" (content/shift-info.he.html) מעודכ
   assert.ok(content.includes('4 נוכחות'), 'כלל 4 הנוכחות מתוך 5 לא מתועד במדריך');
 });
 
-test('כל 16 צילומי המסך הנדרשים קיימים בפועל ב-manual-template/images/', () => {
+test('כל 17 צילומי המסך הנדרשים קיימים בפועל ב-manual-template/images/', () => {
   const names = ['01-login-screen','02-register-tab','03-main-header','04-balances-ribbon','05-input-panel',
     '06-kpi-ribbon','07-timesheet-empty','08-timesheet-filled','09-shift-code-popup','10-weekly-warning',
-    '11-balances-table','12-close-month-confirm','13-excel-export-modal','14-shift-info-modal','15-update-toast','16-maintenance-screen'];
+    '11-balances-table','12-close-month-confirm','13-excel-export-modal','14-shift-info-modal','15-update-toast',
+    '16-maintenance-screen','17-payroll-import'];
   for (const n of names) {
     assert.ok(fs.existsSync(path.join(root, 'manual-template', 'images', n + '.png')), n + '.png חסר');
   }

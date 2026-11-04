@@ -50,3 +50,16 @@ test('מעבר שעון (24-25/10/2026, חורף): COT לא מוסיף/מחסי�
   setTimes(app2, 24, '1900', '0800');
   assert.strictEqual(parseFloat(app2.doc.getElementById('val-total-hours-24').getAttribute('data-val')), 13, 'הזנת שעת היציאה כפי שמחלקת השכר מציגה אותה אמורה לתת את אותו הסכום בדיוק, בלי שום התאמה נוספת של COT');
 });
+
+test('יום שישי שהוא גם ערב חג (02/10/2026, הושענ"ר - ערב שמחת תורה): חופש שבת מקבל זיכוי על חלק המשמרת שחוצה לתוך השבת, בלי לגעת בחלוקת I/J/K/L המאומתת', () => {
+  const { loadApp, setupMonth, setTimes } = require('./helpers/loadApp');
+  const app = loadApp();
+  setupMonth(app, { year: 2026, month: 10, rate: 50 });
+  setTimes(app, 2, '0700', '1900'); // 07:00-19:00, 2 שעות (17:00-19:00) בתוך חלון השבת של החורף
+  assert.strictEqual(parseFloat(app.doc.getElementById('val-shabbat-hours-2').getAttribute('data-val')), 0.25, '2 שעות שבת = 120 דקות / 60 / 8 = 0.25 ימים');
+  // I/J/K/L/O נשארים מהנוסחה המאומתת של ערב-חג-יום-שישי, בלי שום שינוי
+  assert.strictEqual(parseFloat(app.doc.getElementById('val-I-2').getAttribute('data-val')), 5.5);
+  assert.strictEqual(parseFloat(app.doc.getElementById('val-J-2').getAttribute('data-val')), 1);
+  assert.strictEqual(parseFloat(app.doc.getElementById('val-K-2').getAttribute('data-val')), 2);
+  assert.strictEqual(parseFloat(app.doc.getElementById('val-L-2').getAttribute('data-val')), 3.5);
+});

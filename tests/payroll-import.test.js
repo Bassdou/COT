@@ -267,17 +267,19 @@ test('importPayrollForComparison: אחרי ייבוא, דוח הסתירות ל�
   assert.ok(!app.doc.getElementById('payrollCompareBody').innerHTML.includes('ניתוח סתירות'), 'דוח הסתירות לא אמור להופיע יותר אחרי ייבוא, גם למנהל');
 });
 
-test('שעות בחלון ההשוואה: כפיית LTR חזקה (direction+unicode-bidi:bidi-override), לא רק dir="ltr"', () => {
+test('חלון ההשוואה: 4 עמודות נפרדות (כניסה/יציאה × COT/דוח) עם כותרת-קבוצה דו-שורתית, כמו הטבלה הראשית - לא עוד מחרוזת משולבת/טריקי כיווניות', () => {
   const app = loadApp();
   setupMonth(app, { year: 2026, month: 9, rate: 50 });
   app.ctx.renderPayrollComparison([{ day: 2, cotStart: '07:58', cotEnd: '19:00', pdfStart: '07:58', pdfEnd: '19:00', timesMatch: true }]);
   const html = app.doc.getElementById('payrollCompareBody').innerHTML;
-  const ltrCells = html.match(/<td[^>]*dir="ltr"[^>]*>/g) || [];
-  assert.ok(ltrCells.length >= 2, 'אמורים להיות לפחות 2 תאי שעות עם dir="ltr"');
-  for (const cell of ltrCells) {
-    assert.ok(cell.includes('unicode-bidi:bidi-override'), cell);
-    assert.ok(cell.includes('direction:ltr'), cell);
-  }
+  assert.ok(!html.includes('unicode-bidi:bidi-override') && !html.includes('dir="ltr"'), 'עמודות נפרדות מסתדרות נכון ב-RTL מאליהן - אין יותר צורך בשום טריק כיווניות');
+  assert.match(html, /<th colspan="2"[^>]*>COT<\/th>/);
+  assert.match(html, /<th colspan="2"[^>]*>דוח/);
+  // שתי כותרות המשנה "כניסה"/"יציאה" מופיעות פעמיים (פעם לכל קבוצה)
+  assert.equal((html.match(/>כניסה</g) || []).length, 2);
+  assert.equal((html.match(/>יציאה</g) || []).length, 2);
+  // ארבעת הערכים מופיעים כל אחד בתא נפרד משלו (לא מחוברים במחרוזת אחת)
+  assert.ok(html.includes('>07:58<') && html.includes('>19:00<'));
 });
 
 test('generatePayrollUpdateRequest: שורה שהשתנתה מהדוח שנסרק מסומנת (רקע שונה)', async () => {
@@ -330,4 +332,15 @@ test('generatePayrollUpdateRequest: יום היעדרות (בלי שעות) מס
   await app.ctx.generatePayrollUpdateRequest();
   const row = capturedEl.innerHTML.split('<tr').find((r) => r.includes('08/09'));
   assert.ok(row && row.includes('#F3E8FF'), 'שורת ההיעדרות אמורה להיות מסומנת');
+});
+
+test('תיבות העריכה בחלון ההשוואה: עמודת "כניסה" ועמודת "יציאה" נפרדות לגמרי - הכותרת מעל כל עמודה היא התווית, לא placeholder שעלול להיעלם', () => {
+  const app = loadApp();
+  setupMonth(app, { year: 2026, month: 9, rate: 50 });
+  app.ctx.renderPayrollComparison([{ day: 2, cotStart: '07:58', cotEnd: '19:00', pdfStart: '07:58', pdfEnd: '19:00', timesMatch: true }]);
+  const startEl = app.doc.getElementById('payroll-start-2');
+  const endEl = app.doc.getElementById('payroll-end-2');
+  assert.ok(startEl && endEl, 'שתי תיבות העריכה הנפרדות אמורות להימצא בשמות ה-id הקבועים שלהן');
+  assert.equal(startEl.value, '07:58');
+  assert.equal(endEl.value, '19:00');
 });

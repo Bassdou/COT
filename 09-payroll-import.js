@@ -1,4 +1,4 @@
-/* COT System Version: V202611021415 */
+/* COT System Version: V202611041915 */
 // קובץ: 09-payroll-import.js
 // ייבוא דוח פיצול (PDF) ממחלקת השכר, לעדכון שעות הכניסה/יציאה בטבלת COT - חוסך הקלדה חוזרת.
 //
@@ -181,8 +181,8 @@ window.generatePayrollUpdateRequest = async function() {
         return '<tr style="border-bottom:1px solid #DCE3EC;' + (bg ? 'background:' + bg + ';' : '') + '">' +
             '<td style="padding:2px 6px;text-align:center;">' + pad2(d.day) + '/' + pad2(ym.m) + '</td>' +
             '<td style="padding:2px 6px;text-align:center;">' + (d.shift || '-') + '</td>' +
-            '<td style="padding:2px 6px;direction:ltr;unicode-bidi:bidi-override;text-align:left;" dir="ltr">' + (d.start || '-') + '</td>' +
-            '<td style="padding:2px 6px;direction:ltr;unicode-bidi:bidi-override;text-align:left;" dir="ltr">' + (d.end || '-') + '</td>' +
+            '<td style="padding:2px 6px;text-align:center;">' + (d.start || '-') + '</td>' +
+            '<td style="padding:2px 6px;text-align:center;">' + (d.end || '-') + '</td>' +
             '<td style="padding:2px 6px;text-align:right;">' + (d.desc || '-') + '</td></tr>';
     }).join('');
     var legend = '<div style="font-size:9.5px;color:#64748B;margin-bottom:8px;display:flex;gap:14px;">' +
@@ -325,26 +325,32 @@ function renderPayrollComparison(results, discrepancies) {
         analysisHtml += '</div>';
     }
 
-    // כפיית LTR חזקה (direction+unicode-bidi:bidi-override, לא רק attribute dir) + יישור שמאל -
-    // בלי זה, בתוך עמוד RTL, גם עם dir="ltr" בלבד, העין שסורקת מימין-לשמאל עדיין "פוגשת" קודם
-    // את הקצה הימני של הבלוק (שהוא סוף שעת היציאה, לא תחילת הכניסה) - נראה הפוך גם כש"טכנית"
-    // סדר התווים נכון. יישור לשמאל + bidi-override פותר את זה לגמרי, לא רק dir לבדו.
-    var LTR_TIME = 'direction:ltr;unicode-bidi:bidi-override;text-align:left;';
-    // dir="ltr" בשתי עמודות השעות - בלי זה, כיווניות ה-RTL של הדף יכולה להציג את שתי העמודות
-    // (מחרוזת טקסט מול שני תאי קלט) בסדר ויזואלי לא עקבי ביניהן. עם dir="ltr" מפורש, שתיהן תמיד
-    // יציגו כניסה (שמאל) ואז יציאה (ימין), באותו סדר בדיוק בשתי העמודות.
+    // 4 עמודות נפרדות (כניסה/יציאה × COT/דוח) עם כותרת-קבוצה דו-שורתית, בדיוק אותו דפוס
+    // שהטבלה הראשית של COT כבר משתמשת בו (למשל "ש"נ"/"שבת" מעל תתי-עמודות). זה מחליף לגמרי את
+    // ניסיון ה"מחרוזת הפוכה" הקודם - עמודות טבלה נפרדות כבר מסתדרות נכון ב-RTL מאליהן, בלי שום
+    // טריק כיווניות; זו בדיוק הסיבה שבקשת העדכון ו"הורד PDF" (ששניהם כבר משתמשים בעמודות נפרדות)
+    // מעולם לא סבלו מהבעיה הזו בכלל.
     let html = '<table style="width:100%;border-collapse:collapse;font-size:12.5px;">' +
-        '<tr style="background:#E3ECF8;"><th style="padding:3px 6px;text-align:right;">יום</th><th style="padding:3px 6px;">שעות - COT</th><th style="padding:3px 6px;">שעות - דוח (ניתן לתקן)</th></tr>';
+        '<tr style="background:#E3ECF8;">' +
+        '<th rowspan="2" style="padding:3px 6px;text-align:right;border:1px solid #DCE3EC;">יום</th>' +
+        '<th colspan="2" style="padding:3px 6px;border:1px solid #DCE3EC;">COT</th>' +
+        '<th colspan="2" style="padding:3px 6px;border:1px solid #DCE3EC;">דוח (ניתן לתקן)</th>' +
+        '</tr>' +
+        '<tr style="background:#E3ECF8;">' +
+        '<th style="padding:3px 6px;border:1px solid #DCE3EC;">כניסה</th><th style="padding:3px 6px;border:1px solid #DCE3EC;">יציאה</th>' +
+        '<th style="padding:3px 6px;border:1px solid #DCE3EC;">כניסה</th><th style="padding:3px 6px;border:1px solid #DCE3EC;">יציאה</th>' +
+        '</tr>';
     for (const r of results) {
         const rowColor = r.timesMatch ? '' : 'background:#FDF2F2;';
-        const editableTimes = (r.pdfStart || r.pdfEnd)
-            ? `<input type="text" id="payroll-start-${r.day}" value="${r.pdfStart}" style="width:48px;text-align:center;border:1px solid #DCE3EC;border-radius:5px;padding:1px;font-size:11.5px;" placeholder="כניסה">-` +
-              `<input type="text" id="payroll-end-${r.day}" value="${r.pdfEnd}" style="width:48px;text-align:center;border:1px solid #DCE3EC;border-radius:5px;padding:1px;font-size:11.5px;" placeholder="יציאה">`
-            : '<span style="color:#94A3B8;">-</span>';
+        const inputStyle = 'width:52px;text-align:center;border:1px solid #DCE3EC;border-radius:5px;padding:2px;font-size:11.5px;';
+        const startInput = (r.pdfStart || r.pdfEnd) ? `<input type="text" id="payroll-start-${r.day}" value="${r.pdfStart}" style="${inputStyle}">` : '<span style="color:#94A3B8;">-</span>';
+        const endInput = (r.pdfStart || r.pdfEnd) ? `<input type="text" id="payroll-end-${r.day}" value="${r.pdfEnd}" style="${inputStyle}">` : '<span style="color:#94A3B8;">-</span>';
         html += `<tr style="${rowColor}border-bottom:1px solid #DCE3EC;">` +
-            `<td style="padding:2px 6px;text-align:center;font-weight:700;">${r.day}</td>` +
-            `<td style="padding:2px 6px;${LTR_TIME}" dir="ltr">${r.cotStart}-${r.cotEnd}</td>` +
-            `<td style="padding:2px 6px;white-space:nowrap;${LTR_TIME}" dir="ltr">${editableTimes}</td></tr>`;
+            `<td style="padding:2px 6px;text-align:center;font-weight:700;border:1px solid #DCE3EC;">${r.day}</td>` +
+            `<td style="padding:2px 6px;text-align:center;border:1px solid #DCE3EC;">${r.cotStart}</td>` +
+            `<td style="padding:2px 6px;text-align:center;border:1px solid #DCE3EC;">${r.cotEnd}</td>` +
+            `<td style="padding:2px 6px;text-align:center;border:1px solid #DCE3EC;">${startInput}</td>` +
+            `<td style="padding:2px 6px;text-align:center;border:1px solid #DCE3EC;">${endInput}</td></tr>`;
     }
     html += '</table>';
     const summary = mismatches.length === 0

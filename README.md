@@ -1,8 +1,8 @@
-<!-- COT System Version: V202611021415 -->
+<!-- COT System Version: V202611041915 -->
 
 # COT - Calculate Over Time: full source + tests + deployment guide
 
-Current version: **V202611021415** (see `version.json`)
+Current version: **V202611041915** (see `version.json`)
 
 ## File layout
 
@@ -116,6 +116,31 @@ flagging this from December 15 of each year.
 **Next steps:** take the screenshots per the list and send them to me (skipping any that are hard
 to get is fine). I'll build the final polished manual from them and export it as a separate zip
 named `MANUAL`, versioned to match the app version at that moment.
+
+## This round: payroll-import comparison table rebuilt as 4 real columns + a second real payroll bug fixed + the manual is now genuinely complete
+
+**Time-alignment, finally fixed correctly.** After multiple failed CSS-direction attempts (the actual
+root cause: a purely numeric string has no strong-RTL anchor for the bidi algorithm to reorder by, so
+no amount of `dir`/`unicode-bidi` CSS could ever have worked), rebuilt the comparison table as 4 real
+columns (כניסה/יציאה × COT/report) with a 2-row grouped header - the same pattern COT's own main
+table already uses, and the same reason `generatePayrollUpdateRequest`/`exportToPDF` never had this
+problem in the first place (separate table columns reorder correctly in RTL on their own; combined
+strings don't). Confirmed correct against an actual screenshot this time before considering it closed.
+
+**A second real payroll bug, found from an actual report comparison.** A Friday that's also erev-chag
+(02/10/2026, Hoshana Rabbah) wasn't crediting any "חופש שבת" hours for the portion of the shift past
+the Shabbat-start threshold, because that day type uses a separate, deliberately-untouched validated
+formula (I/J/K/L/O, from the earlier erev-ר"ה fix) that simply never computed Shabbat-minutes at all.
+Added the Shabbat-hours calculation to that branch directly, without touching a single line of the
+validated formula - verified I/J/K/L/O stayed byte-identical before and after.
+
+**The manual is now genuinely complete.** Added the missing terms/privacy/accessibility consent-flow
+coverage to both the in-app guide and the full manual, and the 17th and final required screenshot
+(payroll-import) arrived and was incorporated - the manual no longer has any "image coming soon"
+placeholders.
+
+**Packaging note:** starting this version, only files with real functional changes are included in
+the zip (not the full ~23-file set) - see the attached file listing the exact changed files.
 
 ## Payroll fix, corrected: COT shouldn't auto-adjust DST-transition shifts at all
 

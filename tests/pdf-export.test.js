@@ -88,7 +88,7 @@ test('exportToPDF: jsPDF נקרא עם orientation landscape', async () => {
   assert.equal(jsPdfArgs.orientation, 'landscape');
 });
 
-test('exportToPDF: שעות עם כפיית LTR חזקה (unicode-bidi:bidi-override), לא רק dir="ltr"', async () => {
+test('exportToPDF: שעות בלי כפיית כיווניות - bidi-override גרם להיפוך שדווח, הוסר', async () => {
   const app = loadApp();
   setupMonth(app, { year: 2026, month: 10, rate: 50 });
   setTimes(app, 2, '0758', '1900');
@@ -96,5 +96,6 @@ test('exportToPDF: שעות עם כפיית LTR חזקה (unicode-bidi:bidi-over
   app.ctx.html2canvas = async (el) => { capturedEl = el; return { width: 10, height: 10, toDataURL: () => 'data:x' }; };
   app.ctx.jsPDF = function () { this.addImage = () => {}; this.save = () => {}; };
   await app.ctx.exportToPDF();
-  assert.ok(capturedEl.innerHTML.includes('unicode-bidi:bidi-override'));
+  assert.ok(!capturedEl.innerHTML.includes('unicode-bidi:bidi-override'));
+  assert.ok(!capturedEl.innerHTML.includes('dir="ltr"'));
 });
