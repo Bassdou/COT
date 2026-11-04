@@ -1,4 +1,4 @@
-<!-- COT System Version: V202611041915 -->
+<!-- COT System Version: V202611042020 -->
 <!--
   קובץ: cot-manual.html
   שלד חוברת ההדרכה. הטקסט כאן כבר מתוקן לפי ההתנהגות האמיתית של הקוד (לא לפי הספרון הישן).
@@ -26,12 +26,15 @@
   header h1 { margin:0 0 6px; font-size:28px; }
   header .ver { font-family:monospace; opacity:.8; font-size:13px; }
   main { max-width:860px; margin:0 auto; padding:0 20px; }
-  section { background:#fff; border-radius:14px; box-shadow:0 4px 15px rgba(13,71,161,.08); padding:26px 30px; margin:26px 0; }
+  section { background:#fff; border-radius:14px; box-shadow:0 4px 15px rgba(13,71,161,.08); padding:26px 30px; margin:26px 0;
+            page-break-before: always; }
+  section:first-of-type { page-break-before: auto; }
   h2 { color:var(--blue); font-size:21px; border-bottom:2px solid #DCE3EC; padding-bottom:8px; }
   h3 { color:var(--blue2); font-size:17px; margin-bottom:6px; }
   ul { padding-right:20px; }
   li { margin-bottom:8px; line-height:1.6; }
-  .fig { margin:18px 0; text-align:center; }
+  .fig { margin:18px 0; text-align:center; page-break-inside: avoid; }
+  h3 { page-break-after: avoid; }
   .fig img { max-width:100%; border:1px solid #DCE3EC; border-radius:10px; box-shadow:0 2px 10px rgba(0,0,0,.08); }
   .fig .cap { font-size:13px; color:#64748B; margin-top:6px; }
   .fig .missing { display:flex; align-items:center; justify-content:center; height:160px; background:#F2F5F9;
@@ -49,7 +52,7 @@
 
 <header>
   <h1>COT <span style="opacity:.8;">(Calculate Over Time)</span> - ספרון הדרכה למשתמש</h1>
-  <div class="ver">חוברת זו תקפה החל מגרסת אפליקציה מס' V202611041915</div>
+  <div class="ver">חוברת זו תקפה החל מגרסת אפליקציה מס' V202611042020</div>
 </header>
 
 <main>

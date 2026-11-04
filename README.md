@@ -1,8 +1,8 @@
-<!-- COT System Version: V202611041915 -->
+<!-- COT System Version: V202611042020 -->
 
 # COT - Calculate Over Time: full source + tests + deployment guide
 
-Current version: **V202611041915** (see `version.json`)
+Current version: **V202611042020** (see `version.json`)
 
 ## File layout
 
@@ -116,6 +116,20 @@ flagging this from December 15 of each year.
 **Next steps:** take the screenshots per the list and send them to me (skipping any that are hard
 to get is fine). I'll build the final polished manual from them and export it as a separate zip
 named `MANUAL`, versioned to match the app version at that moment.
+
+## This round: the manual is now actually, fully accurate - text and images
+
+After the last round claimed the manual was "complete," a closer look turned up real gaps that a
+content-only check had missed. The PDF's sections were crammed onto 2 pages with no breaks between
+topics; fixed properly with `page-break-before: always` on each section (verified concretely, not
+assumed - page count went from 2 to 11, confirmed via pdftotext that each topic starts cleanly).
+
+Separately, a real audit of all 17 screenshot-generator cards (not just the one flagged) turned up
+three that were stale relative to current reality: the action-grid card was missing the newer "יבא
+דו"ח פיצול" button, the top-bar card was missing the lock-screen button, and the registration card
+was missing the terms/privacy/accessibility consent checkbox - all three fixed in the generator, all
+three screenshots retaken and confirmed correct against actual screenshots before being incorporated.
+`cot_user_manual.pdf` now has zero "image coming soon" placeholders and genuinely matches the live app.
 
 ## This round: payroll-import comparison table rebuilt as 4 real columns + a second real payroll bug fixed + the manual is now genuinely complete
 
