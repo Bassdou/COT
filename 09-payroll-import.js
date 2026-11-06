@@ -1,4 +1,4 @@
-/* COT System Version: V202611041915 */
+/* COT System Version: V202611062023 */
 // קובץ: 09-payroll-import.js
 // ייבוא דוח פיצול (PDF) ממחלקת השכר, לעדכון שעות הכניסה/יציאה בטבלת COT - חוסך הקלדה חוזרת.
 //
@@ -189,7 +189,7 @@ window.generatePayrollUpdateRequest = async function() {
         '<span><span style="display:inline-block;width:10px;height:10px;background:#F3E8DA;border-radius:2px;vertical-align:middle;"></span> שונה מהדוח שנסרק</span>' +
         '<span><span style="display:inline-block;width:10px;height:10px;background:#F3E8FF;border-radius:2px;vertical-align:middle;"></span> היעדרות</span></div>';
     container.innerHTML =
-        '<h2 style="font-size:13.5px;margin:0 0 8px;text-align:center;">בקשת עדכון לדו"ח פיצול לחודש ' + pad2(ym.m) + '/' + ym.y + ' עבור עובד ' + empName + '</h2>' +
+        '<h2 style="font-size:13.5px;margin:0 0 8px;text-align:center;">בקשת עדכון לדו"ח פיצול לחודש ' + pad2(ym.m) + '/' + ym.y + ' עבור עובד ' + window.escapeHtml(empName) + '</h2>' +
         legend +
         '<table style="width:100%;border-collapse:collapse;font-size:10.5px;">' +
         '<tr style="background:#E3ECF8;"><th style="padding:3px 6px;">תאריך</th><th style="padding:3px 6px;">משמרת</th><th style="padding:3px 6px;">כניסה</th><th style="padding:3px 6px;">יציאה</th><th style="padding:3px 6px;">תאור</th></tr>' +

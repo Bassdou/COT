@@ -1,4 +1,4 @@
-/* COT System Version: V202611021415 */
+/* COT System Version: V202611062023 */
 // קובץ: 00-core.js
 // הגדרות גלובליות, חיבור Firebase ומצב משותף. נטען ראשון, לפני כל שאר קבצי COT.
 
@@ -23,4 +23,13 @@ if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
 const db = firebase.firestore();
 
 function showLoading(show) { document.getElementById('loadingOverlay').style.display = show ? 'flex' : 'none'; }
+
+// הגנה מפני XSS: כל טקסט שהמשתמש הקליד (למשל שם עובד) שנכנס ל-innerHTML/תבנית HTML חייב לעבור את
+// זה קודם. בלי זה, שם עובד כמו <img src=x onerror=...> היה מתבצע בפועל ברגע שה-HTML נטען לדף -
+// כולל בחלונות שמוצגים למשתמש *אחר*.
+window.escapeHtml = function(str) {
+    return String(str == null ? '' : str)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+};
 

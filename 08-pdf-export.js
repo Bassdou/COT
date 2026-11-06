@@ -1,4 +1,4 @@
-/* COT System Version: V202611041915 */
+/* COT System Version: V202611062023 */
 // קובץ: 08-pdf-export.js
 // ייצוא ישיר לקובץ PDF - לא תלוי בדפדפן/מדפסת של המשתמש, בניגוד להדפסה (Ctrl+P).
 //
@@ -77,7 +77,7 @@ window.exportToPDF = async function() {
     container.style.cssText = 'position:fixed;top:-9999px;right:-9999px;background:#fff;color:#000;padding:16px;width:1600px;direction:rtl;font-family:Arial,Heebo,sans-serif;font-size:10px;';
     container.innerHTML =
         '<div style="display:flex;justify-content:space-between;border-bottom:2px solid #000;padding-bottom:6px;margin-bottom:8px;font-size:12px;">' +
-        '<span>שם עובד: ' + empName + '</span><span>לתקופה: ' + pad2(ym.m) + ' / ' + ym.y + '</span><span>תאריך הפקה: ' + new Date().toLocaleDateString('he-IL') + '</span></div>' +
+        '<span>שם עובד: ' + window.escapeHtml(empName) + '</span><span>לתקופה: ' + pad2(ym.m) + ' / ' + ym.y + '</span><span>תאריך הפקה: ' + new Date().toLocaleDateString('he-IL') + '</span></div>' +
         '<table style="width:100%;border-collapse:collapse;">' +
         '<tr style="font-weight:700;">' +
         '<th style="' + CELL + '">יום</th><th style="' + CELL + '"></th><th style="' + CELL + '">כניסה</th><th style="' + CELL + '">יציאה</th>' +
